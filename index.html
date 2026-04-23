@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRC — The Right Click | Website Development for Businesses in India</title>
+    <meta name="description" content="Professional website development for small businesses and professionals in India. Fast delivery, honest pricing, guaranteed quality. TRC — The Right Click.">
+    <meta property="og:title" content="TRC — The Right Click">
+    <meta property="og:description" content="Your dedicated web development partner in India.">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Lenis Smooth Scroll -->
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.21/dist/lenis.css">
+    
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    
+    <!-- Lenis JS -->
+    <script src="https://unpkg.com/lenis@1.3.21/dist/lenis.min.js"></script>
+
+    <!-- Content Store (admin-editable) -->
+    <script src="js/content.js"></script>
+
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<script>
+  // Apply admin content before render
+  (function() {
+    const C = window.TRC ? window.TRC() : {};
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-trc]').forEach(el => {
+        const key = el.getAttribute('data-trc');
+        if (C[key] !== undefined) el.innerHTML = C[key];
+      });
+    });
+  })();
+</script>
+
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- SCROLL PROGRESS -->
+    <div class="progress-bar"></div>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="preloader-trc">
+            <span class="preloader-char">T</span>
+            <span class="preloader-char">R</span>
+            <span class="preloader-char">C</span>
+        </div>
+        <div class="preloader-line"></div>
+        <div class="preloader-sub">THE RIGHT CLICK</div>
+        <div class="preloader-progress"></div>
+    </div>
+
+    <!-- PARTICLES -->
+    <div class="particles">
+        <div class="particle" style="left:10%; top:20%; animation-duration:12s;">&lt;/&gt;</div>
+        <div class="particle" style="left:80%; top:15%; animation-duration:18s; font-size:20px;">{ }</div>
+        <div class="particle" style="left:40%; top:60%; animation-duration:14s;">()</div>
+        <div class="particle" style="left:70%; top:80%; animation-duration:20s; font-size:16px;">/* */</div>
+        <div class="particle" style="left:20%; top:70%; animation-duration:16s;">#</div>
+        <div class="particle" style="left:50%; top:30%; animation-duration:15s;">@</div>
+    </div>
+
+    <!-- STICKY LABELS -->
+    <div class="sticky-left">
+        <div class="sticky-text">India's Growth-Focused Web Studio</div>
+    </div>
+    <div class="sticky-right">
+        <a href="#contact" class="wa-icon" style="width:24px; height:24px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        </a>
+        <div class="sticky-line"></div>
+        <div class="sticky-text">Chat with us</div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="logo-area">
+            <a href="#" class="trc">TRC<span class="dot">•</span></a>
+            <span class="sub">The Right Click</span>
+        </div>
+        <div class="nav-links">
+            <a href="#work">Work</a>
+            <a href="#services">Services</a>
+            <a href="#process">Process</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="nav-right">
+            <a href="#contact" class="wa-icon btn-magnetic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </a>
+            <a href="#contact" class="btn btn-magnetic">LET'S TALK</a>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <div style="display:flex; gap:20px; margin-top:20px;">
+            <a href="#contact" class="wa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
+        </div>
+    </div>
+
+    <!-- SECTION 1: HERO -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="hero-top-label fade-up" style="animation-delay: 0.2s;">
+                    <span style="color:var(--color-copper);">•</span> INDIA'S GROWTH-FOCUSED WEB STUDIO
+                </div>
+                <h1 class="hero-headline word-reveal" data-accent-word="Businesses.">We Build Websites That Build <span class="accent-word">Businesses.</span></h1>
+                <p class="hero-subheadline fade-up" style="animation-delay: 1.2s;">
+                    From your first call to your launch day — we handle everything. Clean design, fast performance, and websites that actually get you clients.
+                </p>
+                
+                <div class="trust-badges fade-up" style="animation-delay: 1.5s;">
+                    <div class="trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> 20+ Projects Delivered</div>
+                    <div class="trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> On-Time. Every Time.</div>
+                    <div class="trust-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Real Support</div>
+                </div>
+
+                <div class="hero-buttons fade-up" style="animation-delay: 1.7s;">
+                    <a href="#contact" class="btn btn-magnetic">START YOUR PROJECT</a>
+                    <a href="#work" class="btn-ghost">SEE OUR WORK &darr;</a>
+                </div>
+
+                <div class="social-proof-strip fade-up" style="animation-delay: 1.8s;">
+                    <p>Trusted by 20+ businesses across India —</p>
+                    <div class="pills">
+                        <span class="pill">Restaurant</span>
+                        <span class="pill">Real Estate</span>
+                        <span class="pill">Doctor</span>
+                        <span class="pill">E-commerce</span>
+                        <span class="pill">Coach</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual fade-up" style="animation-delay: 0.8s;">
+                <div class="code-mockup">
+                    <div class="mockup-header">
+                        <div class="circle r"></div>
+                        <div class="circle y"></div>
+                        <div class="circle g"></div>
+                    </div>
+                    <div class="mockup-body">
+                        &lt;<span class="tag">html</span> <span class="attr">lang</span>=<span class="val">"en"</span>&gt;<br>
+                        &nbsp;&nbsp;&lt;<span class="tag">body</span>&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="tag">h1</span>&gt;Grow Your Business&lt;/<span class="tag">h1</span>&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="tag">p</span>&gt;We build websites that convert.&lt;/<span class="tag">p</span>&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="tag">button</span> <span class="attr">class</span>=<span class="val">"cta"</span>&gt;Let's Talk<span class="blinking-cursor"></span>&lt;/<span class="tag">button</span>&gt;<br>
+                        &nbsp;&nbsp;&lt;/<span class="tag">body</span>&gt;<br>
+                        &lt;/<span class="tag">html</span>&gt;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="marquee-strip">
+        <div class="marquee-content">
+            <span>WEBSITES</span><span>•</span>
+            <span>APPS</span><span>•</span>
+            <span>LANDING PAGES</span><span>•</span>
+            <span>E-COMMERCE</span><span>•</span>
+            <span>PORTFOLIOS</span><span>•</span>
+            <span>RESTAURANTS</span><span>•</span>
+            <span>REAL ESTATE</span><span>•</span>
+            <span>DOCTORS</span><span>•</span>
+            <span>COACHES</span><span>•</span>
+            <span>STARTUPS</span><span>•</span>
+            <span>WEBSITES</span><span>•</span>
+            <span>APPS</span><span>•</span>
+            <span>LANDING PAGES</span><span>•</span>
+            <span>E-COMMERCE</span><span>•</span>
+            <span>PORTFOLIOS</span><span>•</span>
+            <span>RESTAURANTS</span><span>•</span>
+            <span>REAL ESTATE</span><span>•</span>
+            <span>DOCTORS</span><span>•</span>
+            <span>COACHES</span><span>•</span>
+            <span>STARTUPS</span>
+        </div>
+    </div>
+
+    <!-- SECTION 2: STATS -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-row">
+                <div class="stat fade-up">
+                    <div class="stat-num"><span data-target="20">0</span>+</div>
+                    <div class="stat-label">Projects Delivered</div>
+                </div>
+                <div class="stat fade-up" style="transition-delay: 0.1s;">
+                    <div class="stat-num"><span data-target="15">0</span>+</div>
+                    <div class="stat-label">Happy Clients</div>
+                </div>
+                <div class="stat fade-up" style="transition-delay: 0.2s;">
+                    <div class="stat-num"><span data-target="100">0</span>%</div>
+                    <div class="stat-label">On-Time Delivery</div>
+                </div>
+                <div class="stat fade-up" style="transition-delay: 0.3s;">
+                    <div class="stat-num"><span data-target="24">0</span>hrs</div>
+                    <div class="stat-label">Avg. Response Time</div>
+                </div>
+            </div>
+            <div class="stats-footer fade-up">
+                Every number represents a real business we helped grow.
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: ABOUT -->
+    <section id="about" class="about-section">
+        <div class="container about-grid">
+            <div class="about-content">
+                <span class="label fade-up">ABOUT TRC</span>
+                <h2 class="about-headline word-reveal">We're not a big firm.<br>We're your dedicated web team.</h2>
+                <div class="about-body">
+                    <p class="fade-up">TRC — The Right Click — was built on one belief: that small businesses in India deserve world-class websites. Not overpriced, not generic. A website that actually represents you and brings in real results.</p>
+                    <p class="fade-up">We work directly with you — no middlemen, no confusing jargon. You tell us your goal. We build the website that gets you there.</p>
+                    <p class="fade-up">From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have a business, you need a website. And we know how to build one that makes your phone ring.</p>
+                </div>
+                <div class="founder-note fade-up">
+                    <p>"— Built by someone who's been where you are. I know what it feels like to not have an online presence. That's why I built TRC."</p>
+                    <span>Founder, TRC</span>
+                </div>
+            </div>
+            <div class="about-features">
+                <div class="feature-card fade-up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:24px;height:24px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    <h4>Web Development</h4>
+                    <p>Custom built for your exact needs.</p>
+                </div>
+                <div class="feature-card fade-up" style="transition-delay: 0.1s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:24px;height:24px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                    <h4>Mobile Friendly</h4>
+                    <p>Perfect on every single device.</p>
+                </div>
+                <div class="feature-card fade-up" style="transition-delay: 0.2s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:24px;height:24px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    <h4>Fast Performance</h4>
+                    <p>Loads instantly to keep visitors.</p>
+                </div>
+                <div class="feature-card fade-up" style="transition-delay: 0.3s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:24px;height:24px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <h4>SEO Ready</h4>
+                    <p>Built to be found on Google.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: PORTFOLIO -->
+    <section id="work" class="portfolio-section">
+        <span class="label fade-up">OUR WORK</span>
+        <h2 class="portfolio-headline word-reveal">20 Websites. Real Businesses.</h2>
+        <p class="portfolio-subtext fade-up">Hover to preview. Click to explore the full project.</p>
+        
+        <div class="filter-row fade-up">
+            <button class="filter-pill active" data-filter="all">ALL</button>
+            <button class="filter-pill" data-filter="business">BUSINESS</button>
+            <button class="filter-pill" data-filter="restaurant">RESTAURANT</button>
+            <button class="filter-pill" data-filter="realestate">REAL ESTATE</button>
+            <button class="filter-pill" data-filter="ecommerce">E-COMMERCE</button>
+        </div>
+
+        <div class="marquee-container fade-up">
+            <!-- ROW 1 -->
+            <div class="marquee-row left">
+                <!-- Duplicate cards for infinite loop -->
+                <script>
+                    const imgs = [
+                        'Screenshot 2026-04-23 075117.png',
+                        'Screenshot 2026-04-23 075136.png',
+                        'Screenshot 2026-04-23 075157.png',
+                        'Screenshot 2026-04-23 075216.png',
+                        'Screenshot 2026-04-23 075238.png'
+                    ];
+                    for(let j=0; j<2; j++){
+                        for(let i=0; i<5; i++){
+                            document.write(`
+                            <div class="project-card" data-cat="${['business','restaurant','realestate','ecommerce','business'][i]}">
+                                <div class="card-browser-bar">
+                                    <div class="circle r"></div><div class="circle y"></div><div class="circle g"></div>
+                                    <div class="url"></div>
+                                </div>
+                                <div class="card-img-wrapper">
+                                    <img src="${imgs[i]}" alt="Project" loading="lazy">
+                                    <div class="card-overlay">
+                                        <span class="card-cat">${['Business','Restaurant','Real Estate','E-commerce','Portfolio'][i]}</span>
+                                        <div class="card-overlay-text">
+                                            <h4>Project Title 0${i+1}</h4>
+                                            <p><span>OPEN PROJECT &rarr;</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`);
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+        
+        <div class="marquee-container fade-up" style="margin-top: 24px;">
+            <!-- ROW 2 -->
+            <div class="marquee-row right">
+                <script>
+                    const imgs2 = [
+                        'Screenshot 2026-04-23 075246.png',
+                        'Screenshot 2026-04-23 075252.png',
+                        'Screenshot 2026-04-23 075304.png',
+                        'Screenshot 2026-04-23 075311.png',
+                        'Screenshot 2026-04-23 075345.png'
+                    ];
+                    for(let j=0; j<2; j++){
+                        for(let i=0; i<5; i++){
+                            document.write(`
+                            <div class="project-card" data-cat="${['restaurant','business','ecommerce','realestate','business'][i]}">
+                                <div class="card-browser-bar">
+                                    <div class="circle r"></div><div class="circle y"></div><div class="circle g"></div>
+                                    <div class="url"></div>
+                                </div>
+                                <div class="card-img-wrapper">
+                                    <img src="${imgs2[i]}" alt="Project" loading="lazy">
+                                    <div class="card-overlay">
+                                        <span class="card-cat">${['Restaurant','Business','E-commerce','Real Estate','Business'][i]}</span>
+                                        <div class="card-overlay-text">
+                                            <h4>Project Title 0${i+6}</h4>
+                                            <p><span>OPEN PROJECT &rarr;</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`);
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div class="marquee-container fade-up" style="margin-top: 24px;">
+            <!-- ROW 3 -->
+            <div class="marquee-row left-fast">
+                <script>
+                    const imgs3 = [
+                        'Screenshot 2026-04-23 075357.png',
+                        'Screenshot 2026-04-23 075415.png',
+                        'Screenshot 2026-04-23 075421.png',
+                        'Screenshot 2026-04-23 075117.png',
+                        'Screenshot 2026-04-23 075136.png'
+                    ];
+                    for(let j=0; j<2; j++){
+                        for(let i=0; i<5; i++){
+                            document.write(`
+                            <div class="project-card" data-cat="${['ecommerce','realestate','business','restaurant','business'][i]}">
+                                <div class="card-browser-bar">
+                                    <div class="circle r"></div><div class="circle y"></div><div class="circle g"></div>
+                                    <div class="url"></div>
+                                </div>
+                                <div class="card-img-wrapper">
+                                    <img src="${imgs3[i]}" alt="Project" loading="lazy">
+                                    <div class="card-overlay">
+                                        <span class="card-cat">${['E-commerce','Real Estate','Business','Restaurant','Business'][i]}</span>
+                                        <div class="card-overlay-text">
+                                            <h4>Project Title 0${i+11}</h4>
+                                            <p><span>OPEN PROJECT &rarr;</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`);
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div class="portfolio-footer fade-up">
+            <p style="font-family: var(--font-body); font-style: italic; color: var(--color-muted); margin-bottom: 16px;">Your industry isn't on this list? We've probably built for it.</p>
+            <a href="#contact" class="btn-ghost">DISCUSS YOUR PROJECT &rarr;</a>
+        </div>
+    </section>
+
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="services-header fade-up">
+                <span class="label">WHAT WE BUILD</span>
+                <h2 class="services-headline word-reveal">Services Built for<br>Results, Not Awards.</h2>
+            </div>
+
+            <div class="services-list">
+                <div class="service-row">
+                    <div class="service-row-header">
+                        <span class="srv-num">01</span>
+                        <span class="srv-title">Business Websites</span>
+                        <span class="srv-tag">Most Popular</span>
+                        <span class="srv-arrow">+</span>
+                    </div>
+                    <div class="service-row-body">
+                        <div class="service-row-body-inner">
+                            <p>Professional multi-page websites for businesses, clinics, agencies, and service providers. Custom design, fast loading, and built to show up on Google. We design it around your clients — not around a template.</p>
+                            <ul class="service-features">
+                                <li>Custom Design</li>
+                                <li>Mobile Responsive</li>
+                                <li>SEO Ready</li>
+                                <li>CMS / Easy Editing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-row">
+                    <div class="service-row-header">
+                        <span class="srv-num">02</span>
+                        <span class="srv-title">E-Commerce Stores</span>
+                        <span class="srv-tag">Sell Online</span>
+                        <span class="srv-arrow">+</span>
+                    </div>
+                    <div class="service-row-body">
+                        <div class="service-row-body-inner">
+                            <p>Online stores built to sell. Product management, payment integration, WhatsApp ordering, and a checkout flow your customers won't abandon mid-way.</p>
+                            <ul class="service-features">
+                                <li>Payment Gateway</li>
+                                <li>Product Catalogue</li>
+                                <li>Order Management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-row">
+                    <div class="service-row-header">
+                        <span class="srv-num">03</span>
+                        <span class="srv-title">Landing Pages</span>
+                        <span class="srv-tag">Ads &amp; Campaigns</span>
+                        <span class="srv-arrow">+</span>
+                    </div>
+                    <div class="service-row-body">
+                        <div class="service-row-body-inner">
+                            <p>Single-purpose pages designed with one goal: turning visitors into leads. Built for Google Ads, cold outreach, and direct traffic. Speed and conversion baked in.</p>
+                            <ul class="service-features">
+                                <li>A/B Test Ready</li>
+                                <li>Sub-2s Load Time</li>
+                                <li>Lead Capture Forms</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-row">
+                    <div class="service-row-header">
+                        <span class="srv-num">04</span>
+                        <span class="srv-title">Web Applications</span>
+                        <span class="srv-tag">Custom Software</span>
+                        <span class="srv-arrow">+</span>
+                    </div>
+                    <div class="service-row-body">
+                        <div class="service-row-body-inner">
+                            <p>Custom software for your business — booking systems, dashboards, portals, and admin tools. Built for reliability and scale. If it solves a real problem, we'll build it.</p>
+                            <ul class="service-features">
+                                <li>Custom Logic</li>
+                                <li>Database Integration</li>
+                                <li>User Authentication</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="services-info-bar fade-up">
+                Starting at &#8377;9,999 &nbsp;&nbsp;•&nbsp;&nbsp; Delivered in 7–21 days &nbsp;&nbsp;•&nbsp;&nbsp; Free domain + hosting for 1 year
+            </div>
+        </div>
+    </section>
+
+
+    <!-- SECTION 6: PROCESS -->
+
+    <section id="process" class="process-section">
+        <div class="container">
+            <div class="process-header fade-up">
+                <span class="label">THE PROCESS</span>
+                <h2 class="process-headline word-reveal">Simple. Transparent. No Surprises.</h2>
+                <p class="process-subtext">Here's exactly how we go from your first call to your live website.</p>
+            </div>
+        </div>
+
+        <div class="process-list">
+            <div class="process-step fade-up">
+                <div class="step-num">01</div>
+                <div class="step-content">
+                    <h3 data-trc="proc1_title">Discovery Call</h3>
+                    <p data-trc="proc1_body">You tell us about your business, your goals, and who you want to attract. We listen. We ask the right questions. No tech jargon — just a clear conversation. Takes 20–30 minutes.</p>
+                    <span class="badge" data-trc="proc1_badge">📞 20-30 min call</span>
+                </div>
+            </div>
+            
+            <div class="process-step fade-up">
+                <div class="step-num">02</div>
+                <div class="step-content">
+                    <h3 data-trc="proc2_title">Proposal & Quote</h3>
+                    <p data-trc="proc2_body">Within 24 hours, you receive a detailed proposal: what we'll build, how long it'll take, and exactly what it'll cost. No hidden charges.</p>
+                    <span class="badge" data-trc="proc2_badge">📋 Delivered in 24hrs</span>
+                </div>
+            </div>
+
+            <div class="process-step fade-up">
+                <div class="step-num">03</div>
+                <div class="step-content">
+                    <h3 data-trc="proc3_title">Design & Build</h3>
+                    <p data-trc="proc3_body">We design, you approve. Then we develop. You can see live progress at every stage. We don't disappear for weeks — we check in regularly.</p>
+                    <span class="badge" data-trc="proc3_badge">⚡ 7–21 days average</span>
+                </div>
+            </div>
+
+            <div class="process-step fade-up">
+                <div class="step-num">04</div>
+                <div class="step-content">
+                    <h3 data-trc="proc4_title">Review & Refine</h3>
+                    <p data-trc="proc4_body">You review everything and give feedback. We make revisions until you're completely satisfied. We include 2 rounds of revisions in every package.</p>
+                    <span class="badge" data-trc="proc4_badge">✏️ Up to 2 revisions</span>
+                </div>
+            </div>
+
+            <div class="process-step fade-up">
+                <div class="step-num">05</div>
+                <div class="step-content">
+                    <h3 data-trc="proc5_title">Go Live</h3>
+                    <p data-trc="proc5_body">Your website launches. We handle domain connection, hosting setup, and testing. After launch, we're still here — 30-day support included free.</p>
+                    <span class="badge" data-trc="proc5_badge">🚀 30-day free support</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container process-cta fade-up">
+            <p>Ready to start? Step 1 takes 30 minutes.</p>
+            <a href="#contact" class="btn btn-magnetic">BOOK A FREE CALL &rarr;</a>
+        </div>
+    </section>
+
+    <!-- SECTION 7: WHY CHOOSE -->
+    <section class="why-section">
+        <div class="container">
+            <div class="why-header fade-up">
+                <span class="label">WHY TRC</span>
+                <h2 class="why-headline word-reveal">Why small businesses in India choose us over big agencies.</h2>
+            </div>
+            
+            <div class="why-grid">
+                <div class="why-card fade-up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:36px;height:36px;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    <h4>Honest Pricing</h4>
+                    <p>No inflated quotes. No surprise bills. What we quote is what you pay.</p>
+                </div>
+                <div class="why-card fade-up" style="transition-delay: 0.1s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:36px;height:36px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <h4>Fast Turnaround</h4>
+                    <p>Most projects delivered in 7–21 days. Not months. Your time matters.</p>
+                </div>
+                <div class="why-card fade-up" style="transition-delay: 0.2s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:36px;height:36px;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                    <h4>Business-First Design</h4>
+                    <p>We don't just make things look good. We make them bring you customers.</p>
+                </div>
+                <div class="why-card fade-up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:36px;height:36px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <h4>Direct Communication</h4>
+                    <p>Talk directly to the person building your website. No account managers playing telephone.</p>
+                </div>
+                <div class="why-card fade-up" style="transition-delay: 0.1s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:36px;height:36px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                    <h4>100% Mobile-First</h4>
+                    <p>Over 70% of Indian users browse on mobile. Every site we build is perfect on every screen.</p>
+                </div>
+                <div class="why-card fade-up" style="transition-delay: 0.2s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-copper" style="width:36px;height:36px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <h4>Google-Ready from Day One</h4>
+                    <p>Basic SEO, proper meta tags, fast loading — your site is set up to be found. Not just exist.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: TESTIMONIALS -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="test-header fade-up">
+                <span class="label">CLIENT VOICES</span>
+                <h2 class="word-reveal">Don't take our word for it.</h2>
+            </div>
+            
+            <div class="stars-summary fade-up">
+                <div class="stars">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <p><strong>5.0 rating</strong> from 15 verified clients</p>
+            </div>
+
+            <div class="test-grid">
+                <div class="test-card fade-up">
+                    <div class="stars"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                    <p class="test-quote">"TRC built our restaurant website in just 10 days. Since launch, we've had new customers telling us they found us on Google. Worth every rupee."</p>
+                    <hr>
+                    <div class="test-client">
+                        <div class="avatar">R</div>
+                        <div class="client-info"><h5>Rajesh M.</h5><span>Owner, Spice Garden Restaurant</span></div>
+                    </div>
+                </div>
+                
+                <div class="test-card fade-up" style="transition-delay: 0.1s;">
+                    <div class="stars"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                    <p class="test-quote">"I was skeptical about investing in a website. But after TRC built ours, our patient inquiries doubled in 3 months. Professional, fast, honest."</p>
+                    <hr>
+                    <div class="test-client">
+                        <div class="avatar">P</div>
+                        <div class="client-info"><h5>Dr. Priya S.</h5><span>General Physician</span></div>
+                    </div>
+                </div>
+
+                <div class="test-card fade-up" style="transition-delay: 0.2s;">
+                    <div class="stars"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                    <p class="test-quote">"Finally a web developer who delivers what they promise. No delays, no drama. My real estate listings look incredible and enquiries are up."</p>
+                    <hr>
+                    <div class="test-client">
+                        <div class="avatar">A</div>
+                        <div class="client-info"><h5>Amit K.</h5><span>Real Estate Agent</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9: FAQ -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="faq-header fade-up">
+                <span class="label">QUESTIONS</span>
+                <h2 class="word-reveal">The questions everyone asks before saying yes.</h2>
+            </div>
+            
+            <div class="faq-container fade-up">
+                <div class="faq-item">
+                    <div class="faq-question">How much does a website cost? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Our packages start at ₹9,999 for a basic business website and go up depending on features, pages, and complexity. Before any work begins, you'll receive a detailed quote — no hidden costs, ever.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How long does it take to build a website? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Most standard websites are delivered in 7–14 working days. E-commerce stores and complex projects may take up to 21 days. We'll give you an exact timeline in your proposal.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">I'm not tech-savvy. Will I understand everything? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Absolutely yes. We avoid technical jargon and explain everything in plain language. You'll always know exactly what's happening with your project.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">What do I need to provide to get started? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Just your business information, any photos or content you already have, and a rough idea of what you want. We guide you through everything else.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Can I update my website myself after it's done? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Yes! We build websites with easy-to-use CMS systems so you can update text, images, and products without touching any code. We also provide a quick tutorial session.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">What happens after the website is launched? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Every project includes 30 days of free support after launch. After that, we offer affordable maintenance packages. And honestly? We're just a WhatsApp message away — always.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 10: CTA / CONTACT -->
+    <section id="contact" class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <span class="label fade-up">LET'S BUILD SOMETHING GREAT</span>
+                <h2 class="cta-headline word-reveal">Your website. Your growth. <span style="color:var(--color-copper)">Starting today.</span></h2>
+                <p class="cta-subtext fade-up">Stop losing clients to competitors with better online presence. Let's build the website your business deserves — at a price that makes sense.</p>
+                
+                <div class="contact-options fade-up">
+                    <a href="#contact-form" class="btn btn-magnetic">START MY PROJECT</a>
+                    <a href="https://wa.me/910000000000" class="btn btn-wa">💬 CHAT ON WHATSAPP</a>
+                    <div class="contact-details">📞 +91-XXXXXXXXXX &nbsp;•&nbsp; ✉ hello@therightclick.in</div>
+                </div>
+                
+                <div class="divider fade-up">OR FILL THE FORM BELOW</div>
+
+                <form id="contact-form" class="contact-form fade-up">
+                    <div class="form-group">
+                        <input type="text" class="form-control" required>
+                        <label>Name*</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" required>
+                        <label>Business Name*</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" class="form-control" required>
+                        <label>Phone*</label>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" required>
+                            <option value="" disabled selected></option>
+                            <option value="website">Website</option>
+                            <option value="ecommerce">E-commerce</option>
+                            <option value="landing">Landing Page</option>
+                            <option value="app">Web App</option>
+                            <option value="notsure">Not Sure</option>
+                        </select>
+                        <label>Service Needed</label>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" required>
+                            <option value="" disabled selected></option>
+                            <option value="tier1">Under ₹15k</option>
+                            <option value="tier2">₹15k - ₹30k</option>
+                            <option value="tier3">₹30k - ₹60k</option>
+                            <option value="tier4">₹60k+</option>
+                        </select>
+                        <label>Budget Range</label>
+                    </div>
+                    <div class="form-group" style="margin-bottom:40px;">
+                        <textarea class="form-control" rows="4" style="resize:none"></textarea>
+                        <label>Tell us about your project...</label>
+                    </div>
+                    <button type="submit" class="btn" style="width:100%">SEND MY ENQUIRY &rarr;</button>
+                    <div class="form-success">✓ We've received your enquiry! We'll reach out within 24 hours.</div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-top fade-up">
+                <div>
+                    <span class="trc" style="font-family:var(--font-display);font-weight:800;color:white;">TRC</span>
+                    <p>We build websites that build businesses.</p>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:13px; color:var(--color-muted);">Ready to talk?</span>
+                    <a href="#" class="wa-icon" style="width:32px; height:32px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
+                </div>
+            </div>
+            
+            <div class="footer-grid fade-up">
+                <div class="footer-col">
+                    <h6>COMPANY</h6>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#work">Our Work</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#process">Process</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h6>SERVICES</h6>
+                    <ul>
+                        <li><a href="#services">Business Websites</a></li>
+                        <li><a href="#services">E-Commerce</a></li>
+                        <li><a href="#services">Landing Pages</a></li>
+                        <li><a href="#services">Web Apps</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h6>INDUSTRIES</h6>
+                    <ul>
+                        <li><a href="#">Restaurant</a></li>
+                        <li><a href="#">Healthcare</a></li>
+                        <li><a href="#">Real Estate</a></li>
+                        <li><a href="#">Education</a></li>
+                        <li><a href="#">Retail</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h6>CONNECT</h6>
+                    <ul>
+                        <li><a href="mailto:hello@therightclick.in">hello@therightclick.in</a></li>
+                        <li><a href="tel:+910000000000">+91-XXXXXXXXXX</a></li>
+                    </ul>
+                    <div class="social-icons">
+                        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 TRC — The Right Click. All Rights Reserved.</p>
+                <div class="footer-badges">
+                    <span class="pill">GST Compliant</span>
+                    <span class="pill">Secure Checkout</span>
+                    <span class="pill">India-Based Team</span>
+                </div>
+                <p>Made with &hearts; in India &#127470;&#127475;</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PROJECT MODAL -->
+    <div class="project-modal">
+        <div class="modal-backdrop"></div>
+        <button class="modal-close">&times;</button>
+        <div class="modal-content">
+            <div class="modal-left">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-right">
+                <span class="modal-cat">CATEGORY</span>
+                <h2 class="modal-title">Project Name</h2>
+                <div class="modal-meta">
+                    <h6>WHAT WE BUILT</h6>
+                    <p>Custom Website Development, UI/UX Design, SEO Optimization.</p>
+                </div>
+                <div class="modal-meta">
+                    <h6>TECHNOLOGY</h6>
+                    <p>HTML5, GSAP, Lenis, Custom CSS.</p>
+                </div>
+                <a href="#" class="btn" style="text-align:center; margin-top:auto;">VIEW LIVE WEBSITE &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

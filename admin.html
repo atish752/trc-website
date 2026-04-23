@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TRC Admin</title>
+<script src="js/content.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#100E0A;--bg2:#1A1712;--bg3:#242017;--red:#D70321;--redl:#E8293A;--cream:#FBF5E7;--muted:#8B7355;--border:rgba(215,3,33,0.2);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;}
+input,select,textarea,button{font-family:'Inter',sans-serif;}
+#login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse 60% 50% at 20% 20%,rgba(215,3,33,0.14),transparent 70%),var(--bg);}
+.lbox{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:48px;width:100%;max-width:420px;}
+.llogo{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;margin-bottom:4px;}
+.llogo span{color:var(--red);}
+.lsub{font-size:11px;color:var(--muted);letter-spacing:.15em;margin-bottom:32px;}
+.lf{margin-bottom:18px;}
+.lf label{display:block;font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;}
+.lf input{width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:13px 15px;color:var(--cream);font-size:15px;outline:none;transition:border-color .3s;}
+.lf input:focus{border-color:var(--red);}
+.lerr{color:#e74c3c;font-size:13px;margin-bottom:14px;display:none;}
+.lbtn{width:100%;background:var(--red);color:#fff;border:none;padding:15px;border-radius:6px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .3s;}
+.lbtn:hover{background:var(--redl);}
+#dash{display:none;min-height:100vh;}
+.dnav{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;}
+.dnav .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;}
+.dnav .logo span{color:var(--red);}
+.dbody{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 55px);}
+.side{background:var(--bg2);border-right:1px solid var(--border);padding:20px 0;}
+.si{padding:12px 20px;font-size:13px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:10px;border-left:3px solid transparent;transition:all .2s;}
+.si:hover,.si.act{color:var(--cream);background:rgba(215,3,33,.07);border-left-color:var(--red);}
+.dmain{padding:36px;}
+.panel{display:none;}
+.panel.act{display:block;}
+.ptitle{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:6px;}
+.psub{color:var(--muted);font-size:13px;margin-bottom:30px;}
+/* CONTENT EDITOR */
+.cgroup{margin-bottom:36px;}
+.cgroup-title{font-size:11px;font-weight:600;color:var(--red);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.cf{margin-bottom:14px;}
+.cf label{display:block;font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
+.cf input,.cf textarea,.cf select{width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:11px 14px;color:var(--cream);font-size:13px;outline:none;transition:border-color .3s;resize:vertical;}
+.cf input:focus,.cf textarea:focus,.cf select:focus{border-color:var(--red);}
+.cf textarea{min-height:70px;}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sbtn{background:var(--red);color:#fff;border:none;padding:12px 28px;border-radius:6px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .3s;}
+.sbtn:hover{background:var(--redl);}
+.smsg{display:none;color:#2ecc71;font-size:13px;margin-top:10px;}
+.rbtn{background:rgba(231,76,60,.1);color:#e74c3c;border:1px solid rgba(231,76,60,.2);padding:10px 20px;border-radius:6px;font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+.rbtn:hover{background:rgba(231,76,60,.2);}
+/* PROJECTS */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:20px;}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.pc img{width:100%;height:150px;object-fit:cover;object-position:top;}
+.pci{padding:14px;}
+.pci .cat{font-size:10px;color:var(--red);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;display:block;}
+.pci h4{font-family:'Syne',sans-serif;font-size:15px;margin-bottom:4px;}
+.pci a{font-size:11px;color:var(--muted);text-decoration:none;word-break:break-all;}
+.pa{display:flex;gap:8px;margin-top:10px;}
+.bsm{padding:6px 12px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:none;text-transform:uppercase;letter-spacing:.07em;}
+.bdel{background:rgba(231,76,60,.12);color:#e74c3c;}
+.bdel:hover{background:rgba(231,76,60,.25);}
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;}
+.chip{background:var(--bg3);border:1px solid var(--border);border-radius:40px;padding:7px 16px;font-size:12px;display:flex;align-items:center;gap:8px;}
+.chip button{background:none;border:none;color:#e74c3c;cursor:pointer;font-size:15px;}
+.no{color:var(--muted);font-style:italic;font-size:13px;padding:16px 0;}
+.badge-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;background:rgba(215,3,33,.1);color:var(--red);letter-spacing:.08em;margin-left:6px;}
+.bout{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:6px;font-size:12px;cursor:pointer;transition:all .2s;}
+.bout:hover{border-color:var(--red);color:var(--red);}
+@media(max-width:768px){.dbody{grid-template-columns:1fr;}.side{display:flex;overflow-x:auto;gap:0;padding:0;border-right:none;border-bottom:1px solid var(--border);}.si{white-space:nowrap;border-left:none;border-bottom:3px solid transparent;}.si.act{border-left:none;border-bottom-color:var(--red);}.dmain{padding:20px;}}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="lbox">
+    <div class="llogo">TRC<span>•</span></div>
+    <div class="lsub">ADMIN — RESTRICTED ACCESS</div>
+    <div class="lf"><label>Username</label><input id="un" type="text" placeholder="Username"></div>
+    <div class="lf"><label>Password</label><input id="pw" type="password" placeholder="Password"></div>
+    <div class="lerr" id="lerr">Invalid credentials.</div>
+    <button class="lbtn" onclick="doLogin()">ACCESS DASHBOARD</button>
+  </div>
+</div>
+
+<div id="dash">
+  <nav class="dnav">
+    <div class="logo">TRC<span>•</span> Admin</div>
+    <button class="bout" onclick="logout()">LOGOUT</button>
+  </nav>
+  <div class="dbody">
+    <div class="side">
+      <div class="si act" onclick="show('content',this)">✏️ &nbsp;Site Content</div>
+      <div class="si" onclick="show('projects',this)">📁 &nbsp;Projects</div>
+      <div class="si" onclick="show('addp',this)">➕ &nbsp;Add Project</div>
+      <div class="si" onclick="show('cats',this)">🏷️ &nbsp;Categories</div>
+    </div>
+    <div class="dmain">
+
+      <!-- CONTENT PANEL -->
+      <div class="panel act" id="panel-content">
+        <div class="ptitle">Edit Website Content</div>
+        <div class="psub">Every change saves instantly to the live site via localStorage.</div>
+
+        <!-- HERO -->
+        <div class="cgroup">
+          <div class="cgroup-title">🏠 Hero Section</div>
+          <div class="cf"><label>Top Label</label><input data-key="hero_label" placeholder="INDIA'S GROWTH-FOCUSED WEB STUDIO"></div>
+          <div class="cf-row">
+            <div class="cf"><label>Headline (first part)</label><input data-key="hero_headline" placeholder="We Build Websites That Build"></div>
+            <div class="cf"><label>Accent Word (red)</label><input data-key="hero_accent" placeholder="Businesses."></div>
+          </div>
+          <div class="cf"><label>Sub-headline</label><textarea data-key="hero_sub"></textarea></div>
+          <div class="cf-row">
+            <div class="cf"><label>Button 1 Text</label><input data-key="hero_btn1"></div>
+            <div class="cf"><label>Button 2 Text</label><input data-key="hero_btn2"></div>
+          </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="cgroup">
+          <div class="cgroup-title">📊 Stats Bar</div>
+          <div class="cf-row">
+            <div class="cf"><label>Stat 1 Number</label><input data-key="stat1_num"></div>
+            <div class="cf"><label>Stat 1 Label</label><input data-key="stat1_label"></div>
+          </div>
+          <div class="cf-row">
+            <div class="cf"><label>Stat 2 Number</label><input data-key="stat2_num"></div>
+            <div class="cf"><label>Stat 2 Label</label><input data-key="stat2_label"></div>
+          </div>
+          <div class="cf-row">
+            <div class="cf"><label>Stat 3 Number</label><input data-key="stat3_num"></div>
+            <div class="cf"><label>Stat 3 Label</label><input data-key="stat3_label"></div>
+          </div>
+          <div class="cf-row">
+            <div class="cf"><label>Stat 4 Number</label><input data-key="stat4_num"></div>
+            <div class="cf"><label>Stat 4 Label</label><input data-key="stat4_label"></div>
+          </div>
+          <div class="cf"><label>Stats Note</label><input data-key="stat_note"></div>
+        </div>
+
+        <!-- ABOUT -->
+        <div class="cgroup">
+          <div class="cgroup-title">👤 About Section</div>
+          <div class="cf"><label>Section Label</label><input data-key="about_label"></div>
+          <div class="cf"><label>Headline</label><input data-key="about_headline"></div>
+          <div class="cf"><label>Body Text</label><textarea data-key="about_body"></textarea></div>
+          <div class="cf-row">
+            <div class="cf"><label>Feature 1 Title</label><input data-key="about_f1_title"></div>
+            <div class="cf"><label>Feature 1 Body</label><input data-key="about_f1_body"></div>
+          </div>
+          <div class="cf-row">
+            <div class="cf"><label>Feature 2 Title</label><input data-key="about_f2_title"></div>
+            <div class="cf"><label>Feature 2 Body</label><input data-key="about_f2_body"></div>
+          </div>
+          <div class="cf-row">
+            <div class="cf"><label>Feature 3 Title</label><input data-key="about_f3_title"></div>
+            <div class="cf"><label>Feature 3 Body</label><input data-key="about_f3_body"></div>
+          </div>
+          <div class="cf-row">
+            <div class="cf"><label>Feature 4 Title</label><input data-key="about_f4_title"></div>
+            <div class="cf"><label>Feature 4 Body</label><input data-key="about_f4_body"></div>
+          </div>
+        </div>
+
+        <!-- SERVICES -->
+        <div class="cgroup">
+          <div class="cgroup-title">⚙️ Services</div>
+          <div class="cf"><label>Section Headline</label><input data-key="srv_headline"></div>
+          <div class="cf"><label>Info Bar Text</label><input data-key="srv_bar"></div>
+          <div class="cf-row">
+            <div class="cf"><label>Service 1 Title</label><input data-key="srv1_title"></div>
+            <div class="cf"><label>Service 1 Tag</label><input data-key="srv1_tag"></div>
+          </div>
+          <div class="cf"><label>Service 1 Description</label><textarea data-key="srv1_body"></textarea></div>
+          <div class="cf-row">
+            <div class="cf"><label>Service 2 Title</label><input data-key="srv2_title"></div>
+            <div class="cf"><label>Service 2 Tag</label><input data-key="srv2_tag"></div>
+          </div>
+          <div class="cf"><label>Service 2 Description</label><textarea data-key="srv2_body"></textarea></div>
+          <div class="cf-row">
+            <div class="cf"><label>Service 3 Title</label><input data-key="srv3_title"></div>
+            <div class="cf"><label>Service 3 Tag</label><input data-key="srv3_tag"></div>
+          </div>
+          <div class="cf"><label>Service 3 Description</label><textarea data-key="srv3_body"></textarea></div>
+          <div class="cf-row">
+            <div class="cf"><label>Service 4 Title</label><input data-key="srv4_title"></div>
+            <div class="cf"><label>Service 4 Tag</label><input data-key="srv4_tag"></div>
+          </div>
+          <div class="cf"><label>Service 4 Description</label><textarea data-key="srv4_body"></textarea></div>
+        </div>
+
+        <!-- PROCESS -->
+        <div class="cgroup">
+          <div class="cgroup-title">🔄 Process Steps</div>
+          <div class="cf"><label>Section Headline</label><input data-key="proc_headline"></div>
+          <div class="cf"><label>Sub Text</label><input data-key="proc_sub"></div>
+          <div class="cf-row"><div class="cf"><label>Step 1 Title</label><input data-key="proc1_title"></div><div class="cf"><label>Step 1 Badge</label><input data-key="proc1_badge"></div></div>
+          <div class="cf"><label>Step 1 Description</label><textarea data-key="proc1_body"></textarea></div>
+          <div class="cf-row"><div class="cf"><label>Step 2 Title</label><input data-key="proc2_title"></div><div class="cf"><label>Step 2 Badge</label><input data-key="proc2_badge"></div></div>
+          <div class="cf"><label>Step 2 Description</label><textarea data-key="proc2_body"></textarea></div>
+          <div class="cf-row"><div class="cf"><label>Step 3 Title</label><input data-key="proc3_title"></div><div class="cf"><label>Step 3 Badge</label><input data-key="proc3_badge"></div></div>
+          <div class="cf"><label>Step 3 Description</label><textarea data-key="proc3_body"></textarea></div>
+          <div class="cf-row"><div class="cf"><label>Step 4 Title</label><input data-key="proc4_title"></div><div class="cf"><label>Step 4 Badge</label><input data-key="proc4_badge"></div></div>
+          <div class="cf"><label>Step 4 Description</label><textarea data-key="proc4_body"></textarea></div>
+          <div class="cf-row"><div class="cf"><label>Step 5 Title</label><input data-key="proc5_title"></div><div class="cf"><label>Step 5 Badge</label><input data-key="proc5_badge"></div></div>
+          <div class="cf"><label>Step 5 Description</label><textarea data-key="proc5_body"></textarea></div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="cgroup">
+          <div class="cgroup-title">📞 Contact & Footer</div>
+          <div class="cf-row">
+            <div class="cf"><label>Phone</label><input data-key="contact_phone"></div>
+            <div class="cf"><label>Email</label><input data-key="contact_email"></div>
+          </div>
+          <div class="cf"><label>WhatsApp Number (digits only)</label><input data-key="contact_wa"></div>
+          <div class="cf"><label>Footer Tagline</label><input data-key="footer_tagline"></div>
+          <div class="cf"><label>Nav CTA Button Text</label><input data-key="nav_cta"></div>
+        </div>
+
+        <button class="sbtn" onclick="saveContent()">💾 SAVE ALL CHANGES</button>
+        &nbsp;&nbsp;
+        <button class="rbtn" onclick="resetContent()">Reset to Defaults</button>
+        <div class="smsg" id="cmsg">✓ All changes saved! Refresh the site to see them live.</div>
+      </div>
+
+      <!-- PROJECTS PANEL -->
+      <div class="panel" id="panel-projects">
+        <div class="ptitle">All Projects</div>
+        <div class="psub">Portfolio cards shown in the marquee rows on the site.</div>
+        <div id="pg" class="pg"></div>
+      </div>
+
+      <!-- ADD PROJECT -->
+      <div class="panel" id="panel-addp">
+        <div class="ptitle">Add New Project</div>
+        <div class="psub">Appears live in the portfolio marquee once saved.</div>
+        <div style="max-width:580px">
+          <div class="cf"><label>Project Title</label><input id="ft" placeholder="e.g. Spice Garden Restaurant"></div>
+          <div class="cf"><label>Category</label><select id="fc"><option value="">Select category</option></select></div>
+          <div class="cf"><label>Image URL</label><input id="fi" type="url" placeholder="https://..."></div>
+          <div class="cf"><label>Live URL</label><input id="fl" type="url" placeholder="https://..."></div>
+          <button class="sbtn" onclick="addProject()">SAVE PROJECT</button>
+          <div class="smsg" id="pmsg">✓ Project added!</div>
+        </div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="panel" id="panel-cats">
+        <div class="ptitle">Categories</div>
+        <div class="psub">Each category maps to a marquee row on the homepage.</div>
+        <div style="max-width:440px">
+          <div class="cf"><label>New Category</label><input id="fnc" placeholder="e.g. Healthcare, Education..."></div>
+          <button class="sbtn" onclick="addCat()">ADD</button>
+          <div class="smsg" id="catmsg">✓ Added!</div>
+        </div>
+        <div id="catlist" class="cats" style="margin-top:20px;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const U = 'atish3477', P = 'aj(-0:{_)(*Ij)(ujHIUGHjk90jHij';
+let db = {
+  cats: JSON.parse(localStorage.getItem('trc_cats') || '["Business","Restaurant","Real Estate","E-Commerce","Healthcare"]'),
+  projects: JSON.parse(localStorage.getItem('trc_projects') || '[]')
+};
+
+function saveDB() {
+  localStorage.setItem('trc_cats', JSON.stringify(db.cats));
+  localStorage.setItem('trc_projects', JSON.stringify(db.projects));
+}
+
+// AUTH
+function doLogin() {
+  if (document.getElementById('un').value === U && document.getElementById('pw').value === P) {
+    sessionStorage.setItem('trc_adm', '1');
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dash').style.display = 'block';
+    init();
+  } else {
+    document.getElementById('lerr').style.display = 'block';
+  }
+}
+function logout() { sessionStorage.removeItem('trc_adm'); location.reload(); }
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+if (sessionStorage.getItem('trc_adm') === '1') {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('dash').style.display = 'block';
+  init();
+}
+
+// PANELS
+function show(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('act'));
+  document.querySelectorAll('.si').forEach(s => s.classList.remove('act'));
+  document.getElementById('panel-' + id).classList.add('act');
+  el.classList.add('act');
+}
+
+// INIT
+function init() { loadFields(); renderProjects(); renderCats(); populateCatSel(); }
+
+// CONTENT FIELDS
+function loadFields() {
+  const C = window.TRC ? window.TRC() : {};
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const k = el.getAttribute('data-key');
+    if (C[k] !== undefined) el.value = C[k];
+  });
+}
+
+function saveContent() {
+  const saved = JSON.parse(localStorage.getItem('trc_content') || '{}');
+  document.querySelectorAll('[data-key]').forEach(el => {
+    saved[el.getAttribute('data-key')] = el.value;
+  });
+  localStorage.setItem('trc_content', JSON.stringify(saved));
+  const m = document.getElementById('cmsg');
+  m.style.display = 'block';
+  setTimeout(() => m.style.display = 'none', 4000);
+}
+
+function resetContent() {
+  if (!confirm('Reset ALL content to defaults? This cannot be undone.')) return;
+  localStorage.removeItem('trc_content');
+  loadFields();
+  alert('Reset done. Refresh the site to see defaults.');
+}
+
+// PROJECTS
+function renderProjects() {
+  const g = document.getElementById('pg');
+  if (!db.projects.length) { g.innerHTML = '<p class="no">No projects yet. Use Add Project.</p>'; return; }
+  g.innerHTML = db.projects.map((p, i) => `
+    <div class="pc">
+      <img src="${p.img}" alt="${p.title}" onerror="this.src='https://placehold.co/260x150/242017/D70321?text=No+Image'">
+      <div class="pci">
+        <span class="cat">${p.cat}</span>
+        <h4>${p.title}</h4>
+        <a href="${p.link}" target="_blank">${p.link || '—'}</a>
+        <div class="pa"><button class="bsm bdel" onclick="delProject(${i})">Delete</button></div>
+      </div>
+    </div>`).join('');
+}
+
+function addProject() {
+  const t = document.getElementById('ft').value.trim();
+  const c = document.getElementById('fc').value;
+  const img = document.getElementById('fi').value.trim();
+  const link = document.getElementById('fl').value.trim();
+  if (!t || !c || !img) return alert('Please fill Title, Category, and Image URL.');
+  db.projects.push({ title: t, cat: c, img, link });
+  saveDB(); renderProjects(); populateCatSel();
+  ['ft','fi','fl'].forEach(id => document.getElementById(id).value = '');
+  const m = document.getElementById('pmsg'); m.style.display = 'block';
+  setTimeout(() => m.style.display = 'none', 3000);
+}
+
+function delProject(i) {
+  if (!confirm('Delete this project?')) return;
+  db.projects.splice(i, 1); saveDB(); renderProjects();
+}
+
+// CATEGORIES
+function renderCats() {
+  const el = document.getElementById('catlist');
+  if (!db.cats.length) { el.innerHTML = '<p class="no">No categories.</p>'; return; }
+  el.innerHTML = db.cats.map((c, i) =>
+    `<div class="chip">${c} <button onclick="delCat(${i})" title="Delete">×</button></div>`).join('');
+}
+
+function addCat() {
+  const n = document.getElementById('fnc').value.trim();
+  if (!n) return;
+  if (db.cats.includes(n)) return alert('Already exists.');
+  db.cats.push(n); saveDB(); renderCats(); populateCatSel();
+  document.getElementById('fnc').value = '';
+  const m = document.getElementById('catmsg'); m.style.display = 'block';
+  setTimeout(() => m.style.display = 'none', 2000);
+}
+
+function delCat(i) {
+  if (!confirm('Delete category?')) return;
+  db.cats.splice(i, 1); saveDB(); renderCats(); populateCatSel();
+}
+
+function populateCatSel() {
+  const s = document.getElementById('fc');
+  s.innerHTML = '<option value="">Select category</option>' +
+    db.cats.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+</script>
+</body>
+</html>
