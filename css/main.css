@@ -180,10 +180,17 @@ p { line-height: 1.6; }
   align-items: center;
   justify-content: center;
 }
+.preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
 .preloader-trc {
   display: flex;
-  overflow: hidden;
-  margin-bottom: 20px;
+  /* NO overflow:hidden — letters animate UP from below, clipping would hide them */
+  margin-bottom: 4px;
+  letter-spacing: 0.06em;
 }
 .preloader-char {
   font-family: var(--font-display);
@@ -193,25 +200,31 @@ p { line-height: 1.6; }
   opacity: 0;
   transform: translateY(100px);
   line-height: 1;
+  display: inline-block;
 }
 .preloader-line {
   width: 0;
   height: 2px;
   background: var(--color-accent);
-  margin: 15px 0;
+  margin: 12px 0;
+  /* line will expand to full width of the content box */
+  min-width: 0;
+  max-width: 600px;
+  align-self: stretch;
 }
 .preloader-sub {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(14px, 2vw, 24px);
-  letter-spacing: 0.5em;
+  font-size: clamp(14px, 2vw, 22px);
+  letter-spacing: 0.45em;
   color: var(--color-white);
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(20px);
-  margin: 10px 0;
+  margin: 4px 0;
+  white-space: nowrap;
 }
-.second-line { margin-top: 5px; }
+.second-line { margin-top: 4px; }
 
 /* NAVIGATION */
 nav {

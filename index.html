@@ -55,8 +55,8 @@
 
     <!-- PRELOADER -->
     <div id="preloader">
-        <div class="preloader-content" style="display:flex; flex-direction:column; align-items:center;">
-            <div class="preloader-trc" style="display:flex; justify-content:center;">
+        <div class="preloader-content">
+            <div class="preloader-trc">
                 <span class="preloader-char">T</span>
                 <span class="preloader-char">R</span>
                 <span class="preloader-char">C</span>
@@ -340,6 +340,7 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
                     projects = projects.concat(projects);
                 }
                 
+                const isGif = (src) => src && src.toLowerCase().includes('.gif');
                 const buildCard = (p) => `
                     <div class="project-card" data-cat="${(p.cat || '').toLowerCase().replace(/[^a-z]/g,'')}">
                         <div class="card-browser-bar">
@@ -347,7 +348,7 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
                             <div class="url"></div>
                         </div>
                         <div class="card-img-wrapper">
-                            <img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.src='https://placehold.co/260x150/242017/D70321?text=No+Image'">
+                            <img src="${p.img}" alt="${p.title}" ${isGif(p.img) ? '' : 'loading="lazy"'} onerror="this.src='https://placehold.co/260x150/242017/D70321?text=No+Image'" style="${isGif(p.img) ? 'object-fit:cover;' : ''}">
                             <div class="card-overlay">
                                 <span class="card-cat">${p.cat}</span>
                                 <div class="card-overlay-text">

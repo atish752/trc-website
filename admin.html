@@ -375,22 +375,58 @@ async function resetContent() {
 async function uploadToStorage(file, targetInputId, btnEl) {
   if (!file) return;
   const originalBtnText = btnEl.innerText;
-  btnEl.innerText = "Uploading...";
+  btnEl.innerText = "Connecting...";
   btnEl.disabled = true;
+  btnEl.classList.remove('success-btn');
+
+  console.log("Starting upload for:", file.name, "Size:", file.size);
 
   try {
-    const fileName = `${Date.now()}_${file.name}`;
+    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
     const storageRef = storage.ref(`projects/${fileName}`);
-    const snapshot = await storageRef.put(file);
-    const url = await snapshot.ref.getDownloadURL();
-    document.getElementById(targetInputId).value = url;
-    btnEl.innerText = "✓ Uploaded";
-    btnEl.classList.add('success-btn');
+    
+    // Create upload task
+    const uploadTask = storageRef.put(file);
+
+    // Monitor progress
+    uploadTask.on('state_changed', 
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        btnEl.innerText = `Uploading ${Math.round(progress)}%`;
+        console.log('Upload is ' + progress + '% done');
+      }, 
+      (error) => {
+        // Handle unsuccessful uploads
+        console.error("Firebase Storage Error:", error);
+        let msg = "Upload failed.";
+        if (error.code === 'storage/unauthorized') msg = "Permission denied. Check Firebase Rules.";
+        if (error.code === 'storage/canceled') msg = "Upload canceled.";
+        alert(msg + "\nError: " + error.message);
+        btnEl.innerText = "Retry Upload";
+        btnEl.disabled = false;
+      }, 
+      async () => {
+        // Handle successful uploads on complete
+        const url = await uploadTask.snapshot.ref.getDownloadURL();
+        document.getElementById(targetInputId).value = url;
+        btnEl.innerText = "✓ Uploaded";
+        btnEl.classList.add('success-btn');
+        btnEl.disabled = false;
+        console.log("Upload successful! URL:", url);
+      }
+    );
+
+    // Timeout safety
+    setTimeout(() => {
+      if (btnEl.innerText.includes('Uploading') && !btnEl.innerText.includes('100')) {
+         console.warn("Upload seems stuck. This might be a CORS or Firewall issue.");
+      }
+    }, 15000);
+
   } catch (e) {
-    console.error("Upload error", e);
-    alert("Error uploading file: " + e.message);
-    btnEl.innerText = "Retry Upload";
-  } finally {
+    console.error("General Upload Error:", e);
+    alert("Error: " + e.message);
+    btnEl.innerText = "Upload Failed";
     btnEl.disabled = false;
   }
 }
@@ -399,16 +435,22 @@ async function uploadToStorage(file, targetInputId, btnEl) {
 function renderProjects() {
   const g = document.getElementById('pg');
   if (!db.projects.length) { g.innerHTML = '<p class="no">No projects yet. Use Add Project.</p>'; return; }
-  g.innerHTML = db.projects.map((p, i) => `
+  g.innerHTML = db.projects.map((p, i) => {
+    const isGif = p.img && p.img.toLowerCase().includes('.gif');
+    const mediaPreview = isGif
+      ? `<img src="${p.img}" alt="${p.title}" style="width:100%;height:150px;object-fit:cover;" onerror="this.style.display='none'">`
+      : `<img src="${p.img}" alt="${p.title}" onerror="this.src='https://placehold.co/260x150/242017/D70321?text=No+Image'">`;    
+    return `
     <div class="pc">
-      <img src="${p.img}" alt="${p.title}" onerror="this.src='https://placehold.co/260x150/242017/D70321?text=No+Image'">
+      ${mediaPreview}
       <div class="pci">
-        <span class="cat">${p.cat}</span>
+        <span class="cat">${p.cat}${isGif ? ' <span style="background:rgba(215,3,33,0.15);color:var(--red);font-size:9px;padding:2px 6px;border-radius:10px;margin-left:4px;">GIF</span>' : ''}</span>
         <h4>${p.title}</h4>
         <a href="${p.link}" target="_blank">${p.link || '—'}</a>
         <div class="pa"><button class="bsm bdel" onclick="delProject(${i})">Delete</button></div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function addProject() {

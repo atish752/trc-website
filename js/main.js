@@ -20,23 +20,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
   // ── PRELOADER TIMELINE ─────────────────────────────────────────
-  const preloaderTl = gsap.timeline();
-  
-  const preloaderTitle = document.querySelector('.preloader-title');
-  if (preloaderTitle && !preloaderTitle.querySelector('.preloader-char')) {
-    const text = preloaderTitle.innerText;
-    preloaderTitle.innerHTML = text.split('').map(c => `<span class="preloader-char">${c}</span>`).join('');
-  }
-
-  preloaderTl.to('.preloader-char',  { y: 0, opacity: 1, stagger: 0.15, duration: 0.8, ease: 'power4.out' })
-    .to('.first-line',       { width: '100%', duration: 0.7, ease: 'power3.inOut' }, '-=0.3')
-    .to('.preloader-sub',    { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.2')
-    .to('.second-line',      { width: '100%', duration: 0.7, ease: 'power3.inOut' }, '-=0.3')
-    .to({}, { duration: 0.5 }); // Short pause at the end
+  // Returns a Promise that resolves when the full cinematic sequence is done
+  const preloaderPromise = new Promise(resolve => {
+    gsap.timeline({ onComplete: resolve })
+      // 1. T R C letters slide up one by one
+      .to('.preloader-char', {
+        y: 0, opacity: 1,
+        stagger: 0.18, duration: 0.9,
+        ease: 'power4.out'
+      })
+      // 2. First red line expands beneath TRC
+      .to('.first-line', {
+        width: '100%', duration: 0.7,
+        ease: 'power3.inOut'
+      }, '-=0.2')
+      // 3. "THE RIGHT CLICK" text rises in
+      .to('.preloader-sub', {
+        opacity: 1, y: 0, duration: 0.65,
+        ease: 'power2.out'
+      }, '-=0.15')
+      // 4. Second red line appears below the subtitle
+      .to('.second-line', {
+        width: '100%', duration: 0.7,
+        ease: 'power3.inOut'
+      }, '-=0.25')
+      // 5. Cinematic hold — let it breathe
+      .to({}, { duration: 0.8 });
+  });
 
   // ── INITIALIZATION ─────────────────────────────────────────────
   async function startApp() {
-    // 1. Fetch data with timeout
+    // 1. Fetch Firebase data (with 3s timeout so preloader never hangs forever)
     let data = null;
     try {
       if (typeof window.fetchTRCData === 'function') {
@@ -47,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (e) { console.warn("Data fetch skipped or timed out:", e); }
 
-    // 2. Apply data
+    // 2. Apply data to [data-trc] elements
     if (data) {
       document.querySelectorAll('[data-trc]').forEach(el => {
         const key = el.getAttribute('data-trc');
@@ -70,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 3. Word Reveal Setup
+    // 3. Word Reveal Setup (wraps each word in an animated span)
     document.querySelectorAll('.word-reveal').forEach(el => {
       const nodes = Array.from(el.childNodes);
       let html = '';
@@ -93,9 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
       el.innerHTML = html;
     });
 
-    // 4. Reveal Site (Robust exit)
+    // 4. CRITICAL: Wait for the full cinematic preloader sequence to complete
+    //    before we slide it away. This guarantees TRC + lines + subtitle are
+    //    always fully visible for the right amount of time.
+    await preloaderPromise;
+
+    // 5. Slide preloader up — reveal site below
     gsap.timeline()
-      .to('#preloader', { y: '-100%', duration: 1.0, ease: 'expo.inOut' })
+      .to('#preloader', { y: '-100%', duration: 1.1, ease: 'expo.inOut' })
       .to('#preloader', { opacity: 0, duration: 0.4 }, '-=0.4')
       .set('#preloader', { display: 'none' })
       .add(() => { initScrollAnimations(); });
