@@ -127,11 +127,11 @@
     <section class="hero">
         <div class="container hero-grid">
             <div class="hero-content">
-                <div class="hero-top-label fade-up" style="animation-delay: 0.2s;">
+                <div class="hero-top-label fade-up" style="animation-delay: 0.2s;" data-trc="hero_label">
                     <span style="color:var(--color-copper);">•</span> INDIA'S GROWTH-FOCUSED WEB STUDIO
                 </div>
-                <h1 class="hero-headline word-reveal" data-accent-word="Businesses.">We Build Websites That Build <span class="accent-word">Businesses.</span></h1>
-                <p class="hero-subheadline fade-up" style="animation-delay: 1.2s;">
+                <h1 class="hero-headline word-reveal"><span data-trc="hero_headline">We Build Websites That Build</span> <span class="accent-word" data-trc="hero_accent">Businesses.</span></h1>
+                <p class="hero-subheadline fade-up" style="animation-delay: 1.2s;" data-trc="hero_sub">
                     From your first call to your launch day — we handle everything. Clean design, fast performance, and websites that actually get you clients.
                 </p>
                 
@@ -209,20 +209,20 @@
         <div class="container">
             <div class="stats-row">
                 <div class="stat fade-up">
-                    <div class="stat-num"><span data-target="20">0</span>+</div>
-                    <div class="stat-label">Projects Delivered</div>
+                    <div class="stat-num"><span data-target="20" data-trc="stat1_num">0</span>+</div>
+                    <div class="stat-label" data-trc="stat1_label">Projects Delivered</div>
                 </div>
                 <div class="stat fade-up" style="transition-delay: 0.1s;">
-                    <div class="stat-num"><span data-target="15">0</span>+</div>
-                    <div class="stat-label">Happy Clients</div>
+                    <div class="stat-num"><span data-target="15" data-trc="stat2_num">0</span>+</div>
+                    <div class="stat-label" data-trc="stat2_label">Happy Clients</div>
                 </div>
                 <div class="stat fade-up" style="transition-delay: 0.2s;">
-                    <div class="stat-num"><span data-target="100">0</span>%</div>
-                    <div class="stat-label">On-Time Delivery</div>
+                    <div class="stat-num"><span data-target="100" data-trc="stat3_num">0</span>%</div>
+                    <div class="stat-label" data-trc="stat3_label">On-Time Delivery</div>
                 </div>
                 <div class="stat fade-up" style="transition-delay: 0.3s;">
-                    <div class="stat-num"><span data-target="24">0</span>hrs</div>
-                    <div class="stat-label">Avg. Response Time</div>
+                    <div class="stat-num"><span data-target="24" data-trc="stat4_num">0</span>hrs</div>
+                    <div class="stat-label" data-trc="stat4_label">Avg. Response Time</div>
                 </div>
             </div>
             <div class="stats-footer fade-up">
@@ -235,12 +235,12 @@
     <section id="about" class="about-section">
         <div class="container about-grid">
             <div class="about-content">
-                <span class="label fade-up">ABOUT TRC</span>
-                <h2 class="about-headline word-reveal">We're not a big firm.<br>We're your dedicated web team.</h2>
+                <span class="label fade-up" data-trc="about_label">ABOUT TRC</span>
+                <h2 class="about-headline word-reveal" data-trc="about_headline">We're not a big firm.<br>We're your dedicated web team.</h2>
                 <div class="about-body">
-                    <p class="fade-up">TRC — The Right Click — was built on one belief: that small businesses in India deserve world-class websites. Not overpriced, not generic. A website that actually represents you and brings in real results.</p>
-                    <p class="fade-up">We work directly with you — no middlemen, no confusing jargon. You tell us your goal. We build the website that gets you there.</p>
-                    <p class="fade-up">From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have a business, you need a website. And we know how to build one that makes your phone ring.</p>
+                    <p class="fade-up" data-trc="about_p1">TRC — The Right Click — was built on one belief: that small businesses in India deserve world-class websites. Not overpriced, not generic. A website that actually represents you and brings in real results.</p>
+                    <p class="fade-up" data-trc="about_p2">We work directly with you — no middlemen, no confusing jargon. You tell us your goal. We build the website that gets you there.</p>
+                    <p class="fade-up" data-trc="about_p3">From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have a business, you need a website. And we know how to build one that makes your phone ring.</p>
                 </div>
                 <div class="founder-note fade-up">
                     <p>"— Built by someone who's been where you are. I know what it feels like to not have an online presence. That's why I built TRC."</p>
@@ -856,16 +856,31 @@
         <div class="popup-overlay"></div>
         <div class="popup-content">
             <button class="popup-close">&times;</button>
+            <div class="popup-badge">LIMITED SLOTS AVAILABLE</div>
             <h3>Ready to scale your business?</h3>
-            <p>Get a world-class website that converts visitors into customers.</p>
+            <p>Get a world-class website that converts visitors into customers. Launching in 7-21 days.</p>
+            
             <div class="popup-actions">
                 <a href="https://wa.me/910000000000" class="btn btn-wa popup-wa">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                    WhatsApp Us
+                    WhatsApp
                 </a>
                 <a href="tel:+910000000000" class="btn popup-call">
                     📞 Call Now
                 </a>
+            </div>
+
+            <div class="popup-form">
+                <h4>QUICK ENQUIRY</h4>
+                <form id="popup-contact-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="Name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Phone Number" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; font-size:12px; padding:10px;">SEND REQUEST &rarr;</button>
+                </form>
             </div>
         </div>
     </div>
