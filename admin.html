@@ -106,7 +106,7 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
       <!-- CONTENT PANEL -->
       <div class="panel act" id="panel-content">
         <div class="ptitle">Edit Website Content</div>
-        <div class="psub">Every change saves instantly to the live site via localStorage.</div>
+        <div class="psub">Changes are saved globally to Firebase and reflect live for all users.</div>
 
         <!-- HERO -->
         <div class="cgroup">
@@ -355,7 +355,7 @@ async function saveContent() {
 async function resetContent() {
   if (!confirm('Reset ALL content to defaults? This cannot be undone.')) return;
   try {
-    await TRC_DOC.set({ content: {} }, { merge: true });
+    await TRC_DOC.set({ content: window.TRC_DEFAULTS }, { merge: true });
     await loadFields();
     alert('Reset done. Refresh the site to see defaults.');
   } catch(e) { alert("Error resetting."); }

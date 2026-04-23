@@ -15,10 +15,43 @@ gsap.ticker.lagSmoothing(0);
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.defaults({ markers: false });
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const isMobile = window.innerWidth <= 768;
   const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
+  // ── FIREBASE DATA SYNC ──────────────────────────────────────────
+  async function applyTRCData() {
+    if (typeof window.fetchTRCData !== 'function') return;
+    try {
+      const data = await window.fetchTRCData();
+      document.querySelectorAll('[data-trc]').forEach(el => {
+        const key = el.getAttribute('data-trc');
+        if (data[key]) {
+          if (el.tagName === 'A') {
+            if (key.includes('wa')) {
+              const num = data[key].replace(/\D/g, '');
+              el.href = `https://wa.me/${num}`;
+            } else if (key.includes('phone')) {
+              el.href = `tel:${data[key].replace(/\D/g, '')}`;
+            } else if (key.includes('email')) {
+              el.href = `mailto:${data[key]}`;
+            } else {
+              el.innerText = data[key];
+            }
+          } else if (el.tagName === 'IMG') {
+            el.src = data[key];
+          } else {
+            el.innerText = data[key];
+          }
+        }
+      });
+    } catch (e) {
+      console.error("Error applying TRC data:", e);
+    }
+  }
+
+  // Await data before running any UI logic or animations
+  await applyTRCData();
 
   // ── PRELOADER ──────────────────────────────────────────────────
   const tl = gsap.timeline({ onComplete: initScrollAnimations });
@@ -391,5 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
       });
     }
+  }
+
   }
 });
