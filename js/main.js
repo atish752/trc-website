@@ -351,3 +351,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
+  // ── INQUIRY POPUP (5-10s delay) ──────────────────────────────
+  const inquiryPopup = document.getElementById('inquiry-popup');
+  const popupClose = document.querySelector('.popup-close');
+  const popupOverlay = document.querySelector('.popup-overlay');
+  if (inquiryPopup) {
+    setTimeout(() => {
+      if (!sessionStorage.getItem('popupShown')) {
+        inquiryPopup.classList.add('show');
+        lenis.stop();
+        sessionStorage.setItem('popupShown', 'true');
+      }
+    }, 7000);
+    
+    const closeInquiryPopup = () => {
+      inquiryPopup.classList.remove('show');
+      lenis.start();
+    };
+    
+    if (popupClose) popupClose.addEventListener('click', closeInquiryPopup);
+    if (popupOverlay) popupOverlay.addEventListener('click', closeInquiryPopup);
+  }
+});
