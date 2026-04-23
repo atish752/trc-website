@@ -1,17 +1,18 @@
 // firebase-config.js
-// REPLACE THE CONFIG BELOW WITH YOUR FIREBASE CONFIGURATION
+// Using Firebase v8 Compat SDK for simple CDN usage
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDYgJYYZ5Gc7fdLw1gRVwX0OdhzOidelmQ",
+  authDomain: "sale-trc.firebaseapp.com",
+  projectId: "sale-trc",
+  storageBucket: "sale-trc.firebasestorage.app",
+  messagingSenderId: "333525498476",
+  appId: "1:333525498476:web:18ac977bc06b6e3f1ef649",
+  measurementId: "G-MQV98N84WB"
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// We are using a single document to store the website content and projects
-const TRC_DOC = db.collection('trc').doc('main_site');
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const dbStore = firebase.firestore();
+const TRC_DOC = dbStore.collection('trc').doc('main_site');

@@ -62,8 +62,21 @@ window.TRC_DEFAULTS = {
   nav_cta: "START A PROJECT",
 };
 
-// Get merged content (localStorage overrides defaults)
-window.TRC = function() {
-  const saved = JSON.parse(localStorage.getItem('trc_content') || '{}');
-  return Object.assign({}, window.TRC_DEFAULTS, saved);
+// Get merged content (Firebase overrides defaults)
+window.fetchTRCData = async function() {
+  try {
+    if (typeof TRC_DOC !== 'undefined') {
+      const docSnap = await TRC_DOC.get();
+      if (docSnap.exists) {
+        const data = docSnap.data();
+        if (data.content) {
+            return Object.assign({}, window.TRC_DEFAULTS, data.content);
+        }
+      }
+    }
+  } catch(e) {
+    console.error("Firebase fetch error:", e);
+  }
+  // Fallback to defaults
+  return Object.assign({}, window.TRC_DEFAULTS);
 };

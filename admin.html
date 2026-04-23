@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TRC Admin</title>
-<link rel="icon" type="image/jpeg" href="logo.jpg">
+<link rel="icon" type="image/png" href="logoo.png">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="js/firebase-config.js"></script>
 <script src="js/content.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -268,13 +271,14 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
 <script>
 const U = 'atish3477', P = 'aj(-0:{_)(*Ij)(ujHIUGHjk90jHij';
 let db = {
-  cats: JSON.parse(localStorage.getItem('trc_cats') || '["Business","Restaurant","Real Estate","E-Commerce","Healthcare"]'),
-  projects: JSON.parse(localStorage.getItem('trc_projects') || '[]')
+  cats: ["Business","Restaurant","Real Estate","E-Commerce","Healthcare"],
+  projects: []
 };
 
-function saveDB() {
-  localStorage.setItem('trc_cats', JSON.stringify(db.cats));
-  localStorage.setItem('trc_projects', JSON.stringify(db.projects));
+async function saveDB() {
+  try {
+    await TRC_DOC.set({ cats: db.cats, projects: db.projects }, { merge: true });
+  } catch(e) { alert('Error saving to Firebase'); console.error(e); }
 }
 
 // AUTH
@@ -305,33 +309,56 @@ function show(id, el) {
 }
 
 // INIT
-function init() { loadFields(); renderProjects(); renderCats(); populateCatSel(); }
+async function init() { 
+  try {
+    const docSnap = await TRC_DOC.get();
+    if(docSnap.exists) {
+        const data = docSnap.data();
+        if(data.cats) db.cats = data.cats;
+        if(data.projects) db.projects = data.projects;
+    }
+  } catch(e) { console.error("Firebase fetch error", e); }
+  
+  await loadFields(); 
+  renderProjects(); 
+  renderCats(); 
+  populateCatSel(); 
+}
 
 // CONTENT FIELDS
-function loadFields() {
-  const C = window.TRC ? window.TRC() : {};
+async function loadFields() {
+  const C = await window.fetchTRCData();
   document.querySelectorAll('[data-key]').forEach(el => {
     const k = el.getAttribute('data-key');
     if (C[k] !== undefined) el.value = C[k];
   });
 }
 
-function saveContent() {
-  const saved = JSON.parse(localStorage.getItem('trc_content') || '{}');
+async function saveContent() {
+  document.getElementById('cmsg').innerText = "Saving...";
+  document.getElementById('cmsg').style.display = 'block';
+  const saved = {};
   document.querySelectorAll('[data-key]').forEach(el => {
     saved[el.getAttribute('data-key')] = el.value;
   });
-  localStorage.setItem('trc_content', JSON.stringify(saved));
-  const m = document.getElementById('cmsg');
-  m.style.display = 'block';
-  setTimeout(() => m.style.display = 'none', 4000);
+  
+  try {
+    await TRC_DOC.set({ content: saved }, { merge: true });
+    document.getElementById('cmsg').innerText = "✓ All changes saved!";
+  } catch(e) {
+    document.getElementById('cmsg').innerText = "Error saving to Firebase!";
+  }
+  
+  setTimeout(() => document.getElementById('cmsg').style.display = 'none', 4000);
 }
 
-function resetContent() {
+async function resetContent() {
   if (!confirm('Reset ALL content to defaults? This cannot be undone.')) return;
-  localStorage.removeItem('trc_content');
-  loadFields();
-  alert('Reset done. Refresh the site to see defaults.');
+  try {
+    await TRC_DOC.set({ content: {} }, { merge: true });
+    await loadFields();
+    alert('Reset done. Refresh the site to see defaults.');
+  } catch(e) { alert("Error resetting."); }
 }
 
 // PROJECTS
