@@ -307,73 +307,80 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
         </div>
 
         <script>
-            document.addEventListener('DOMContentLoaded', async () => {
-                // Default fallback projects if none in Firebase
-                const defaultProjects = [
-                    { cat: 'Business', title: 'Business Site', img: 'Screenshot 2026-04-23 075117.png', link: '#' },
-                    { cat: 'Restaurant', title: 'Spice Garden', img: 'Screenshot 2026-04-23 075136.png', link: '#' },
-                    { cat: 'Real Estate', title: 'Urban Homes', img: 'Screenshot 2026-04-23 075157.png', link: '#' },
-                    { cat: 'E-commerce', title: 'Style Store', img: 'Screenshot 2026-04-23 075216.png', link: '#' },
-                    { cat: 'Portfolio', title: 'Creative Studio', img: 'Screenshot 2026-04-23 075238.png', link: '#' },
-                    { cat: 'Business', title: 'Tech Startup', img: 'Screenshot 2026-04-23 075246.png', link: '#' },
-                    { cat: 'E-commerce', title: 'Gadget Hub', img: 'Screenshot 2026-04-23 075252.png', link: '#' },
-                    { cat: 'Healthcare', title: 'City Clinic', img: 'Screenshot 2026-04-23 075304.png', link: '#' },
-                    { cat: 'Restaurant', title: 'Cafe Beans', img: 'Screenshot 2026-04-23 075311.png', link: '#' },
-                    { cat: 'Real Estate', title: 'Skyline Props', img: 'Screenshot 2026-04-23 075345.png', link: '#' }
-                ];
-                
-                let projects = [];
-                try {
-                    const docSnap = await TRC_DOC.get();
-                    if(docSnap.exists) {
-                        const data = docSnap.data();
-                        if(data.projects && data.projects.length > 0) {
-                            projects = data.projects;
-                        }
-                    }
-                } catch(e) { console.error("Firebase error getting projects", e); }
-                
-                if (projects.length === 0) projects = defaultProjects;
-                
-                // We need exactly 5 per row for a good visual, so we repeat if we don't have enough
-                while (projects.length < 15) {
-                    projects = projects.concat(projects);
-                }
-                
-                const isGif = (src) => src && src.toLowerCase().includes('.gif');
-                const buildCard = (p) => `
-                    <div class="project-card" data-cat="${(p.cat || '').toLowerCase().replace(/[^a-z]/g,'')}">
-                        <div class="card-browser-bar">
-                            <div class="circle r"></div><div class="circle y"></div><div class="circle g"></div>
-                            <div class="url"></div>
-                        </div>
-                        <div class="card-img-wrapper">
-                            <img src="${p.img}" alt="${p.title}" ${isGif(p.img) ? '' : 'loading="lazy"'} onerror="this.src='https://placehold.co/260x150/242017/D70321?text=No+Image'" style="${isGif(p.img) ? 'object-fit:cover;' : ''}">
-                            <div class="card-overlay">
-                                <span class="card-cat">${p.cat}</span>
-                                <div class="card-overlay-text">
-                                    <h4>${p.title}</h4>
-                                    <p><a href="${p.link}" target="_blank" style="color:var(--color-copper);text-decoration:none;">OPEN PROJECT &rarr;</a></p>
-                                </div>
+            const isGif = src => src && (src.includes('.gif') || src.startsWith('data:image/gif'));
+
+            const buildCard = p => `
+                <div class="project-card" data-cat="${(p.cat||'').toLowerCase().replace(/[^a-z]/g,'')}">
+                    <div class="card-browser-bar">
+                        <div class="circle r"></div><div class="circle y"></div><div class="circle g"></div>
+                        <div class="url"></div>
+                    </div>
+                    <div class="card-img-wrapper">
+                        <img src="${p.img}" alt="${p.title}" ${isGif(p.img)?'':'loading="lazy"'}
+                             onerror="this.src='https://placehold.co/260x150/242017/D70321?text=No+Image'">
+                        <div class="card-overlay">
+                            <span class="card-cat">${p.cat}</span>
+                            <div class="card-overlay-text">
+                                <h4>${p.title}</h4>
+                                <p><a href="${p.link||'#'}" target="_blank" style="color:var(--color-copper);text-decoration:none;">OPEN PROJECT &rarr;</a></p>
                             </div>
                         </div>
-                    </div>`;
-                
-                const r1 = document.getElementById('marquee-r1');
-                const r2 = document.getElementById('marquee-r2');
-                const r3 = document.getElementById('marquee-r3');
-                
-                if(r1 && r2 && r3) {
-                    let h1='', h2='', h3='';
-                    // Double the array for infinite loop effect
-                    for(let j=0; j<2; j++) {
-                        for(let i=0; i<5; i++) h1 += buildCard(projects[i % projects.length]);
-                        for(let i=5; i<10; i++) h2 += buildCard(projects[i % projects.length]);
-                        for(let i=10; i<15; i++) h3 += buildCard(projects[i % projects.length]);
+                    </div>
+                </div>`;
+
+            function buildRows(projects) {
+                const r1=document.getElementById('marquee-r1');
+                const r2=document.getElementById('marquee-r2');
+                const r3=document.getElementById('marquee-r3');
+                if (!r1||!r2||!r3) return;
+                // Need at least 15 cards for 3 rows of 5; repeat if fewer
+                let ps = projects.slice();
+                while (ps.length < 15) ps = ps.concat(ps);
+                let h1='',h2='',h3='';
+                for(let j=0;j<2;j++){
+                    for(let i=0;i<5;i++)  h1 += buildCard(ps[i % ps.length]);
+                    for(let i=5;i<10;i++) h2 += buildCard(ps[i % ps.length]);
+                    for(let i=10;i<15;i++)h3 += buildCard(ps[i % ps.length]);
+                }
+                r1.innerHTML=h1; r2.innerHTML=h2; r3.innerHTML=h3;
+            }
+
+            const defaultProjects = [
+                {cat:'Business',   title:'Business Site',    img:'Screenshot 2026-04-23 075117.png', link:'#'},
+                {cat:'Restaurant', title:'Spice Garden',     img:'Screenshot 2026-04-23 075136.png', link:'#'},
+                {cat:'Real Estate',title:'Urban Homes',      img:'Screenshot 2026-04-23 075157.png', link:'#'},
+                {cat:'E-commerce', title:'Style Store',      img:'Screenshot 2026-04-23 075216.png', link:'#'},
+                {cat:'Portfolio',  title:'Creative Studio',  img:'Screenshot 2026-04-23 075238.png', link:'#'},
+                {cat:'Business',   title:'Tech Startup',     img:'Screenshot 2026-04-23 075246.png', link:'#'},
+                {cat:'E-commerce', title:'Gadget Hub',       img:'Screenshot 2026-04-23 075252.png', link:'#'},
+                {cat:'Healthcare', title:'City Clinic',      img:'Screenshot 2026-04-23 075304.png', link:'#'},
+                {cat:'Restaurant', title:'Cafe Beans',       img:'Screenshot 2026-04-23 075311.png', link:'#'},
+                {cat:'Real Estate',title:'Skyline Props',    img:'Screenshot 2026-04-23 075345.png', link:'#'}
+            ];
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // Try real-time listener from trc_projects collection first
+                try {
+                    TRC_DOC.firestore
+                        ? listenProjects()   // firestore available via TRC_DOC
+                        : fallback();
+                    function listenProjects() {
+                        dbStore.collection('trc_projects')
+                            .orderBy('createdAt','desc')
+                            .onSnapshot(snap => {
+                                const projects = snap.docs.map(d => d.data());
+                                buildRows(projects.length ? projects : defaultProjects);
+                            }, () => {
+                                // index not created yet — try without ordering
+                                dbStore.collection('trc_projects').onSnapshot(snap => {
+                                    const projects = snap.docs.map(d => d.data());
+                                    buildRows(projects.length ? projects : defaultProjects);
+                                }, () => fallback());
+                            });
                     }
-                    r1.innerHTML = h1;
-                    r2.innerHTML = h2;
-                    r3.innerHTML = h3;
+                    function fallback() { buildRows(defaultProjects); }
+                } catch(e) {
+                    buildRows(defaultProjects);
                 }
             });
         </script>
