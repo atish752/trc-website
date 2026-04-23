@@ -350,8 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-});
-
   // ── INQUIRY POPUP (5-10s delay) ──────────────────────────────
   const inquiryPopup = document.getElementById('inquiry-popup');
   const popupClose = document.querySelector('.popup-close');
