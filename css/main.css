@@ -246,6 +246,24 @@ nav.scrolled {
   font-size: 10px;
   color: var(--color-muted);
 }
+/* Logo image in navbar */
+.logo-img-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.nav-logo-img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  filter: drop-shadow(0 2px 8px rgba(215,3,33,0.25));
+}
+.nav-logo-img:hover {
+  opacity: 0.9;
+  transform: scale(1.04);
+}
 .nav-links { display: flex; gap: 32px; }
 .nav-links a {
   font-family: var(--font-display);
