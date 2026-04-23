@@ -26,6 +26,7 @@
     <!-- Firebase App (the core Firebase SDK) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     
     <!-- Content Store (admin-editable) -->
     <script src="js/firebase-config.js"></script>
@@ -54,14 +55,16 @@
 
     <!-- PRELOADER -->
     <div id="preloader">
-        <div class="preloader-trc">
-            <span class="preloader-char">T</span>
-            <span class="preloader-char">R</span>
-            <span class="preloader-char">C</span>
+        <div class="preloader-content" style="display:flex; flex-direction:column; align-items:center;">
+            <div class="preloader-trc" style="display:flex; justify-content:center;">
+                <span class="preloader-char">T</span>
+                <span class="preloader-char">R</span>
+                <span class="preloader-char">C</span>
+            </div>
+            <div class="preloader-line first-line"></div>
+            <div class="preloader-sub">THE RIGHT CLICK</div>
+            <div class="preloader-line second-line"></div>
         </div>
-        <div class="preloader-line"></div>
-        <div class="preloader-sub">THE RIGHT CLICK</div>
-        <div class="preloader-progress"></div>
     </div>
 
     <!-- PARTICLES -->

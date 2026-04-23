@@ -28,10 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
     preloaderTitle.innerHTML = text.split('').map(c => `<span class="preloader-char">${c}</span>`).join('');
   }
 
-  preloaderTl.to('.preloader-char',  { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: 'power3.out' })
-    .to('.preloader-line',   { width: '100%', duration: 0.5, ease: 'power3.inOut' }, '-=0.2')
-    .to('.preloader-sub',    { opacity: 1, duration: 0.4 }, '-=0.2')
-    .to('.preloader-progress', { width: '100%', duration: 1.5, ease: 'power2.inOut' }, '+=0.1');
+  preloaderTl.to('.preloader-char',  { y: 0, opacity: 1, stagger: 0.15, duration: 0.8, ease: 'power4.out' })
+    .to('.first-line',       { width: '100%', duration: 0.7, ease: 'power3.inOut' }, '-=0.3')
+    .to('.preloader-sub',    { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.2')
+    .to('.second-line',      { width: '100%', duration: 0.7, ease: 'power3.inOut' }, '-=0.3')
+    .to({}, { duration: 0.5 }); // Short pause at the end
 
   // ── INITIALIZATION ─────────────────────────────────────────────
   async function startApp() {

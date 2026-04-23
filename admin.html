@@ -7,6 +7,7 @@
 <link rel="icon" type="image/png" href="logoo.png">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 <script src="js/firebase-config.js"></script>
 <script src="js/content.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -51,6 +52,7 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
 .cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .sbtn{background:var(--red);color:#fff;border:none;padding:12px 28px;border-radius:6px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .3s;}
 .sbtn:hover{background:var(--redl);}
+.success-btn{background:#29C941 !important;}
 .smsg{display:none;color:#2ecc71;font-size:13px;margin-top:10px;}
 .rbtn{background:rgba(231,76,60,.1);color:#e74c3c;border:1px solid rgba(231,76,60,.2);padding:10px 20px;border-radius:6px;font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
 .rbtn:hover{background:rgba(231,76,60,.2);}
@@ -245,7 +247,15 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
         <div style="max-width:580px">
           <div class="cf"><label>Project Title</label><input id="ft" placeholder="e.g. Spice Garden Restaurant"></div>
           <div class="cf"><label>Category</label><select id="fc"><option value="">Select category</option></select></div>
-          <div class="cf"><label>Image URL</label><input id="fi" type="url" placeholder="https://..."></div>
+          <div class="cf">
+            <label>Project Image or GIF</label>
+            <div style="display:flex; gap:10px;">
+              <input id="fi" type="url" placeholder="Paste link or upload below..." style="flex:1">
+              <input type="file" id="f_file" accept="image/*,image/gif" style="display:none" onchange="uploadToStorage(this.files[0], 'fi', document.getElementById('up_btn'))">
+              <button class="bsm" id="up_btn" onclick="document.getElementById('f_file').click()">Upload File</button>
+            </div>
+            <small style="color:var(--muted); margin-top:4px; display:block;">Directly upload images or GIFs (max 10MB recommended).</small>
+          </div>
           <div class="cf"><label>Live URL</label><input id="fl" type="url" placeholder="https://..."></div>
           <button class="sbtn" onclick="addProject()">SAVE PROJECT</button>
           <div class="smsg" id="pmsg">✓ Project added!</div>
@@ -361,6 +371,30 @@ async function resetContent() {
   } catch(e) { alert("Error resetting."); }
 }
 
+// UPLOAD TO STORAGE
+async function uploadToStorage(file, targetInputId, btnEl) {
+  if (!file) return;
+  const originalBtnText = btnEl.innerText;
+  btnEl.innerText = "Uploading...";
+  btnEl.disabled = true;
+
+  try {
+    const fileName = `${Date.now()}_${file.name}`;
+    const storageRef = storage.ref(`projects/${fileName}`);
+    const snapshot = await storageRef.put(file);
+    const url = await snapshot.ref.getDownloadURL();
+    document.getElementById(targetInputId).value = url;
+    btnEl.innerText = "✓ Uploaded";
+    btnEl.classList.add('success-btn');
+  } catch (e) {
+    console.error("Upload error", e);
+    alert("Error uploading file: " + e.message);
+    btnEl.innerText = "Retry Upload";
+  } finally {
+    btnEl.disabled = false;
+  }
+}
+
 // PROJECTS
 function renderProjects() {
   const g = document.getElementById('pg');
@@ -382,10 +416,15 @@ function addProject() {
   const c = document.getElementById('fc').value;
   const img = document.getElementById('fi').value.trim();
   const link = document.getElementById('fl').value.trim();
-  if (!t || !c || !img) return alert('Please fill Title, Category, and Image URL.');
+  if (!t || !c || !img) return alert('Please fill Title, Category, and Image/GIF.');
   db.projects.push({ title: t, cat: c, img, link });
   saveDB(); renderProjects(); populateCatSel();
   ['ft','fi','fl'].forEach(id => document.getElementById(id).value = '');
+  // Reset upload button
+  const upBtn = document.getElementById('up_btn');
+  upBtn.innerText = "Upload File";
+  upBtn.classList.remove('success-btn');
+  
   const m = document.getElementById('pmsg'); m.style.display = 'block';
   setTimeout(() => m.style.display = 'none', 3000);
 }

@@ -14,4 +14,5 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const dbStore = firebase.firestore();
+const storage = firebase.storage();
 const TRC_DOC = dbStore.collection('trc').doc('main_site');
