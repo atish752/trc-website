@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -339,7 +339,7 @@ function renderDocs(snap) {
   if (!snap.docs.length) { g.innerHTML='<p class="no">No projects yet.</p>'; return; }
   g.innerHTML = snap.docs.map(doc => {
     const p=doc.data(), id=doc.id;
-    const isGif = p.img && (p.img.includes('.gif')||p.img.startsWith('data:image/gif'));
+    const isGif = p.img && p.img.toLowerCase().includes('.gif');
     return `<div class="pc">
       <img src="${p.img||''}" style="width:100%;height:150px;object-fit:cover;object-position:top;" onerror="this.style.display='none'">
       <div class="pci">
@@ -351,37 +351,58 @@ function renderDocs(snap) {
   }).join('');
 }
 
-// ── FILE UPLOAD (base64 via FileReader — no Firebase Storage rules needed) ──
+// ── FILE UPLOAD (Firebase Storage) ─────────────────────────────
 function setupUpload() {
   const fi=document.getElementById('f_file');
   const dz=document.getElementById('drop-zone');
   if(!fi||!dz) return;
-  fi.addEventListener('change', ()=>{ if(fi.files[0]) processFile(fi.files[0]); });
+  fi.addEventListener('change', ()=>{ if(fi.files[0]) uploadToStorage(fi.files[0]); });
   dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.style.borderColor='var(--red)'; });
   dz.addEventListener('dragleave', ()=>{ dz.style.borderColor=''; });
   dz.addEventListener('drop', e=>{
     e.preventDefault(); dz.style.borderColor='';
     const f=e.dataTransfer.files[0];
-    if(f && f.type.startsWith('image/')) processFile(f);
+    if(f && f.type.startsWith('image/')) uploadToStorage(f);
     else setStatus('Only image/GIF files supported.','err');
   });
 }
 
-function processFile(file) {
+async function uploadToStorage(file) {
   if(file.size > 15*1024*1024) { setStatus('File too large (max 15MB).','err'); return; }
-  setStatus(`Reading (${(file.size/1024).toFixed(0)} KB)...`,'info');
-  const reader = new FileReader();
-  reader.onload = e => {
-    const url = e.target.result;
-    document.getElementById('fi').value = url;
-    const prev=document.getElementById('dz-preview');
-    prev.src=url; prev.style.display='block';
-    document.getElementById('dz-text').style.display='none';
-    document.getElementById('dz-icon').style.display='none';
-    setStatus(`✓ Ready (${(file.size/1024).toFixed(0)} KB) — click Save Project`,'ok');
-  };
-  reader.onerror = ()=>setStatus('Could not read file. Try again.','err');
-  reader.readAsDataURL(file);
+  
+  setStatus(`Uploading ${(file.size/1024/1024).toFixed(1)} MB to Firebase Storage...`,'info');
+  
+  const dzText=document.getElementById('dz-text');
+  const dzIcon=document.getElementById('dz-icon');
+  dzText.style.display='none'; dzIcon.style.display='none';
+
+  try {
+    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+    const storageRef = storage.ref(`projects/${fileName}`);
+    const uploadTask = storageRef.put(file);
+
+    uploadTask.on('state_changed', 
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setStatus(`Uploading... ${Math.round(progress)}%`, 'info');
+      }, 
+      (error) => {
+        console.error("Storage Error:", error);
+        setStatus('Upload failed: ' + error.message, 'err');
+        dzText.style.display=''; dzIcon.style.display='';
+      }, 
+      async () => {
+        const url = await uploadTask.snapshot.ref.getDownloadURL();
+        document.getElementById('fi').value = url;
+        const prev=document.getElementById('dz-preview');
+        prev.src=url; prev.style.display='block';
+        setStatus(`✓ Upload successful! Now click Save Project`,'ok');
+      }
+    );
+  } catch(e) {
+    setStatus('Error initializing upload.', 'err');
+    console.error(e);
+  }
 }
 
 function setStatus(msg,type) {
@@ -425,30 +446,41 @@ async function addProject() {
   const c=document.getElementById('fc').value;
   const img=document.getElementById('fi').value.trim();
   const link=document.getElementById('fl').value.trim();
-  if(!t) return alert('Enter a Project Title.');
-  if(!c) return alert('Select a Category.');
-  if(!img) return alert('Upload an image/GIF or paste a URL first.');
+  
+  if(!t) { alert('Please enter a Project Title.'); return; }
+  if(!c) { alert('Please select a Category.'); return; }
+  if(!img) { alert('Please wait for the image/GIF to finish uploading.'); return; }
+
   const btn=document.getElementById('save-proj-btn');
-  btn.innerText='Saving...'; btn.disabled=true;
+  btn.innerText='Saving to Database...'; btn.disabled=true;
+  
   try {
     await dbStore.collection('trc_projects').add({
       title:t, cat:c, img, link,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    
     if(!db.cats.includes(c)) {
       db.cats.push(c);
       await TRC_DOC.set({cats:db.cats},{merge:true});
       renderCats(); populateCatSel();
     }
+    
+    // Reset form
     ['ft','fi','fl'].forEach(id=>document.getElementById(id).value='');
     const prev=document.getElementById('dz-preview');
     if(prev){prev.src='';prev.style.display='none';}
     const dzT=document.getElementById('dz-text'), dzI=document.getElementById('dz-icon');
     if(dzT) dzT.style.display=''; if(dzI) dzI.style.display='';
     setStatus('','');
+    
     const m=document.getElementById('pmsg'); m.style.display='block';
     setTimeout(()=>m.style.display='none',3000);
-  } catch(e) { alert('Error: '+e.message); }
+  } catch(e) { 
+    alert('Error saving project to database: ' + e.message); 
+    console.error(e);
+  }
+  
   btn.innerText='💾 SAVE PROJECT'; btn.disabled=false;
 }
 
