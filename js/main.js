@@ -15,52 +15,95 @@ gsap.ticker.lagSmoothing(0);
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.defaults({ markers: false });
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   const isMobile = window.innerWidth <= 768;
   const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
-  // ── FIREBASE DATA SYNC ──────────────────────────────────────────
-  async function applyTRCData() {
-    if (typeof window.fetchTRCData !== 'function') return;
+  // ── PRELOADER TIMELINE ─────────────────────────────────────────
+  const preloaderTl = gsap.timeline();
+  
+  const preloaderTitle = document.querySelector('.preloader-title');
+  if (preloaderTitle && !preloaderTitle.querySelector('.preloader-char')) {
+    const text = preloaderTitle.innerText;
+    preloaderTitle.innerHTML = text.split('').map(c => `<span class="preloader-char">${c}</span>`).join('');
+  }
+
+  preloaderTl.to('.preloader-char',  { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: 'power3.out' })
+    .to('.preloader-line',   { width: '100%', duration: 0.5, ease: 'power3.inOut' }, '-=0.2')
+    .to('.preloader-sub',    { opacity: 1, duration: 0.4 }, '-=0.2')
+    .to('.preloader-progress', { width: '100%', duration: 1.5, ease: 'power2.inOut' }, '+=0.1');
+
+  // ── INITIALIZATION ─────────────────────────────────────────────
+  async function startApp() {
+    // 1. Parallel: Fetch data and wait at most 2 seconds
+    let data = null;
     try {
-      const data = await window.fetchTRCData();
+      if (typeof window.fetchTRCData === 'function') {
+        // Race the fetch against a 2s timeout
+        data = await Promise.race([
+          window.fetchTRCData(),
+          new Promise((_, reject) => setTimeout(() => reject('Timeout'), 2500))
+        ]);
+      }
+    } catch (e) { console.warn("Data fetch skipped or timed out:", e); }
+
+    // 2. Apply data if we have it
+    if (data) {
       document.querySelectorAll('[data-trc]').forEach(el => {
         const key = el.getAttribute('data-trc');
         if (data[key]) {
           if (el.tagName === 'A') {
-            if (key.includes('wa')) {
-              const num = data[key].replace(/\D/g, '');
-              el.href = `https://wa.me/${num}`;
-            } else if (key.includes('phone')) {
-              el.href = `tel:${data[key].replace(/\D/g, '')}`;
-            } else if (key.includes('email')) {
-              el.href = `mailto:${data[key]}`;
-            } else {
-              el.innerText = data[key];
-            }
+            if (key.includes('wa')) el.href = `https://wa.me/${data[key].replace(/\D/g, '')}`;
+            else if (key.includes('phone')) el.href = `tel:${data[key].replace(/\D/g, '')}`;
+            else if (key.includes('email')) el.href = `mailto:${data[key]}`;
+            else el.innerText = data[key];
           } else if (el.tagName === 'IMG') {
             el.src = data[key];
           } else {
-            el.innerText = data[key];
+            if (data[key].includes('<') || data[key].includes('\n')) {
+              el.innerHTML = data[key].replace(/\n/g, '<br>');
+            } else {
+              el.innerText = data[key];
+            }
           }
         }
       });
-    } catch (e) {
-      console.error("Error applying TRC data:", e);
     }
+
+    // 3. Word Reveal Setup (Always run)
+    document.querySelectorAll('.word-reveal').forEach(el => {
+      const nodes = Array.from(el.childNodes);
+      let html = '';
+      nodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent.trim().split(/\s+/).filter(Boolean).forEach(w => {
+            html += `<span class="word-wrap"><span class="word">${w}&nbsp;</span></span>`;
+          });
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.tagName === 'BR') {
+            html += '<br>';
+          } else {
+            const cls = node.className ? ` class="${node.className}"` : '';
+            node.innerText.trim().split(/\s+/).filter(Boolean).forEach(w => {
+              html += `<span class="word-wrap"><span class="word"><span${cls}>${w}</span>&nbsp;</span></span>`;
+            });
+          }
+        }
+      });
+      el.innerHTML = html;
+    });
+
+    // 4. Reveal Site
+    gsap.timeline()
+      .to('#preloader', { clipPath: 'inset(100% 0 0 0)', duration: 0.8, ease: 'power4.inOut' })
+      .set('#preloader', { display: 'none' })
+      .add(() => { initScrollAnimations(); });
   }
 
-  // Await data before running any UI logic or animations
-  await applyTRCData();
+  // Kick off initialization
+  startApp();
 
-  // ── PRELOADER ──────────────────────────────────────────────────
-  const tl = gsap.timeline({ onComplete: initScrollAnimations });
-  tl.to('.preloader-char',  { y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: 'power3.out' })
-    .to('.preloader-line',   { width: '100%', duration: 0.6, ease: 'power3.inOut' }, '-=0.2')
-    .to('.preloader-sub',    { opacity: 1, duration: 0.4 }, '-=0.2')
-    .to('.preloader-progress', { width: '100%', duration: 0.8, ease: 'power2.inOut' }, '+=0.3')
-    .to('#preloader',        { clipPath: 'inset(100% 0 0 0)', duration: 0.7, ease: 'power4.inOut' })
-    .set('#preloader',       { display: 'none' });
+  // ── CUSTOM CURSOR (desktop only) ───────────────────────────────
 
   // ── CUSTOM CURSOR (desktop only) ───────────────────────────────
   if (!isTouchDevice) {
@@ -137,25 +180,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     nav.classList.toggle('scrolled', window.scrollY > 100);
     const h = document.body.offsetHeight - window.innerHeight;
     if (h > 0) progressBar.style.width = (window.scrollY / h * 100) + '%';
-  });
-
-  // ── WORD REVEAL SETUP (preserves .accent-word spans) ────────
-  document.querySelectorAll('.word-reveal').forEach(el => {
-    const nodes = Array.from(el.childNodes);
-    let html = '';
-    nodes.forEach(node => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        node.textContent.trim().split(/\s+/).filter(Boolean).forEach(w => {
-          html += `<span class="word-wrap"><span class="word">${w}&nbsp;</span></span>`;
-        });
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        const cls = node.className ? ` class="${node.className}"` : '';
-        node.innerText.trim().split(/\s+/).filter(Boolean).forEach(w => {
-          html += `<span class="word-wrap"><span class="word"><span${cls}>${w}</span>&nbsp;</span></span>`;
-        });
-      }
-    });
-    el.innerHTML = html;
   });
 
 
