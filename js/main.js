@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lenis.stop();
         sessionStorage.setItem('popupShown', 'true');
       }
-    }, 7000);
+    }, 6000);
     
     const closeInquiryPopup = () => {
       inquiryPopup.classList.remove('show');
@@ -370,5 +370,26 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (popupClose) popupClose.addEventListener('click', closeInquiryPopup);
     if (popupOverlay) popupOverlay.addEventListener('click', closeInquiryPopup);
+
+    const popupForm = document.getElementById('popup-contact-form');
+    if (popupForm) {
+      popupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const btn = popupForm.querySelector('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = 'Sending...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+          btn.innerHTML = '✓ Sent!';
+          setTimeout(() => {
+            closeInquiryPopup();
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            popupForm.reset();
+          }, 1500);
+        }, 1000);
+      });
+    }
   }
 });
