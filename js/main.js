@@ -295,36 +295,57 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── PORTFOLIO FILTERS ──────────────────────────────────────────
-  document.querySelectorAll('.filter-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-pill').forEach(f => f.classList.remove('active'));
-      btn.classList.add('active');
-      const filter = btn.getAttribute('data-filter');
-      document.querySelectorAll('.project-card').forEach(card => {
-        const match = filter === 'all' || card.getAttribute('data-cat') === filter;
-        gsap.to(card, { opacity: match ? 1 : 0.2, duration: 0.3, pointerEvents: match ? 'auto' : 'none' });
-      });
+  const filterRow = document.querySelector('.filter-row');
+  if (filterRow) {
+    filterRow.addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-pill');
+      if (btn) {
+        document.querySelectorAll('.filter-pill').forEach(f => f.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+        document.querySelectorAll('.project-card').forEach(card => {
+          const match = filter === 'all' || card.getAttribute('data-cat') === filter;
+          gsap.to(card, { opacity: match ? 1 : 0.2, duration: 0.3, pointerEvents: match ? 'auto' : 'none' });
+        });
+      }
     });
-  });
+  }
 
   // ── CONTACT FORM ────────────────────────────────────────────────
   const form       = document.getElementById('contact-form');
   const successMsg = document.querySelector('.form-success');
   if (form) {
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const btn = form.querySelector('button[type="submit"]');
       const originalText = btn.textContent;
       btn.textContent = 'SENDING...';
-      setTimeout(() => {
-        btn.textContent = originalText;
-        form.reset();
-        if (successMsg) {
-          successMsg.style.display = 'block';
-          gsap.from(successMsg, { y: 10, opacity: 0, duration: 0.4 });
-          setTimeout(() => gsap.to(successMsg, { opacity: 0, duration: 0.4, onComplete: () => successMsg.style.display = 'none' }), 5000);
+      btn.disabled = true;
+
+      const formData = new FormData(form);
+      try {
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          body: formData
+        });
+
+        if (response.ok) {
+          btn.textContent = originalText;
+          btn.disabled = false;
+          form.reset();
+          if (successMsg) {
+            successMsg.style.display = 'block';
+            gsap.from(successMsg, { y: 10, opacity: 0, duration: 0.4 });
+            setTimeout(() => gsap.to(successMsg, { opacity: 0, duration: 0.4, onComplete: () => successMsg.style.display = 'none' }), 5000);
+          }
+        } else {
+          btn.textContent = 'ERROR, TRY AGAIN';
+          setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
         }
-      }, 1500);
+      } catch (error) {
+        btn.textContent = 'ERROR, TRY AGAIN';
+        setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
+      }
     });
   }
 
@@ -349,21 +370,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const popupForm = document.getElementById('popup-contact-form');
     if (popupForm) {
-      popupForm.addEventListener('submit', (e) => {
+      popupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = popupForm.querySelector('button');
         const originalText = btn.innerHTML;
         btn.innerHTML = 'Sending...';
         btn.disabled = true;
-        setTimeout(() => {
-          btn.innerHTML = '✓ Sent!';
-          setTimeout(() => {
-            closeInquiryPopup();
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            popupForm.reset();
-          }, 1500);
-        }, 1000);
+
+        const formData = new FormData(popupForm);
+        try {
+          const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            body: formData
+          });
+
+          if (response.ok) {
+            btn.innerHTML = '✓ Sent!';
+            setTimeout(() => {
+              closeInquiryPopup();
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+              popupForm.reset();
+            }, 1500);
+          } else {
+            btn.innerHTML = 'Error!';
+            setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
+          }
+        } catch (error) {
+          btn.innerHTML = 'Error!';
+          setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
+        }
       });
     }
   }

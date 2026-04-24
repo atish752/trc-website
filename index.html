@@ -43,6 +43,18 @@
       const key = el.getAttribute('data-trc');
       if (C[key] !== undefined) el.innerHTML = C[key];
     });
+
+    // Populate categories dynamically
+    if (C.cats && C.cats.length > 0) {
+      const filterRow = document.querySelector('.filter-row');
+      if (filterRow) {
+        let filtersHTML = `<button class="filter-pill active" data-filter="all">ALL</button>`;
+        C.cats.forEach(cat => {
+          filtersHTML += `<button class="filter-pill" style="text-transform:uppercase" data-filter="${cat.toLowerCase().replace(/[^a-z]/g,'')}">${cat}</button>`;
+        });
+        filterRow.innerHTML = filtersHTML;
+      }
+    }
   });
 </script>
 
@@ -307,7 +319,8 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
         </div>
 
         <script>
-            const isGif = src => src && (src.includes('.gif') || src.startsWith('data:image/gif'));
+            // Handle both literal .gif and Firebase Storage URLs that contain .gif or ?alt=media
+            const isGif = src => src && (src.toLowerCase().includes('.gif') || src.toLowerCase().includes('image%2Fgif') || src.startsWith('data:image/gif'));
 
             const buildCard = p => `
                 <div class="project-card" data-cat="${(p.cat||'').toLowerCase().replace(/[^a-z]/g,'')}">
@@ -730,21 +743,22 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
                 
                 <div class="divider fade-up">OR FILL THE FORM BELOW</div>
 
-                <form id="contact-form" class="contact-form fade-up">
+                <form action="https://api.web3forms.com/submit" method="POST" id="contact-form" class="contact-form fade-up">
+                    <input type="hidden" name="access_key" value="319b51ea-cafa-4d88-ab2a-989795529e9d">
                     <div class="form-group">
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="name" class="form-control" required>
                         <label>Name*</label>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="business_name" class="form-control" required>
                         <label>Business Name*</label>
                     </div>
                     <div class="form-group">
-                        <input type="tel" class="form-control" required>
+                        <input type="tel" name="phone" class="form-control" required>
                         <label>Phone*</label>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" required>
+                        <select name="service_needed" class="form-control" required>
                             <option value="" disabled selected></option>
                             <option value="website">Website</option>
                             <option value="ecommerce">E-commerce</option>
@@ -755,7 +769,7 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
                         <label>Service Needed</label>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" required>
+                        <select name="budget_range" class="form-control" required>
                             <option value="" disabled selected></option>
                             <option value="tier1">Under ₹15k</option>
                             <option value="tier2">₹15k - ₹30k</option>
@@ -765,7 +779,7 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
                         <label>Budget Range</label>
                     </div>
                     <div class="form-group" style="margin-bottom:40px;">
-                        <textarea class="form-control" rows="4" style="resize:none"></textarea>
+                        <textarea name="message" class="form-control" rows="4" style="resize:none"></textarea>
                         <label>Tell us about your project...</label>
                     </div>
                     <button type="submit" class="btn" style="width:100%">SEND MY ENQUIRY &rarr;</button>
@@ -889,12 +903,13 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
 
             <div class="popup-form">
                 <h4>QUICK ENQUIRY</h4>
-                <form id="popup-contact-form">
+                <form action="https://api.web3forms.com/submit" method="POST" id="popup-contact-form">
+                    <input type="hidden" name="access_key" value="319b51ea-cafa-4d88-ab2a-989795529e9d">
                     <div class="form-group">
-                        <input type="text" placeholder="Name" class="form-control" required>
+                        <input type="text" name="name" placeholder="Name" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <input type="tel" placeholder="Phone Number" class="form-control" required>
+                        <input type="tel" name="phone" placeholder="Phone Number" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%; font-size:12px; padding:10px;">SEND REQUEST &rarr;</button>
                 </form>

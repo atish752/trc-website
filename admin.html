@@ -314,6 +314,23 @@ function show(id,el) {
   document.querySelectorAll('.si').forEach(s=>s.classList.remove('act'));
   document.getElementById('panel-'+id).classList.add('act');
   el.classList.add('act');
+
+  if (id === 'addp' && !el.hasAttribute('data-edit')) {
+    editingProjectId = null;
+    document.getElementById('panel-addp').querySelector('.ptitle').innerText = 'Add New Project';
+    document.getElementById('save-proj-btn').innerText = '💾 SAVE PROJECT';
+    ['ft','fi','fl'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fc').value = '';
+    const prev=document.getElementById('dz-preview');
+    if(prev){prev.src='';prev.style.display='none';}
+    const dzT=document.getElementById('dz-text'), dzI=document.getElementById('dz-icon');
+    if(dzT) dzT.style.display=''; if(dzI) dzI.style.display='';
+  }
+  
+  // Clean up data-edit attribute if it was set
+  if (id !== 'addp' || !el.hasAttribute('data-edit')) {
+    document.querySelectorAll('.si')[2].removeAttribute('data-edit');
+  }
 }
 
 async function init() {
@@ -339,14 +356,17 @@ function renderDocs(snap) {
   if (!snap.docs.length) { g.innerHTML='<p class="no">No projects yet.</p>'; return; }
   g.innerHTML = snap.docs.map(doc => {
     const p=doc.data(), id=doc.id;
-    const isGif = p.img && p.img.toLowerCase().includes('.gif');
+    const isGif = p.img && (p.img.toLowerCase().includes('.gif') || p.img.toLowerCase().includes('image%2Fgif') || p.img.startsWith('data:image/gif'));
     return `<div class="pc">
       <img src="${p.img||''}" style="width:100%;height:150px;object-fit:cover;object-position:top;" onerror="this.style.display='none'">
       <div class="pci">
         <span class="cat">${p.cat}${isGif?' <span style="font-size:9px;background:rgba(215,3,33,.15);color:var(--red);padding:2px 6px;border-radius:10px;">GIF</span>':''}</span>
         <h4>${p.title}</h4>
         <a href="${p.link||'#'}" target="_blank">${p.link||'—'}</a>
-        <div class="pa"><button class="bsm bdel" onclick="delProject('${id}')">Delete</button></div>
+        <div class="pa">
+          <button class="bsm" style="background:var(--red);color:#fff;" onclick="editProject('${id}')">Edit</button>
+          <button class="bsm bdel" onclick="delProject('${id}')">Delete</button>
+        </div>
       </div></div>`;
   }).join('');
 }
@@ -441,6 +461,37 @@ async function resetContent() {
 }
 
 // ── ADD PROJECT ────────────────────────────────────────────────
+let editingProjectId = null;
+
+function editProject(id) {
+  dbStore.collection('trc_projects').doc(id).get().then(doc => {
+    if (doc.exists) {
+      const p = doc.data();
+      document.getElementById('ft').value = p.title;
+      document.getElementById('fc').value = p.cat;
+      document.getElementById('fi').value = p.img;
+      document.getElementById('fl').value = p.link || '';
+      editingProjectId = id;
+      
+      const prev=document.getElementById('dz-preview');
+      if(p.img) {
+          prev.src=p.img; prev.style.display='block';
+          const dzT=document.getElementById('dz-text'), dzI=document.getElementById('dz-icon');
+          if(dzT) dzT.style.display='none'; 
+          if(dzI) dzI.style.display='none';
+      }
+      
+      document.getElementById('panel-addp').querySelector('.ptitle').innerText = 'Edit Project';
+      document.getElementById('save-proj-btn').innerText = '💾 UPDATE PROJECT';
+      const siAddP = document.querySelectorAll('.si')[2];
+      siAddP.setAttribute('data-edit', '1');
+      show('addp', siAddP);
+    }
+  }).catch(e => {
+    alert('Error fetching project: ' + e.message);
+  });
+}
+
 async function addProject() {
   const t=document.getElementById('ft').value.trim();
   const c=document.getElementById('fc').value;
@@ -449,16 +500,24 @@ async function addProject() {
   
   if(!t) { alert('Please enter a Project Title.'); return; }
   if(!c) { alert('Please select a Category.'); return; }
-  if(!img) { alert('Please wait for the image/GIF to finish uploading.'); return; }
+  if(!img) { alert('Please provide an image/GIF URL or wait for upload to finish.'); return; }
 
   const btn=document.getElementById('save-proj-btn');
   btn.innerText='Saving to Database...'; btn.disabled=true;
   
   try {
-    await dbStore.collection('trc_projects').add({
-      title:t, cat:c, img, link,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    if (editingProjectId) {
+      await dbStore.collection('trc_projects').doc(editingProjectId).update({
+        title:t, cat:c, img, link
+      });
+      editingProjectId = null;
+      document.getElementById('panel-addp').querySelector('.ptitle').innerText = 'Add New Project';
+    } else {
+      await dbStore.collection('trc_projects').add({
+        title:t, cat:c, img, link,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
     
     if(!db.cats.includes(c)) {
       db.cats.push(c);
@@ -474,28 +533,59 @@ async function addProject() {
     if(dzT) dzT.style.display=''; if(dzI) dzI.style.display='';
     setStatus('','');
     
-    const m=document.getElementById('pmsg'); m.style.display='block';
+    const m=document.getElementById('pmsg'); 
+    m.innerText = '✓ Project saved and live on site!';
+    m.style.display='block';
     setTimeout(()=>m.style.display='none',3000);
+    
+    btn.innerText='💾 SAVE PROJECT';
+    show('projects', document.querySelectorAll('.si')[1]);
   } catch(e) { 
     alert('Error saving project to database: ' + e.message); 
     console.error(e);
   }
   
-  btn.innerText='💾 SAVE PROJECT'; btn.disabled=false;
+  btn.disabled=false;
 }
 
 async function delProject(id) {
   if(!confirm('Delete this project?')) return;
-  try { await dbStore.collection('trc_projects').doc(id).delete(); }
-  catch(e) { alert('Error: '+e.message); }
+  try { 
+      await dbStore.collection('trc_projects').doc(id).delete(); 
+      alert('Project deleted successfully.');
+  }
+  catch(e) { 
+      alert('Error deleting project: '+e.message); 
+      console.error('Delete error:', e);
+  }
 }
 
 // ── CATEGORIES ─────────────────────────────────────────────────
 function renderCats() {
   const el=document.getElementById('catlist');
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
+  el.style.gap = '8px';
   el.innerHTML=db.cats.length
-    ? db.cats.map((c,i)=>`<div class="chip">${c} <button onclick="delCat(${i})">×</button></div>`).join('')
+    ? db.cats.map((c,i)=>`
+        <div class="chip" style="justify-content: space-between; border-radius: 8px;">
+          <span style="flex:1; font-weight: 500;">${c}</span> 
+          <div style="display:flex; gap: 8px;">
+            <button onclick="moveCat(${i}, -1)" ${i===0?'disabled style="opacity:0.3;"':''} title="Move Up">↑</button>
+            <button onclick="moveCat(${i}, 1)" ${i===db.cats.length-1?'disabled style="opacity:0.3;"':''} title="Move Down">↓</button>
+            <button onclick="delCat(${i})" style="color:#e74c3c; margin-left:8px;" title="Delete">×</button>
+          </div>
+        </div>`).join('')
     : '<p class="no">No categories.</p>';
+}
+
+async function moveCat(i, dir) {
+  if (i+dir < 0 || i+dir >= db.cats.length) return;
+  const temp = db.cats[i];
+  db.cats[i] = db.cats[i+dir];
+  db.cats[i+dir] = temp;
+  await TRC_DOC.set({cats:db.cats},{merge:true});
+  renderCats(); populateCatSel();
 }
 async function addCat() {
   const n=document.getElementById('fnc').value.trim();

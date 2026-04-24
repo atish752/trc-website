@@ -69,9 +69,16 @@ window.fetchTRCData = async function() {
       const docSnap = await TRC_DOC.get();
       if (docSnap.exists) {
         const data = docSnap.data();
+        let result = {};
         if (data.content) {
-            return Object.assign({}, window.TRC_DEFAULTS, data.content);
+            result = Object.assign({}, window.TRC_DEFAULTS, data.content);
+        } else {
+            result = Object.assign({}, window.TRC_DEFAULTS);
         }
+        if (data.cats) {
+            result.cats = data.cats;
+        }
+        return result;
       }
     }
   } catch(e) {
