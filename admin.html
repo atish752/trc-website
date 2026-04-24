@@ -376,7 +376,10 @@ function setupUpload() {
   const fi=document.getElementById('f_file');
   const dz=document.getElementById('drop-zone');
   if(!fi||!dz) return;
-  fi.addEventListener('change', ()=>{ if(fi.files[0]) uploadToStorage(fi.files[0]); });
+  fi.addEventListener('change', ()=>{ 
+      if(fi.files[0]) uploadToStorage(fi.files[0]); 
+      fi.value = ''; // clear so same file can trigger change again
+  });
   dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.style.borderColor='var(--red)'; });
   dz.addEventListener('dragleave', ()=>{ dz.style.borderColor=''; });
   dz.addEventListener('drop', e=>{
@@ -429,7 +432,8 @@ function setStatus(msg,type) {
   const el=document.getElementById('upload-status');
   if(!el) return;
   el.style.display=msg?'block':'none';
-  el.style.color=type==='err'?'#e74c3c':type==='ok'?'#2ecc71':'var(--muted)';
+  el.style.color=type==='err'?'#e74c3c':type==='ok'?'#2ecc71':type==='info'?'#3498db':'var(--muted)';
+  el.style.fontWeight = 'bold';
   el.textContent=msg;
 }
 
