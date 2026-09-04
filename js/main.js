@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         width: '100%', duration: 0.7,
         ease: 'power3.inOut'
       }, '-=0.2')
-      // 3. "THE RIGHT CLICK" text rises in
+      // 3. "THE RIGHT CLICK IN" text rises in
       .to('.preloader-sub', {
         opacity: 1, y: 0, duration: 0.65,
         ease: 'power2.out'
@@ -82,6 +82,18 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       });
+
+      // Populate categories dynamically
+      if (data.cats && data.cats.length > 0) {
+        const filterRow = document.querySelector('.filter-row');
+        if (filterRow) {
+          let filtersHTML = `<button class="filter-pill active" data-filter="all">ALL</button>`;
+          data.cats.forEach(cat => {
+            filtersHTML += `<button class="filter-pill" style="text-transform:uppercase" data-filter="${cat.toLowerCase().replace(/[^a-z]/g,'')}">${cat}</button>`;
+          });
+          filterRow.innerHTML = filtersHTML;
+        }
+      }
     }
 
     // 3. Word Reveal Setup (wraps each word in an animated span)
@@ -107,17 +119,29 @@ document.addEventListener('DOMContentLoaded', () => {
       el.innerHTML = html;
     });
 
-    // 4. CRITICAL: Wait for the full cinematic preloader sequence to complete
-    //    before we slide it away. This guarantees TRC + lines + subtitle are
-    //    always fully visible for the right amount of time.
+    // 4. Prime hero elements in their hidden starting position so they NEVER flash
+    gsap.set('.hero .word', { y: '105%', skewY: 4, opacity: 0 });
+    gsap.set('.hero .fade-up', { y: 35, opacity: 0 });
+
+    // 5. CRITICAL: Wait for the cinematic preloader sequence to complete
     await preloaderPromise;
 
-    // 5. Slide preloader up — reveal site below
-    gsap.timeline()
-      .to('#preloader', { y: '-100%', duration: 1.1, ease: 'expo.inOut' })
-      .to('#preloader', { opacity: 0, duration: 0.4 }, '-=0.4')
+    // 6. Reveal site & seamlessly animate hero entrance in tandem (exactly once)
+    const siteRevealTl = gsap.timeline();
+    siteRevealTl
+      .to('#preloader', { y: '-100%', duration: 1.0, ease: 'power3.inOut' })
+      .to('#preloader', { opacity: 0, duration: 0.3 }, '-=0.3')
       .set('#preloader', { display: 'none' })
-      .add(() => { initScrollAnimations(); });
+      .to('.hero .word', {
+        y: '0%', skewY: 0, opacity: 1, duration: 1.0, ease: 'expo.out', stagger: 0.05
+      }, '-=0.7')
+      .to('.hero .fade-up', {
+        y: 0, opacity: 1, duration: 0.85, ease: 'expo.out', stagger: 0.07
+      }, '-=0.8')
+      .add(() => {
+        initScrollAnimations();
+        ScrollTrigger.refresh();
+      }, '-=0.3');
   }
 
   startApp();
@@ -223,55 +247,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── SCROLL ANIMATIONS ──────────────────────────────────────────
   function initScrollAnimations() {
-    // 1. HERO staggered word reveal
-    gsap.from('.hero .word', {
-      y: '105%', skewY: 4, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.065
-    });
-
-    // 2. SECTION HEADLINES
+    // 1. SECTION HEADLINES (only for sections below hero)
     document.querySelectorAll('section:not(.hero) .word-reveal').forEach(el => {
       gsap.from(el.querySelectorAll('.word'), {
-        scrollTrigger: { trigger: el, start: 'top 82%' },
-        y: '105%', skewY: 3, opacity: 0, duration: 1.0, ease: 'expo.out', stagger: 0.06
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        y: '105%', skewY: 3, opacity: 0, duration: 0.9, ease: 'expo.out', stagger: 0.05
       });
     });
 
-    // 3. LABELS
-    document.querySelectorAll('.label').forEach(el => {
+    // 2. SECTION LABELS
+    document.querySelectorAll('section:not(.hero) .label').forEach(el => {
       gsap.from(el, {
-        scrollTrigger: { trigger: el, start: 'top 88%' },
-        clipPath: 'inset(0 100% 0 0)', duration: 0.9, ease: 'expo.out'
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        clipPath: 'inset(0 100% 0 0)', duration: 0.85, ease: 'expo.out'
       });
     });
 
-    // 4. FADE-UP
-    document.querySelectorAll('.fade-up').forEach(el => {
+    // 3. FADE-UP (for all elements below hero)
+    document.querySelectorAll('section:not(.hero) .fade-up, footer .fade-up').forEach(el => {
       gsap.from(el, {
-        scrollTrigger: { trigger: el, start: 'top 87%' },
-        y: 60, opacity: 0, duration: 0.95, ease: 'expo.out'
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        y: 40, opacity: 0, duration: 0.85, ease: 'expo.out'
       });
     });
 
-    // 5. STAT COUNTERS
+    // 4. STAT COUNTERS
     document.querySelectorAll('.stat-num span[data-target]').forEach(el => {
       gsap.from(el, {
-        innerHTML: 0, duration: 2.2, ease: 'expo.out', snap: { innerHTML: 1 },
-        scrollTrigger: { trigger: el, start: 'top 80%', once: true }
+        innerHTML: 0, duration: 2.0, ease: 'expo.out', snap: { innerHTML: 1 },
+        scrollTrigger: { trigger: el, start: 'top 82%', once: true }
       });
     });
 
-    // 6. SERVICE ROWS
+    // 5. SERVICE ROWS
     document.querySelectorAll('.service-row').forEach((row, i) => {
       gsap.from(row, {
-        scrollTrigger: { trigger: row, start: 'top 88%' },
-        x: -30, opacity: 0, duration: 0.8, delay: i * 0.07, ease: 'expo.out'
+        scrollTrigger: { trigger: row, start: 'top 88%', once: true },
+        x: -30, opacity: 0, duration: 0.7, delay: (i % 4) * 0.07, ease: 'expo.out'
       });
     });
 
-    // 7. FOUNDER LINE
+    // 6. FOUNDER LINE
     document.querySelectorAll('.founder-note').forEach(el => {
       gsap.from(el, {
-        scrollTrigger: { trigger: el, start: 'top 90%' },
+        scrollTrigger: { trigger: el, start: 'top 90%', once: true },
         scaleX: 0, transformOrigin: 'left', duration: 0.8, ease: 'expo.out'
       });
     });
