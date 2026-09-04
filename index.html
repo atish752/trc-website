@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRC — The Right Click | Website Development for Businesses in India</title>
-    <meta name="description" content="Professional website development for small businesses and professionals in India. Fast delivery, honest pricing, guaranteed quality. TRC — The Right Click.">
-    <meta property="og:title" content="TRC — The Right Click">
+    <title>TRC — The Right Click In | Website Development for Businesses in India</title>
+    <meta name="description" content="Professional website development for small businesses and professionals in India. Fast delivery, honest pricing, guaranteed quality. TRC — The Right Click In.">
+    <meta property="og:title" content="TRC — The Right Click In">
     <meta property="og:description" content="Your dedicated web development partner in India.">
     <meta property="og:image" content="logoo.png">
     <link rel="icon" type="image/png" href="logoo.png">
@@ -35,28 +35,6 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-<script>
-  // Apply admin content before render
-  document.addEventListener('DOMContentLoaded', async () => {
-    const C = await window.fetchTRCData();
-    document.querySelectorAll('[data-trc]').forEach(el => {
-      const key = el.getAttribute('data-trc');
-      if (C[key] !== undefined) el.innerHTML = C[key];
-    });
-
-    // Populate categories dynamically
-    if (C.cats && C.cats.length > 0) {
-      const filterRow = document.querySelector('.filter-row');
-      if (filterRow) {
-        let filtersHTML = `<button class="filter-pill active" data-filter="all">ALL</button>`;
-        C.cats.forEach(cat => {
-          filtersHTML += `<button class="filter-pill" style="text-transform:uppercase" data-filter="${cat.toLowerCase().replace(/[^a-z]/g,'')}">${cat}</button>`;
-        });
-        filterRow.innerHTML = filtersHTML;
-      }
-    }
-  });
-</script>
 
     <!-- CUSTOM CURSOR -->
     <div class="cursor-dot"></div>
