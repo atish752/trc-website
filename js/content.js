@@ -21,7 +21,7 @@ window.TRC_DEFAULTS = {
   // ABOUT
   about_label:    "ABOUT TRC",
   about_headline: "We're not a big agency. That's the point.",
-  about_body:     "TRC — The Right Click — is a small, focused web studio built for Indian businesses who want results, not a sales pitch. We work directly with you. No layers, no handoffs, no excuses.",
+  about_body:     "TRC — The Right Click In — is a small, focused web studio built for Indian businesses who want results, not a sales pitch. We work directly with you. No layers, no handoffs, no excuses.",
   about_f1_title: "India-Based", about_f1_body: "We understand the local market, languages, and what Indian customers trust.",
   about_f2_title: "Direct Access", about_f2_body: "You talk to the developer. No account managers playing telephone.",
   about_f3_title: "Results First", about_f3_body: "Every decision we make is about getting you more clients, not more awards.",
@@ -51,9 +51,10 @@ window.TRC_DEFAULTS = {
   proc5_title: "Go Live",             proc5_body: "Your website launches. We handle domain connection, hosting setup, and testing. After launch, we're still here — 30-day support included free.",                          proc5_badge: "🚀 30-day free support",
 
   // CONTACT
-  contact_phone: "+91-XXXXXXXXXX",
-  contact_email: "hello@therightclick.in",
-  contact_wa:    "910000000000",
+  contact_phone:   "+91 9798482404",
+  contact_email:   "hello@therightclick.in",
+  contact_wa:      "919798482404",
+  contact_address: "1st Floor, NA, Shakti Nagar, Khoja Imli, Phulwari Sharif, Patna, Bihar 801505",
 
   // FOOTER
   footer_tagline: "We build websites that build businesses.",
