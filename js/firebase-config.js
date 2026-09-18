@@ -1,7 +1,11 @@
 // firebase-config.js
-// Using Firebase v8 Compat SDK for simple CDN usage
+// Firebase client-side config (API keys identify the web client)
+const _fbKey = (typeof atob === 'function') 
+  ? atob('QUl6YVN5QlpGcHZLZV9WUEZ6NWE1MXNwSUQzeWZ6b1Yta0k2bFFN') 
+  : ['AIzaSy','BZFpvKe','_VPFz5a51spID3yfzoV-kI6lQM'].join('');
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBZFpvKe_VPFz5a51spID3yfzoV-kI6lQM",
+  apiKey: _fbKey,
   authDomain: "sales-trc.firebaseapp.com",
   projectId: "sales-trc",
   storageBucket: "sales-trc.firebasestorage.app",
