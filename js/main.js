@@ -157,11 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
         gsap.set(dot, { x: e.clientX, y: e.clientY });
         xTo(e.clientX); yTo(e.clientY);
       });
-      document.querySelectorAll('.nav-links a,.btn,.project-card,.faq-question,.filter-pill').forEach(el => {
+      document.querySelectorAll('.nav-links a,.btn,.project-card,.app-card,.faq-question,.filter-pill').forEach(el => {
         el.addEventListener('mouseenter', () => {
           gsap.to(ring, { scale: 2, opacity: 0.6, duration: 0.3 });
           gsap.to(dot, { scale: 0, duration: 0.3 });
-          if (el.classList.contains('project-card')) {
+          if (el.classList.contains('project-card') || el.classList.contains('app-card')) {
             gsap.to(ring, { backgroundColor: 'rgba(215,3,33,0.15)', borderColor: 'rgba(215,3,33,0.8)' });
             ring.setAttribute('data-text', 'VIEW');
           }
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.filter-pill').forEach(f => f.classList.remove('active'));
         btn.classList.add('active');
         const filter = btn.getAttribute('data-filter');
-        document.querySelectorAll('.project-card').forEach(card => {
+        document.querySelectorAll('.project-card, .app-card').forEach(card => {
           const match = filter === 'all' || card.getAttribute('data-cat') === filter;
           gsap.to(card, { opacity: match ? 1 : 0.2, duration: 0.3, pointerEvents: match ? 'auto' : 'none' });
         });

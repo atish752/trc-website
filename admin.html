@@ -238,44 +238,68 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
       <div class="panel" id="panel-projects">
         <div class="ptitle">All Projects</div>
         <div class="psub">Portfolio cards shown in the marquee rows on the site.</div>
+        
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;">
+          <button class="bsm" id="pfilter-all" style="background:var(--red); color:#fff;" onclick="setAdminProjFilter('all')">All Projects (<span id="count-all">0</span>)</button>
+          <button class="bsm" id="pfilter-website" style="background:var(--bg3); color:var(--cream); border:1px solid var(--border);" onclick="setAdminProjFilter('website')">🌐 Websites 16:9 (<span id="count-web">0</span>)</button>
+          <button class="bsm" id="pfilter-app" style="background:var(--bg3); color:var(--cream); border:1px solid var(--border);" onclick="setAdminProjFilter('app')">📱 Mobile Apps 9:16 (<span id="count-app">0</span>)</button>
+        </div>
+
         <div id="pg" class="pg"></div>
       </div>
 
       <!-- ADD PROJECT -->
       <div class="panel" id="panel-addp">
         <div class="ptitle">Add New Project</div>
-        <div class="psub">Upload an image or GIF — appears live on the website instantly.</div>
+        <div class="psub">Upload a GIF, video, or image — appears live on the website instantly.</div>
         <div style="max-width:600px">
+          
+          <!-- PROJECT TYPE SELECTOR -->
+          <div class="cf">
+            <label>Project Type</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px;">
+              <label id="type-opt-website" style="display:flex; align-items:center; gap:10px; background:rgba(215,3,33,0.12); padding:12px 16px; border-radius:8px; border:1.5px solid var(--red); cursor:pointer;">
+                <input type="radio" name="project_type" value="website" checked onchange="onTypeChange('website')">
+                <span style="font-weight:600; font-size:13px;">🌐 Website (16:9 Landscape)</span>
+              </label>
+              <label id="type-opt-app" style="display:flex; align-items:center; gap:10px; background:var(--bg3); padding:12px 16px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                <input type="radio" name="project_type" value="app" onchange="onTypeChange('app')">
+                <span style="font-weight:600; font-size:13px;">📱 Mobile App (9:16 Portrait)</span>
+              </label>
+            </div>
+          </div>
+
           <div class="cf"><label>Project Title</label><input id="ft" placeholder="e.g. Spice Garden Restaurant"></div>
           <div class="cf"><label>Category</label><select id="fc"><option value="">Select category</option></select></div>
 
           <!-- UPLOAD ZONE -->
           <div class="cf">
-            <label>Project Image or GIF <span style="color:var(--red);font-size:10px;">(Select file OR paste a URL)</span></label>
+            <label id="lbl-media-type">Project GIF, Video, or Image <span style="color:var(--red);font-size:10px;">(Select file OR paste a URL)</span></label>
             
             <!-- ImgBB API Key Input -->
             <div style="margin-bottom: 10px; background: rgba(215,3,33,0.05); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
-              <label style="color: var(--cream); font-size: 10px; margin-bottom: 4px;">ImgBB API Key (Required for uploads)</label>
+              <label style="color: var(--cream); font-size: 10px; margin-bottom: 4px;">ImgBB API Key (Required for GIF &amp; image uploads)</label>
               <input id="imgbb_key" type="password" placeholder="Paste your free API key from api.imgbb.com" style="width:100%; padding: 8px; font-size: 12px;" onchange="localStorage.setItem('trc_imgbb', this.value)">
-              <div style="font-size: 9px; color: var(--muted); margin-top: 4px;">Get your free key at <a href="https://api.imgbb.com/" target="_blank" style="color: var(--red);">api.imgbb.com</a></div>
+              <div style="font-size: 9px; color: var(--muted); margin-top: 4px;">Get your free key at <a href="https://api.imgbb.com/" target="_blank" style="color: var(--red);">api.imgbb.com</a>. (For MP4 screen recordings, paste the link in the URL box below!)</div>
             </div>
 
             <div id="drop-zone" onclick="document.getElementById('f_file').click()" style="border:2px dashed var(--border);border-radius:8px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;margin-bottom:8px;">
               <div id="dz-icon" style="font-size:32px;margin-bottom:8px;">📁</div>
-              <div id="dz-text" style="color:var(--muted);font-size:13px;">Click to choose an image or GIF<br><span style="font-size:11px;">JPG · PNG · WebP · GIF supported</span></div>
-              <img id="dz-preview" src="" style="display:none;max-width:100%;max-height:160px;border-radius:6px;margin-top:10px;object-fit:contain;">
+              <div id="dz-text" style="color:var(--muted);font-size:13px;">Click to choose a Landscape GIF, Video, or Image<br><span style="font-size:11px;">Recommended: 16:9 ratio (GIF · MP4 · WebP · PNG · JPG)</span></div>
+              <img id="dz-preview" src="" style="display:none;max-width:100%;max-height:180px;border-radius:6px;margin-top:10px;object-fit:contain;">
+              <video id="dz-video-preview" src="" autoplay loop muted playsinline style="display:none;max-width:100%;max-height:240px;border-radius:6px;margin-top:10px;object-fit:contain;"></video>
             </div>
-            <input type="file" id="f_file" accept="image/*,.gif" style="display:none">
+            <input type="file" id="f_file" accept="image/*,.gif,video/mp4,video/webm" style="display:none">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
               <div style="flex:1;height:1px;background:var(--border);"></div>
-              <span style="font-size:11px;color:var(--muted);">OR paste URL</span>
+              <span style="font-size:11px;color:var(--muted);">OR paste direct URL (GIF, MP4, WebM, Image)</span>
               <div style="flex:1;height:1px;background:var(--border);"></div>
             </div>
-            <input id="fi" type="url" placeholder="https://... (Firebase Storage, Imgur, etc.)" style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:11px 14px;color:var(--cream);font-size:13px;outline:none;">
+            <input id="fi" type="url" placeholder="https://... (Cloudinary, Imgur, Discord, Giphy, etc.)" oninput="previewFromUrl(this.value)" style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:11px 14px;color:var(--cream);font-size:13px;outline:none;">
             <div id="upload-status" style="margin-top:8px;font-size:12px;display:none;"></div>
           </div>
 
-          <div class="cf"><label>Live URL (Website Link)</label><input id="fl" type="url" placeholder="https://..."></div>
+          <div class="cf"><label id="lbl-live-link">Live URL (Website Link)</label><input id="fl" type="url" placeholder="https://..."></div>
           <button class="sbtn" id="save-proj-btn" onclick="addProject()">💾 SAVE PROJECT</button>
           <div class="smsg" id="pmsg">✓ Project added and live on site!</div>
         </div>
@@ -318,6 +342,92 @@ if (sessionStorage.getItem('trc_adm')==='1') {
   init();
 }
 
+let adminCurrentFilter = 'all';
+let allAdminProjects = [];
+
+function isVideoMedia(src) {
+  return src && (
+    src.toLowerCase().endsWith('.mp4') ||
+    src.toLowerCase().endsWith('.webm') ||
+    src.toLowerCase().endsWith('.mov') ||
+    src.toLowerCase().includes('.mp4?') ||
+    src.toLowerCase().includes('.webm?') ||
+    src.toLowerCase().includes('video/')
+  );
+}
+
+function onTypeChange(type) {
+  const isWeb = type === 'website';
+  const optWeb = document.getElementById('type-opt-website');
+  const optApp = document.getElementById('type-opt-app');
+  if (optWeb && optApp) {
+    optWeb.style.background = isWeb ? 'rgba(215,3,33,0.14)' : 'var(--bg3)';
+    optWeb.style.borderColor = isWeb ? 'var(--red)' : 'var(--border)';
+    optApp.style.background = !isWeb ? 'rgba(215,3,33,0.14)' : 'var(--bg3)';
+    optApp.style.borderColor = !isWeb ? 'var(--red)' : 'var(--border)';
+  }
+
+  const dzText = document.getElementById('dz-text');
+  const prevImg = document.getElementById('dz-preview');
+  const prevVid = document.getElementById('dz-video-preview');
+  const lblLive = document.getElementById('lbl-live-link');
+
+  if (isWeb) {
+    if (dzText) dzText.innerHTML = 'Click to choose a Landscape GIF, Video, or Image<br><span style="font-size:11px;">Recommended: 16:9 ratio (GIF · MP4 · WebP · PNG · JPG)</span>';
+    if (prevImg) { prevImg.style.maxWidth = '100%'; prevImg.style.maxHeight = '180px'; prevImg.style.margin = '10px auto'; }
+    if (prevVid) { prevVid.style.maxWidth = '100%'; prevVid.style.maxHeight = '240px'; prevVid.style.margin = '10px auto'; }
+    if (lblLive) lblLive.textContent = 'Live URL (Website Link)';
+  } else {
+    if (dzText) dzText.innerHTML = 'Click to choose a Portrait Screen Recording or GIF<br><span style="font-size:11px;">Recommended: 9:16 portrait ratio (MP4 · GIF · WebP · PNG)</span>';
+    if (prevImg) { prevImg.style.maxWidth = '180px'; prevImg.style.maxHeight = '320px'; prevImg.style.margin = '10px auto'; }
+    if (prevVid) { prevVid.style.maxWidth = '180px'; prevVid.style.maxHeight = '320px'; prevVid.style.margin = '10px auto'; }
+    if (lblLive) lblLive.textContent = 'App Store / Play Store / Live Demo Link (Optional)';
+  }
+}
+
+function previewFromUrl(url) {
+  const prevImg = document.getElementById('dz-preview');
+  const prevVid = document.getElementById('dz-video-preview');
+  const dzT = document.getElementById('dz-text'), dzI = document.getElementById('dz-icon');
+
+  if (!url || !url.trim()) {
+    if (prevImg) { prevImg.src = ''; prevImg.style.display = 'none'; }
+    if (prevVid) { prevVid.src = ''; prevVid.style.display = 'none'; }
+    if (dzT) dzT.style.display = '';
+    if (dzI) dzI.style.display = '';
+    return;
+  }
+
+  if (dzT) dzT.style.display = 'none';
+  if (dzI) dzI.style.display = 'none';
+
+  if (isVideoMedia(url)) {
+    if (prevImg) { prevImg.src = ''; prevImg.style.display = 'none'; }
+    if (prevVid) { prevVid.src = url; prevVid.style.display = 'block'; }
+  } else {
+    if (prevVid) { prevVid.src = ''; prevVid.style.display = 'none'; }
+    if (prevImg) { prevImg.src = url; prevImg.style.display = 'block'; }
+  }
+}
+
+function setAdminProjFilter(f) {
+  adminCurrentFilter = f;
+  ['all', 'website', 'app'].forEach(k => {
+    const b = document.getElementById('pfilter-' + k);
+    if (!b) return;
+    if (k === f) {
+      b.style.background = 'var(--red)';
+      b.style.color = '#fff';
+      b.style.borderColor = 'var(--red)';
+    } else {
+      b.style.background = 'var(--bg3)';
+      b.style.color = 'var(--cream)';
+      b.style.borderColor = 'var(--border)';
+    }
+  });
+  renderProjectCards();
+}
+
 function show(id,el) {
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('act'));
   document.querySelectorAll('.si').forEach(s=>s.classList.remove('act'));
@@ -328,12 +438,14 @@ function show(id,el) {
     editingProjectId = null;
     document.getElementById('panel-addp').querySelector('.ptitle').innerText = 'Add New Project';
     document.getElementById('save-proj-btn').innerText = '💾 SAVE PROJECT';
-    ['ft','fi','fl'].forEach(id=>document.getElementById(id).value='');
+    ['ft','fi','fl'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('fc').value = '';
-    const prev=document.getElementById('dz-preview');
-    if(prev){prev.src='';prev.style.display='none';}
-    const dzT=document.getElementById('dz-text'), dzI=document.getElementById('dz-icon');
-    if(dzT) dzT.style.display=''; if(dzI) dzI.style.display='';
+    
+    const radWeb = document.querySelector('input[name="project_type"][value="website"]');
+    if (radWeb) radWeb.checked = true;
+    onTypeChange('website');
+    previewFromUrl('');
+    setStatus('','');
   }
   
   // Clean up data-edit attribute if it was set
@@ -364,32 +476,100 @@ function listenProjects() {
 }
 
 function renderDocs(snap) {
+  allAdminProjects = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
+  const cntAll = allAdminProjects.length;
+  const cntApp = allAdminProjects.filter(p => p.type === 'app').length;
+  const cntWeb = cntAll - cntApp;
+
+  const elAll = document.getElementById('count-all');
+  const elWeb = document.getElementById('count-web');
+  const elApp = document.getElementById('count-app');
+  if (elAll) elAll.innerText = cntAll;
+  if (elWeb) elWeb.innerText = cntWeb;
+  if (elApp) elApp.innerText = cntApp;
+
+  renderProjectCards();
+}
+
+function renderProjectCards() {
   const g = document.getElementById('pg');
-  if (!snap.docs.length) { g.innerHTML='<p class="no">No projects yet.</p>'; return; }
-  g.innerHTML = snap.docs.map(doc => {
-    const p=doc.data(), id=doc.id;
+  if (!allAdminProjects.length) {
+    g.innerHTML = '<p class="no">No projects yet. Click "+ Add Project" to create one.</p>';
+    return;
+  }
+
+  const filtered = allAdminProjects.filter(p => {
+    if (adminCurrentFilter === 'all') return true;
+    if (adminCurrentFilter === 'app') return p.type === 'app';
+    if (adminCurrentFilter === 'website') return p.type !== 'app';
+    return true;
+  });
+
+  if (!filtered.length) {
+    g.innerHTML = '<p class="no">No projects found in this category.</p>';
+    return;
+  }
+
+  g.innerHTML = filtered.map(p => {
+    const id = p.id;
+    const isApp = p.type === 'app';
+    const isVid = isVideoMedia(p.img);
     const isGif = p.img && (p.img.toLowerCase().includes('.gif') || p.img.toLowerCase().includes('image%2Fgif') || p.img.startsWith('data:image/gif'));
-    return `<div class="pc">
-      <img src="${p.img||''}" style="width:100%;height:150px;object-fit:cover;object-position:top;" onerror="this.style.display='none'">
+
+    const mediaBadge = isVid
+      ? '<span style="font-size:9px;background:rgba(52,152,219,.2);color:#3498db;padding:2px 7px;border-radius:10px;font-weight:700;">VIDEO</span>'
+      : isGif
+        ? '<span style="font-size:9px;background:rgba(215,3,33,.2);color:#FF4D61;padding:2px 7px;border-radius:10px;font-weight:700;">GIF</span>'
+        : '';
+
+    const typeBadge = isApp
+      ? '<span style="font-size:10px;background:rgba(215,3,33,.18);color:#FF6B7A;padding:3px 8px;border-radius:12px;font-weight:700;">📱 9:16 APP</span>'
+      : '<span style="font-size:10px;background:rgba(255,255,255,.08);color:var(--cream);padding:3px 8px;border-radius:12px;font-weight:600;">🌐 16:9 WEBSITE</span>';
+
+    const mediaTag = isVid
+      ? `<video src="${p.img}" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;display:block;"></video>`
+      : `<img src="${p.img||''}" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" onerror="this.style.display='none'">`;
+
+    const mediaContainer = isApp
+      ? `<div style="background:#090807;padding:12px 0;display:flex;justify-content:center;border-bottom:1px solid var(--border);">
+           <div style="width:130px;height:231px;border-radius:18px;border:2px solid rgba(255,255,255,0.15);overflow:hidden;position:relative;background:#000;box-shadow:0 8px 20px rgba(0,0,0,0.6);">
+             <div style="position:absolute;top:5px;left:50%;transform:translateX(-50%);width:36px;height:8px;background:#000;border-radius:10px;z-index:3;"></div>
+             ${mediaTag}
+           </div>
+         </div>`
+      : `<div style="width:100%;height:160px;overflow:hidden;background:#000;border-bottom:1px solid var(--border);">
+           ${mediaTag}
+         </div>`;
+
+    return `<div class="pc" style="border:1px solid ${isApp ? 'rgba(215,3,33,0.35)' : 'var(--border)'};">
+      ${mediaContainer}
       <div class="pci">
-        <span class="cat">${p.cat}${isGif?' <span style="font-size:9px;background:rgba(215,3,33,.15);color:var(--red);padding:2px 6px;border-radius:10px;">GIF</span>':''}</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
+          <span class="cat" style="margin-bottom:0;">${p.cat || 'General'}</span>
+          <div style="display:flex;align-items:center;gap:4px;">
+            ${mediaBadge}
+            ${typeBadge}
+          </div>
+        </div>
         <h4>${p.title}</h4>
-        <a href="${p.link||'#'}" target="_blank">${p.link||'—'}</a>
+        <a href="${p.link||'#'}" target="_blank">${p.link ? p.link.substring(0,35) + (p.link.length>35?'...':'') : '—'}</a>
         <div class="pa">
           <button class="bsm" style="background:var(--red);color:#fff;" onclick="editProject('${id}')">Edit</button>
           <button class="bsm bdel" onclick="delProject('${id}')">Delete</button>
         </div>
-      </div></div>`;
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ── FILE UPLOAD (Firebase Storage) ─────────────────────────────
+// ── FILE UPLOAD (ImgBB + Direct Video Support) ───────────────────
 function setupUpload() {
   const fi=document.getElementById('f_file');
   const dz=document.getElementById('drop-zone');
   if(!fi||!dz) return;
   fi.addEventListener('change', ()=>{ 
-      if(fi.files[0]) uploadToStorage(fi.files[0]); 
+      if(fi.files[0]) handleFileSelection(fi.files[0]); 
       fi.value = ''; // clear so same file can trigger change again
   });
   dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.style.borderColor='var(--red)'; });
@@ -397,9 +577,21 @@ function setupUpload() {
   dz.addEventListener('drop', e=>{
     e.preventDefault(); dz.style.borderColor='';
     const f=e.dataTransfer.files[0];
-    if(f && f.type.startsWith('image/')) uploadToStorage(f);
-    else setStatus('Only image/GIF files supported.','err');
+    if(f) handleFileSelection(f);
   });
+}
+
+async function handleFileSelection(file) {
+  // If video file (screen recording)
+  if (file.type.startsWith('video/')) {
+    const objectUrl = URL.createObjectURL(file);
+    previewFromUrl(objectUrl);
+    setStatus('✓ Video preview loaded! Note: For cloud hosting, please paste a direct video link in the URL box below (from Cloudinary, Catbox, Discord, or Google Drive), or upload an animated GIF.', 'info');
+    return;
+  }
+
+  // If image or GIF
+  uploadToStorage(file);
 }
 
 async function uploadToStorage(file) {
@@ -409,13 +601,14 @@ async function uploadToStorage(file) {
     return;
   }
 
-  if(file.size > 15*1024*1024) { setStatus('File too large (max 15MB).','err'); return; }
+  if(file.size > 20*1024*1024) { setStatus('File too large (max 20MB).','err'); return; }
   
   setStatus(`Uploading to ImgBB...`,'info');
   
   const dzText=document.getElementById('dz-text');
   const dzIcon=document.getElementById('dz-icon');
-  dzText.style.display='none'; dzIcon.style.display='none';
+  if(dzText) dzText.style.display='none'; 
+  if(dzIcon) dzIcon.style.display='none';
 
   const formData = new FormData();
   formData.append('image', file);
@@ -428,19 +621,21 @@ async function uploadToStorage(file) {
     const data = await response.json();
 
     if(data.success) {
-      const downloadUrl = data.data.url;
+      // Prioritize data.image.url to preserve animated GIF without conversion!
+      const downloadUrl = (data.data.image && data.data.image.url) || data.data.url || data.data.display_url;
       document.getElementById('fi').value = downloadUrl;
-      const prev=document.getElementById('dz-preview');
-      prev.src=downloadUrl; prev.style.display='block';
+      previewFromUrl(downloadUrl);
       setStatus(`✓ Upload successful! Now click Save Project`,'ok');
     } else {
       const msg = data.error ? data.error.message : 'Unknown error';
       setStatus(`Upload failed: ${msg}`, 'err');
-      dzText.style.display=''; dzIcon.style.display='';
+      if(dzText) dzText.style.display=''; 
+      if(dzIcon) dzIcon.style.display='';
     }
   } catch (e) {
     setStatus('Upload blocked! Check your internet or API Key.', 'err');
-    dzText.style.display=''; dzIcon.style.display='';
+    if(dzText) dzText.style.display=''; 
+    if(dzIcon) dzIcon.style.display='';
   }
 }
 
@@ -480,25 +675,26 @@ async function resetContent() {
   catch(e) { alert('Error resetting.'); }
 }
 
-// ── ADD PROJECT ────────────────────────────────────────────────
+// ── ADD / EDIT PROJECT ─────────────────────────────────────────
 let editingProjectId = null;
 
 function editProject(id) {
   dbStore.collection('trc_projects').doc(id).get().then(doc => {
     if (doc.exists) {
       const p = doc.data();
-      document.getElementById('ft').value = p.title;
-      document.getElementById('fc').value = p.cat;
-      document.getElementById('fi').value = p.img;
+      document.getElementById('ft').value = p.title || '';
+      document.getElementById('fc').value = p.cat || '';
+      document.getElementById('fi').value = p.img || '';
       document.getElementById('fl').value = p.link || '';
       editingProjectId = id;
       
-      const prev=document.getElementById('dz-preview');
-      if(p.img) {
-          prev.src=p.img; prev.style.display='block';
-          const dzT=document.getElementById('dz-text'), dzI=document.getElementById('dz-icon');
-          if(dzT) dzT.style.display='none'; 
-          if(dzI) dzI.style.display='none';
+      const pType = p.type || 'website';
+      const rad = document.querySelector(`input[name="project_type"][value="${pType}"]`);
+      if (rad) rad.checked = true;
+      onTypeChange(pType);
+      
+      if (p.img) {
+        previewFromUrl(p.img);
       }
       
       document.getElementById('panel-addp').querySelector('.ptitle').innerText = 'Edit Project';
@@ -517,10 +713,11 @@ async function addProject() {
   const c=document.getElementById('fc').value;
   const img=document.getElementById('fi').value.trim();
   const link=document.getElementById('fl').value.trim();
+  const type = document.querySelector('input[name="project_type"]:checked')?.value || 'website';
   
   if(!t) { alert('Please enter a Project Title.'); return; }
   if(!c) { alert('Please select a Category.'); return; }
-  if(!img) { alert('Please provide an image/GIF URL or wait for upload to finish.'); return; }
+  if(!img) { alert('Please provide a GIF/Video/Image URL or upload a file.'); return; }
 
   const btn=document.getElementById('save-proj-btn');
   btn.innerText='Saving to Database...'; btn.disabled=true;
@@ -528,13 +725,13 @@ async function addProject() {
   try {
     if (editingProjectId) {
       await dbStore.collection('trc_projects').doc(editingProjectId).update({
-        title:t, cat:c, img, link
+        title:t, cat:c, img, link, type
       });
       editingProjectId = null;
       document.getElementById('panel-addp').querySelector('.ptitle').innerText = 'Add New Project';
     } else {
       await dbStore.collection('trc_projects').add({
-        title:t, cat:c, img, link,
+        title:t, cat:c, img, link, type,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     }
@@ -546,11 +743,11 @@ async function addProject() {
     }
     
     // Reset form
-    ['ft','fi','fl'].forEach(id=>document.getElementById(id).value='');
-    const prev=document.getElementById('dz-preview');
-    if(prev){prev.src='';prev.style.display='none';}
-    const dzT=document.getElementById('dz-text'), dzI=document.getElementById('dz-icon');
-    if(dzT) dzT.style.display=''; if(dzI) dzI.style.display='';
+    ['ft','fi','fl'].forEach(i=>document.getElementById(i).value='');
+    const radWeb = document.querySelector('input[name="project_type"][value="website"]');
+    if (radWeb) radWeb.checked = true;
+    onTypeChange('website');
+    previewFromUrl('');
     setStatus('','');
     
     const m=document.getElementById('pmsg'); 
