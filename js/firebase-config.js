@@ -1,13 +1,13 @@
 // firebase-config.js
 // Using Firebase v8 Compat SDK for simple CDN usage
 const firebaseConfig = {
-  apiKey: "AIzaSyDYgJYYZ5Gc7fdLw1gRVwX0OdhzOidelmQ",
-  authDomain: "sale-trc.firebaseapp.com",
-  projectId: "sale-trc",
-  storageBucket: "sale-trc.firebasestorage.app",
-  messagingSenderId: "333525498476",
-  appId: "1:333525498476:web:18ac977bc06b6e3f1ef649",
-  measurementId: "G-MQV98N84WB"
+  apiKey: "AIzaSyBZFpvKe_VPFz5a51spID3yfzoV-kI6lQM",
+  authDomain: "sales-trc.firebaseapp.com",
+  projectId: "sales-trc",
+  storageBucket: "sales-trc.firebasestorage.app",
+  messagingSenderId: "1032649255547",
+  appId: "1:1032649255547:web:75994655153b8c2dbd10de",
+  measurementId: "G-E31FX7QZVH"
 };
 // Initialize Firebase
 if (!firebase.apps.length) {
