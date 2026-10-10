@@ -14,9 +14,23 @@ const firebaseConfig = {
   measurementId: "G-E31FX7QZVH"
 };
 // Initialize Firebase
-if (!firebase.apps.length) {
+if (typeof firebase !== 'undefined') {
+  if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
+  }
+  window.dbStore = firebase.firestore();
+  try {
+    window.storage = firebase.storage();
+  } catch(e) {
+    console.warn('Storage initial binding:', e);
+  }
+  if (firebase.auth) {
+    firebase.auth().signInAnonymously().catch(e => console.log('Anonymous auth note:', e.message));
+  }
+  window.TRC_DOC = window.dbStore.collection('trc').doc('main_site');
+  window.firebaseConfig = firebaseConfig;
 }
-const dbStore = firebase.firestore();
-const storage = firebase.storage();
-const TRC_DOC = dbStore.collection('trc').doc('main_site');
+
+const dbStore = window.dbStore;
+const storage = window.storage;
+const TRC_DOC = window.TRC_DOC;

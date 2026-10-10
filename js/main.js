@@ -112,7 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           if (node.tagName === 'BR') {
-            html += '<br>';
+            const cls = node.className ? ` class="${node.className}"` : '';
+            html += `<br${cls}>`;
           } else {
             const cls = node.className ? ` class="${node.className}"` : '';
             node.innerText.trim().split(/\s+/).filter(Boolean).forEach(w => {

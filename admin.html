@@ -6,6 +6,7 @@
 <title>TRC Admin</title>
 <link rel="icon" type="image/png" href="logoo.png">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 <script src="js/firebase-config.js"></script>
@@ -301,11 +302,17 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
           <div class="cf">
             <label id="lbl-media-type">Project GIF, Video, or Image <span style="color:var(--red);font-size:10px;">(Select file OR paste a URL)</span></label>
             
-            <!-- ImgBB API Key Input -->
-            <div style="margin-bottom: 10px; background: rgba(215,3,33,0.05); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
-              <label style="color: var(--cream); font-size: 10px; margin-bottom: 4px;">ImgBB API Key (Required for GIF &amp; image uploads)</label>
+            <!-- ImgBB API Key Input (For Websites & Mobile Apps) -->
+            <div id="box-imgbb-key" style="margin-bottom: 10px; background: rgba(215,3,33,0.05); padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
+              <label style="color: var(--cream); font-size: 10px; margin-bottom: 4px;">ImgBB API Key (For Website &amp; App GIF/Image uploads)</label>
               <input id="imgbb_key" type="password" placeholder="Paste your free API key from api.imgbb.com" style="width:100%; padding: 8px; font-size: 12px;" onchange="localStorage.setItem('trc_imgbb', this.value)">
-              <div style="font-size: 9px; color: var(--muted); margin-top: 4px;">Get your free key at <a href="https://api.imgbb.com/" target="_blank" style="color: var(--red);">api.imgbb.com</a>. (For MP4 screen recordings, paste the link in the URL box below!)</div>
+              <div style="font-size: 9px; color: var(--muted); margin-top: 4px;">Get your free key at <a href="https://api.imgbb.com/" target="_blank" style="color: var(--red);">api.imgbb.com</a>.</div>
+            </div>
+
+            <!-- Firebase Direct Video Upload Info (For Video Work) -->
+            <div id="box-video-storage" style="display:none; margin-bottom: 10px; background: rgba(215,3,33,0.1); padding: 10px 12px; border-radius: 6px; border: 1.5px solid var(--red);">
+              <div style="font-size:12px; font-weight:700; color:#FF5A6E; margin-bottom:3px;">🔥 Firebase Direct Video Storage</div>
+              <div style="font-size:11px; color:var(--cream); line-height:1.4;">Select or drop any MP4 video below — it uploads directly into Firebase Storage and streams permanently in high-speed MP4.</div>
             </div>
 
             <div id="drop-zone" onclick="document.getElementById('f_file').click()" style="border:2px dashed var(--border);border-radius:8px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;margin-bottom:8px;">
@@ -408,6 +415,10 @@ function onTypeChange(type) {
   const prevVid = document.getElementById('dz-video-preview');
   const lblLive = document.getElementById('lbl-live-link');
   const lblMedia = document.getElementById('lbl-media-type');
+  const boxImgbb = document.getElementById('box-imgbb-key');
+  const boxVid = document.getElementById('box-video-storage');
+  if (boxImgbb) boxImgbb.style.display = isVid ? 'none' : 'block';
+  if (boxVid) boxVid.style.display = isVid ? 'block' : 'none';
 
   if (isWeb) {
     if (lblMedia) lblMedia.innerHTML = 'Project GIF, Video, or Image <span style="color:var(--red);font-size:10px;">(Select file OR paste a URL)</span>';
@@ -648,45 +659,101 @@ function setupUpload() {
 }
 
 async function handleFileSelection(file) {
-  // If video file (screen recording / commercial reel)
-  if (file.type.startsWith('video/')) {
+  const isVideo = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v)$/i.test(file.name);
+
+  if (isVideo) {
     const objectUrl = URL.createObjectURL(file);
     previewFromUrl(objectUrl);
-    
-    // Try uploading to Firebase Storage if available
-    try {
-      if (typeof storage !== 'undefined') {
-        const ref = storage.ref('trc_videos/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_'));
-        const uploadTask = ref.put(file);
-        setStatus('Uploading video to Firebase (0%)...', 'info');
-        uploadTask.on('state_changed',
-          snap => {
-            const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-            setStatus(`Uploading video: ${pct}%...`, 'info');
-          },
-          err => {
-            console.warn('Firebase storage video upload error:', err);
-            setStatus('✓ Video preview loaded! For cloud hosting, paste a direct video link below (Cloudinary, Catbox, or Google Drive) or keep preview.', 'info');
-          },
-          async () => {
-            const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
-            document.getElementById('fi').value = downloadUrl;
-            previewFromUrl(downloadUrl);
-            setStatus('✓ Video uploaded successfully! Click Save Project.', 'ok');
-          }
-        );
-        return;
-      }
-    } catch(e) {
-      console.warn('Storage attempt exception:', e);
-    }
-    
-    setStatus('✓ Video preview loaded! For permanent hosting, paste a direct video link in the URL box below (from Cloudinary, Catbox, Discord, or Google Drive).', 'info');
+    await uploadVideoToFirebase(file);
     return;
   }
 
-  // If image or GIF
+  // If image or GIF (for websites & apps)
   uploadToStorage(file);
+}
+
+async function uploadVideoToFirebase(file) {
+  let storageInst = window.storage;
+  if (!storageInst && typeof firebase !== 'undefined' && firebase.apps.length) {
+    try { storageInst = firebase.storage(); } catch(e) {}
+  }
+
+  if (!storageInst) {
+    setStatus('❌ Firebase Storage is not initialized. Check internet connection.', 'err');
+    return;
+  }
+
+  const dzText = document.getElementById('dz-text');
+  const dzIcon = document.getElementById('dz-icon');
+  if (dzText) dzText.style.display = 'none';
+  if (dzIcon) dzIcon.style.display = 'none';
+
+  const cleanName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const path = 'trc_videos/' + cleanName;
+  const metadata = { contentType: file.type || 'video/mp4' };
+
+  setStatus('⏳ Uploading video to Firebase Storage (0%)...', 'info');
+
+  try {
+    let ref = storageInst.ref(path);
+    let uploadTask = ref.put(file, metadata);
+
+    uploadTask.on('state_changed',
+      snap => {
+        const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+        setStatus(`⏳ Uploading video to Firebase Storage: ${pct}%...`, 'info');
+      },
+      async err => {
+        console.error('Firebase Storage upload error:', err);
+        // If bucket-not-found, attempt sales-trc.appspot.com bucket
+        if (err.code === 'storage/bucket-not-found' || (err.message && err.message.includes('404'))) {
+          try {
+            setStatus('⏳ Trying alternate bucket (sales-trc.appspot.com)...', 'info');
+            const altStorage = firebase.app().storage('gs://sales-trc.appspot.com');
+            const altTask = altStorage.ref(path).put(file, metadata);
+            altTask.on('state_changed',
+              s => {
+                const p = Math.round((s.bytesTransferred / s.totalBytes) * 100);
+                setStatus(`⏳ Uploading video to Firebase Storage: ${p}%...`, 'info');
+              },
+              altErr => {
+                showStorageError(altErr);
+              },
+              async () => {
+                const downloadUrl = await altTask.snapshot.ref.getDownloadURL();
+                document.getElementById('fi').value = downloadUrl;
+                previewFromUrl(downloadUrl);
+                setStatus('✅ Video successfully uploaded to Firebase Storage! Click "SAVE PROJECT".', 'ok');
+              }
+            );
+            return;
+          } catch(e2) {
+            console.error('Alt bucket exception:', e2);
+          }
+        }
+        showStorageError(err);
+      },
+      async () => {
+        const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
+        document.getElementById('fi').value = downloadUrl;
+        previewFromUrl(downloadUrl);
+        setStatus('✅ Video successfully uploaded to Firebase Storage! Click "SAVE PROJECT".', 'ok');
+      }
+    );
+  } catch(err) {
+    console.error('Upload exception:', err);
+    showStorageError(err);
+  }
+}
+
+function showStorageError(err) {
+  let msg = 'Upload failed: ' + (err.message || err.code || err);
+  if (err.code === 'storage/unauthorized') {
+    msg = '⚠️ Firebase Storage Permission Denied. In Firebase Console > Storage > Rules, set: allow read, write: if true;';
+  } else if (err.code === 'storage/bucket-not-found' || (err.message && err.message.includes('404'))) {
+    msg = '⚠️ Firebase Storage bucket not created yet! Go to Firebase Console (console.firebase.google.com) > Storage > click "Get started".';
+  }
+  setStatus(msg, 'err');
 }
 
 async function uploadToStorage(file) {

@@ -1716,16 +1716,21 @@ footer { background: #080C12; border-top: 1px solid rgba(160, 82, 45, 0.15); pad
 
 .hero-work-header .hero-top-label {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 11px;
-  letter-spacing: 0.22em;
-  color: var(--color-copper);
+  letter-spacing: 0.16em;
+  color: #FF6B7A;
+  background: rgba(215, 3, 33, 0.12);
+  border: 1px solid rgba(215, 3, 33, 0.28);
+  padding: 4px 14px;
+  border-radius: 50px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 0 auto 8px !important;
+  margin: 0 auto 10px !important;
   text-transform: uppercase;
+  text-align: center;
 }
 
 .hero-work-header .hero-top-label::before {
@@ -1734,15 +1739,15 @@ footer { background: #080C12; border-top: 1px solid rgba(160, 82, 45, 0.15); pad
 
 .hero-work-headline {
   font-family: var(--font-display);
-  font-size: clamp(22px, 3.6vw, 50px);
+  font-size: clamp(26px, 4vw, 52px);
   line-height: 1.15;
   letter-spacing: -0.02em;
-  margin: 0 auto 8px !important;
+  margin: 0 auto 10px !important;
   font-weight: 800;
   color: var(--color-white);
   text-align: center;
-  white-space: nowrap !important;
   display: block;
+  width: 100%;
 }
 
 .hero-work-headline .accent-word {
@@ -1751,7 +1756,17 @@ footer { background: #080C12; border-top: 1px solid rgba(160, 82, 45, 0.15); pad
 
 .hero-work-headline .word-wrap {
   display: inline-block !important;
-  white-space: nowrap !important;
+  vertical-align: bottom;
+}
+
+.mobile-break {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-break {
+    display: block !important;
+  }
 }
 
 .hero-work-sub {
@@ -2246,8 +2261,8 @@ footer { background: #080C12; border-top: 1px solid rgba(160, 82, 45, 0.15); pad
 /* ── RESPONSIVE TWEAKS ── */
 @media (max-width: 900px) {
   .hero-work-headline {
-    font-size: clamp(20px, 3.8vw, 36px) !important;
-    white-space: nowrap !important;
+    font-size: clamp(24px, 4.2vw, 40px) !important;
+    text-align: center !important;
   }
   .reels-stage {
     flex-direction: column;
@@ -2265,20 +2280,24 @@ footer { background: #080C12; border-top: 1px solid rgba(160, 82, 45, 0.15); pad
     padding-bottom: 24px !important;
   }
   .hero-work-header {
-    margin-bottom: 10px !important;
-    padding: 0 10px !important;
+    margin-bottom: 12px !important;
+    padding: 0 12px !important;
   }
   .hero-work-headline {
-    font-size: clamp(15px, 4.6vw, 20px) !important;
-    white-space: nowrap !important;
-    letter-spacing: -0.03em !important;
-    margin-bottom: 6px !important;
+    font-size: clamp(20px, 5.8vw, 28px) !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.02em !important;
+    margin: 0 auto 10px !important;
+    text-align: center !important;
+    white-space: normal !important;
+    display: block !important;
   }
   .hero-work-sub {
-    font-size: 11.5px !important;
-    line-height: 1.4 !important;
-    margin-bottom: 12px !important;
-    max-width: 92% !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    margin-bottom: 14px !important;
+    max-width: 95% !important;
+    text-align: center !important;
   }
   .work-type-switcher {
     width: auto !important;
@@ -2288,7 +2307,7 @@ footer { background: #080C12; border-top: 1px solid rgba(160, 82, 45, 0.15); pad
     gap: 4px !important;
   }
   .work-switch-btn {
-    padding: 7px 12px !important;
+    padding: 7px 14px !important;
     font-size: 11px !important;
     gap: 5px !important;
   }
@@ -2318,7 +2337,7 @@ footer { background: #080C12; border-top: 1px solid rgba(160, 82, 45, 0.15); pad
 
 @media (max-width: 380px) {
   .hero-work-headline {
-    font-size: 13.5px !important;
-    letter-spacing: -0.035em !important;
+    font-size: 19px !important;
+    line-height: 1.22 !important;
   }
 }
