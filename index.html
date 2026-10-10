@@ -243,16 +243,32 @@
 
         <script>
             // Media detection for video vs animated GIF / static image
-            const isVideoMedia = src => src && (
-                src.toLowerCase().endsWith('.mp4') ||
-                src.toLowerCase().endsWith('.webm') ||
-                src.toLowerCase().endsWith('.mov') ||
-                src.toLowerCase().includes('.mp4?') ||
-                src.toLowerCase().includes('.webm?') ||
-                src.toLowerCase().includes('video/')
-            );
+            const normalizeMediaUrl = src => {
+                if (!src) return '';
+                src = src.trim();
+                const dm = src.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || src.match(/id=([a-zA-Z0-9_-]+)/);
+                if (dm && dm[1]) return `https://drive.google.com/uc?export=download&id=${dm[1]}`;
+                if (src.includes('dropbox.com')) return src.replace(/[?&]dl=0/, '?raw=1');
+                return src;
+            };
 
-            const renderCardMedia = (src, title, isPortrait = false) => {
+            const isVideoMedia = src => {
+                if (!src) return false;
+                const s = src.toLowerCase();
+                return (
+                    s.endsWith('.mp4') ||
+                    s.endsWith('.webm') ||
+                    s.endsWith('.mov') ||
+                    s.includes('.mp4?') ||
+                    s.includes('.webm?') ||
+                    s.includes('video/') ||
+                    s.includes('drive.google.com') ||
+                    s.startsWith('data:video/')
+                );
+            };
+
+            const renderCardMedia = (rawSrc, title, isPortrait = false) => {
+                const src = normalizeMediaUrl(rawSrc);
                 if (!src) {
                     return `<div style="width:100%;height:100%;background:#1A1712;display:flex;align-items:center;justify-content:center;color:#8B7355;font-size:12px;">No Preview</div>`;
                 }

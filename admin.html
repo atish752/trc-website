@@ -309,10 +309,18 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
               <div style="font-size: 9px; color: var(--muted); margin-top: 4px;">Get your free key at <a href="https://api.imgbb.com/" target="_blank" style="color: var(--red);">api.imgbb.com</a>.</div>
             </div>
 
-            <!-- Firebase Direct Video Upload Info (For Video Work) -->
-            <div id="box-video-storage" style="display:none; margin-bottom: 10px; background: rgba(215,3,33,0.1); padding: 10px 12px; border-radius: 6px; border: 1.5px solid var(--red);">
-              <div style="font-size:12px; font-weight:700; color:#FF5A6E; margin-bottom:3px;">🔥 Firebase Direct Video Storage</div>
-              <div style="font-size:11px; color:var(--cream); line-height:1.4;">Select or drop any MP4 video below — it uploads directly into Firebase Storage and streams permanently in high-speed MP4.</div>
+            <!-- Video Work Free Plan Guide -->
+            <div id="box-video-storage" style="display:none; margin-bottom: 12px; background: rgba(215,3,33,0.08); padding: 12px 14px; border-radius: 8px; border: 1.5px solid var(--red);">
+              <div style="font-size:12px; font-weight:700; color:#FF5A6E; margin-bottom:4px;">🎬 Video Work Hosting (100% Free)</div>
+              <div style="font-size:11px; color:var(--cream); line-height:1.5;">
+                Firestore stores all your video titles, captions, and links for free. Paste any MP4 video URL below (or select small clips under 700KB directly):
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+                <span style="font-size:10px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; color:var(--cream);">📁 Google Drive (Share &rarr; Anyone with link)</span>
+                <span style="font-size:10px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; color:var(--cream);">📦 Dropbox (Share link)</span>
+                <span style="font-size:10px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; color:var(--cream);">☁️ Cloudinary (25GB Free)</span>
+              </div>
+              <div style="font-size:10px; color:var(--muted); margin-top:6px;">💡 Google Drive and Dropbox share links are automatically converted to direct streaming video!</div>
             </div>
 
             <div id="drop-zone" onclick="document.getElementById('f_file').click()" style="border:2px dashed var(--border);border-radius:8px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;margin-bottom:8px;">
@@ -377,14 +385,33 @@ if (sessionStorage.getItem('trc_adm')==='1') {
 let adminCurrentFilter = 'all';
 let allAdminProjects = [];
 
+function normalizeVideoUrl(url) {
+  if (!url) return '';
+  url = url.trim();
+  // Google Drive: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (driveMatch && driveMatch[1]) {
+    return `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
+  }
+  // Dropbox: https://www.dropbox.com/s/.../video.mp4?dl=0
+  if (url.includes('dropbox.com')) {
+    return url.replace(/[?&]dl=0/, '?raw=1');
+  }
+  return url;
+}
+
 function isVideoMedia(src) {
-  return src && (
-    src.toLowerCase().endsWith('.mp4') ||
-    src.toLowerCase().endsWith('.webm') ||
-    src.toLowerCase().endsWith('.mov') ||
-    src.toLowerCase().includes('.mp4?') ||
-    src.toLowerCase().includes('.webm?') ||
-    src.toLowerCase().includes('video/')
+  if (!src) return false;
+  const s = src.toLowerCase();
+  return (
+    s.endsWith('.mp4') ||
+    s.endsWith('.webm') ||
+    s.endsWith('.mov') ||
+    s.includes('.mp4?') ||
+    s.includes('.webm?') ||
+    s.includes('video/') ||
+    s.includes('drive.google.com') ||
+    s.startsWith('data:video/')
   );
 }
 
@@ -464,6 +491,13 @@ function previewFromUrl(url) {
     if (dzT) dzT.style.display = '';
     if (dzI) dzI.style.display = '';
     return;
+  }
+
+  const normalized = normalizeVideoUrl(url);
+  if (normalized !== url) {
+    url = normalized;
+    const fi = document.getElementById('fi');
+    if (fi && fi.value !== url) fi.value = url;
   }
 
   if (dzT) dzT.style.display = 'none';
@@ -664,7 +698,25 @@ async function handleFileSelection(file) {
   if (isVideo) {
     const objectUrl = URL.createObjectURL(file);
     previewFromUrl(objectUrl);
-    await uploadVideoToFirebase(file);
+
+    // If small video under 750KB, convert directly to Base64 data URL so it stores directly in Firestore without any storage bucket
+    if (file.size <= 750 * 1024) {
+      setStatus('⏳ Encoding video for direct Firestore storage...', 'info');
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        document.getElementById('fi').value = dataUrl;
+        previewFromUrl(dataUrl);
+        setStatus('✅ Video ready for Firestore storage! Click "SAVE PROJECT".', 'ok');
+      };
+      reader.onerror = () => setStatus('❌ Failed to read file.', 'err');
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    // Friendly guide for videos > 750KB on the Firebase Free / Spark plan
+    const mbSize = (file.size / (1024 * 1024)).toFixed(1);
+    setStatus(`💡 Video is ${mbSize}MB (Firestore limit is 1MB). On the Firebase free plan, upload this video to Google Drive, Dropbox, or Cloudinary, and paste the share link in the URL box below! (Preview loaded above)`, 'info');
     return;
   }
 
