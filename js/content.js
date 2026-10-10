@@ -3,7 +3,13 @@
 // index.html reads from this on load.
 
 window.TRC_DEFAULTS = {
-  // HERO
+  // WORK HERO (TOP AUTHORITY HERO SECTION)
+  work_hero_label:     "PROVEN AUTHORITY • 20+ SHIPPED DELIVERIES",
+  work_hero_headline:  "Real Businesses. Real Results.",
+  work_hero_accent:    "Zero Fluff.",
+  work_hero_sub:       "Explore live production websites, high-converting mobile apps, and scroll-stopping video edits engineered for businesses that demand revenue.",
+
+  // HERO (AGENCY OVERVIEW)
   hero_label:     "INDIA'S GROWTH-FOCUSED WEB STUDIO",
   hero_headline:  "We Build Websites That Build",
   hero_accent:    "Businesses.",

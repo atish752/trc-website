@@ -116,14 +116,641 @@
         </div>
     </div>
 
-    <!-- SECTION 1: HERO -->
-    <section class="hero">
+    <!-- SECTION 1: TOP HERO WORK SECTION (AUTHORITY & LIVE WORK) -->
+    <section id="work" class="hero hero-work-section">
+        <div class="container hero-work-header">
+            <div class="hero-top-label fade-up">
+                <span style="color:var(--color-copper);">•</span> <span data-trc="work_hero_label">PROVEN AUTHORITY • 20+ SHIPPED DELIVERIES</span>
+            </div>
+            <h1 class="hero-work-headline word-reveal">
+                <span data-trc="work_hero_headline">Real Businesses. Real Results.</span> <span class="accent-word" data-trc="work_hero_accent">Zero Fluff.</span>
+            </h1>
+            <p class="hero-work-sub fade-up" data-trc="work_hero_sub">
+                Explore live production websites, high-converting mobile apps, and scroll-stopping video edits engineered for businesses that demand revenue.
+            </p>
+            
+            <!-- MAIN WORK SWITCHER (WEB & APPS vs VIDEO WORK) -->
+            <div class="work-type-switcher fade-up">
+                <button class="work-switch-btn active" id="tab-web-app" onclick="switchWorkTab('webapp')">
+                    <span class="btn-icon">🌐</span>
+                    <span>Web &amp; Apps</span>
+                    <span class="btn-badge" id="badge-webapp-count">20+ Projects</span>
+                </button>
+                <button class="work-switch-btn" id="tab-video" onclick="switchWorkTab('video')">
+                    <span class="btn-icon">🎬</span>
+                    <span>Video Work</span>
+                    <span class="btn-badge" id="badge-video-count">Reels &amp; Commercials</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 1: WEB & APPS (DEFAULT) -->
+        <div class="work-view" id="view-web-app">
+            <div class="filter-row fade-up" id="web-app-filters">
+                <button class="filter-pill active" data-filter="all">ALL</button>
+                <button class="filter-pill" data-filter="websites">WEBSITE PROJECTS</button>
+                <button class="filter-pill" data-filter="apps">APP PROJECTS</button>
+                <button class="filter-pill" data-filter="business">BUSINESS</button>
+                <button class="filter-pill" data-filter="restaurant">RESTAURANT</button>
+                <button class="filter-pill" data-filter="realestate">REAL ESTATE</button>
+                <button class="filter-pill" data-filter="ecommerce">E-COMMERCE</button>
+            </div>
+
+            <div class="work-category-header fade-up">
+                <span class="work-cat-badge">Website Projects</span>
+            </div>
+
+            <div class="marquee-container fade-up">
+                <!-- ROW 1 (WEBSITES LEFT) -->
+                <div class="marquee-row left" id="marquee-r1"></div>
+            </div>
+            
+            <div class="marquee-container fade-up" style="margin-top: 24px;">
+                <!-- ROW 2 (WEBSITES RIGHT) -->
+                <div class="marquee-row right" id="marquee-r2"></div>
+            </div>
+
+            <div class="work-category-header fade-up" style="margin-top: 48px;">
+                <span class="work-cat-badge">App Projects</span>
+            </div>
+
+            <div class="marquee-container fade-up" style="margin-top: 14px; padding: 18px 0;">
+                <!-- ROW 3 (APPS PORTRAIT 9:16) -->
+                <div class="marquee-row left-fast apps-marquee" id="marquee-r3"></div>
+            </div>
+
+            <div class="portfolio-footer fade-up" style="margin-top: 40px;">
+                <p style="font-family: var(--font-body); font-style: italic; color: var(--color-muted); margin-bottom: 16px;">Your industry isn't on this list? We've probably built for it.</p>
+                <a href="#contact" class="btn-ghost">DISCUSS YOUR PROJECT &rarr;</a>
+            </div>
+        </div>
+
+        <!-- VIEW 2: VIDEO WORK (LAZY-LOADED ONLY ON CLICK) -->
+        <div class="work-view hidden" id="view-video">
+            <div class="video-mode-bar">
+                <div class="video-mode-toggle">
+                    <button class="video-mode-btn active" id="btn-mode-reels" onclick="setVideoMode('reels')">
+                        <span>📱</span> Infinite Reels
+                    </button>
+                    <button class="video-mode-btn" id="btn-mode-grid" onclick="setVideoMode('grid')">
+                        <span>🏷️</span> Browse Categories
+                    </button>
+                </div>
+                <div class="video-volume-control" id="reels-volume-toggle" onclick="toggleReelsAudio()">
+                    <span id="reels-volume-icon">🔇</span>
+                    <span id="reels-volume-text">Tap to Unmute</span>
+                </div>
+            </div>
+
+            <!-- Video Category Filter Pills (visible in Browse Categories mode) -->
+            <div class="video-cats-row" id="video-cats-row" style="display: none;">
+                <button class="video-cat-pill active" data-vcat="all" onclick="filterVideoCategory('all', this)">ALL</button>
+                <button class="video-cat-pill" data-vcat="brandcommercials" onclick="filterVideoCategory('brandcommercials', this)">BRAND COMMERCIALS</button>
+                <button class="video-cat-pill" data-vcat="reelsandshorts" onclick="filterVideoCategory('reelsandshorts', this)">REELS &amp; SHORTS</button>
+                <button class="video-cat-pill" data-vcat="productpromos" onclick="filterVideoCategory('productpromos', this)">PRODUCT PROMOS</button>
+            </div>
+
+            <!-- MODE 1: REELS FEED (DEFAULT) -->
+            <div id="reels-mode-wrapper">
+                <div class="reels-stage">
+                    <div class="reels-frame">
+                        <div class="reels-viewport" id="reels-viewport" data-lenis-prevent>
+                            <!-- Populated lazily on demand -->
+                        </div>
+                    </div>
+                    <div class="reels-nav-controls">
+                        <button class="reels-arrow-btn" onclick="scrollReel(-1)" title="Previous Reel">&#9650;</button>
+                        <button class="reels-arrow-btn" onclick="scrollReel(1)" title="Next Reel">&#9660;</button>
+                    </div>
+                </div>
+                <div style="font-size:12px; color:var(--color-muted); margin-top:16px;">
+                    Scroll down inside the frame to watch endless video edits &amp; commercial reels.
+                </div>
+            </div>
+
+            <!-- MODE 2: CATEGORIZED VIDEO GRID -->
+            <div id="grid-mode-wrapper" style="display: none;">
+                <div class="video-grid-container" id="video-grid-container">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="portfolio-footer" style="margin-top: 40px;">
+                <p style="font-family: var(--font-body); font-style: italic; color: var(--color-muted); margin-bottom: 16px;">Need high-impact commercial video editing or viral short-form reels for your brand?</p>
+                <a href="#contact" class="btn btn-magnetic">GET A VIDEO QUOTE &rarr;</a>
+            </div>
+        </div>
+
+        <script>
+            // Media detection for video vs animated GIF / static image
+            const isVideoMedia = src => src && (
+                src.toLowerCase().endsWith('.mp4') ||
+                src.toLowerCase().endsWith('.webm') ||
+                src.toLowerCase().endsWith('.mov') ||
+                src.toLowerCase().includes('.mp4?') ||
+                src.toLowerCase().includes('.webm?') ||
+                src.toLowerCase().includes('video/')
+            );
+
+            const renderCardMedia = (src, title, isPortrait = false) => {
+                if (!src) {
+                    return `<div style="width:100%;height:100%;background:#1A1712;display:flex;align-items:center;justify-content:center;color:#8B7355;font-size:12px;">No Preview</div>`;
+                }
+                if (isVideoMedia(src)) {
+                    return `<video src="${src}" autoplay loop muted playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>`;
+                }
+                return `<img src="${src}" alt="${title || 'Project'}" style="width:100%;height:100%;object-fit:cover;display:block;"
+                             onerror="this.onerror=null;this.src='https://placehold.co/${isPortrait ? '220x390' : '340x220'}/1A1712/D70321?text=${encodeURIComponent(title || 'Preview')}';">`;
+            };
+
+            // 16:9 Landscape Website Card
+            const buildCard = p => `
+                <div class="project-card" data-cat="${(p.cat||'').toLowerCase().replace(/[^a-z0-9]/g,'')}">
+                    <div class="card-browser-bar">
+                        <div class="circle r"></div><div class="circle y"></div><div class="circle g"></div>
+                        <div class="url"></div>
+                    </div>
+                    <div class="card-img-wrapper">
+                        ${renderCardMedia(p.img, p.title, false)}
+                        <div class="card-overlay">
+                            <span class="card-cat">${p.cat || 'Website'}</span>
+                            <div class="card-overlay-text">
+                                <h4>${p.title}</h4>
+                                <p><a href="${p.link||'#'}" target="_blank" style="color:var(--color-copper);text-decoration:none;">OPEN PROJECT &rarr;</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            // 9:16 Portrait Mobile App Card
+            const buildAppCard = p => `
+                <div class="app-card" data-cat="${(p.cat||'').toLowerCase().replace(/[^a-z0-9]/g,'')}">
+                    <div class="phone-notch"></div>
+                    <div class="app-screen-wrapper">
+                        ${renderCardMedia(p.img, p.title, true)}
+                        <div class="app-card-overlay">
+                            <span class="app-card-cat">${p.cat || 'Mobile App'}</span>
+                            <div class="app-card-text">
+                                <h4>${p.title}</h4>
+                                <p><a href="${p.link||'#'}" target="_blank">EXPLORE APP &rarr;</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            const defaultWebProjects = [
+                {cat:'Business',   title:'Limitless Jets',   img:'https://i.ibb.co/zjDPy0b/Screen-Recording-2026-04-26-184158.gif', link:'https://limitlessjets.netlify.app/', type:'website'},
+                {cat:'Business',   title:'Business Site',    img:'Screenshot 2026-04-23 075117.png', link:'#', type:'website'},
+                {cat:'Restaurant', title:'Spice Garden',     img:'Screenshot 2026-04-23 075136.png', link:'#', type:'website'},
+                {cat:'Real Estate',title:'Urban Homes',      img:'Screenshot 2026-04-23 075157.png', link:'#', type:'website'},
+                {cat:'E-commerce', title:'Style Store',      img:'Screenshot 2026-04-23 075216.png', link:'#', type:'website'},
+                {cat:'Portfolio',  title:'Creative Studio',  img:'Screenshot 2026-04-23 075238.png', link:'#', type:'website'},
+                {cat:'Business',   title:'Tech Startup',     img:'Screenshot 2026-04-23 075246.png', link:'#', type:'website'},
+                {cat:'E-commerce', title:'Gadget Hub',       img:'Screenshot 2026-04-23 075252.png', link:'#', type:'website'},
+                {cat:'Healthcare', title:'City Clinic',      img:'Screenshot 2026-04-23 075304.png', link:'#', type:'website'},
+                {cat:'Restaurant', title:'Cafe Beans',       img:'Screenshot 2026-04-23 075311.png', link:'#', type:'website'},
+                {cat:'Real Estate',title:'Skyline Props',    img:'Screenshot 2026-04-23 075345.png', link:'#', type:'website'},
+                {cat:'Business',   title:'Apex Logistics',   img:'Screenshot 2026-04-23 075357.png', link:'#', type:'website'},
+                {cat:'Portfolio',  title:'Luxe Interiors',   img:'Screenshot 2026-04-23 075421.png', link:'#', type:'website'}
+            ];
+
+            const defaultAppProjects = [
+                {cat:'Food Delivery', title:'QuickBite App', img:'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
+                {cat:'Fitness',       title:'FitTrack Pro',  img:'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
+                {cat:'Fintech',       title:'Nova Wallet',   img:'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
+                {cat:'E-commerce',    title:'Trendy Store',  img:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
+                {cat:'Healthcare',    title:'MediCare Go',   img:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
+                {cat:'Real Estate',   title:'NestFinder App',img:'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'}
+            ];
+
+            const defaultVideoProjects = [
+                {cat:'Brand Commercials', title:'Urban Streetwear Line', img:'https://res.cloudinary.com/demo/video/upload/c_fill,ar_9:16,w_540/docs/walking_talking.mp4', link:'#', type:'video', desc:'Commercial fashion shoot • Cinematic color grade'},
+                {cat:'Reels & Shorts',     title:'Ocean Motion Promo',   img:'https://res.cloudinary.com/demo/video/upload/c_fill,ar_9:16,w_540/wave.mp4', link:'#', type:'video', desc:'Viral aesthetic reel • 480K+ Organic views'},
+                {cat:'Brand Commercials', title:'Wild Horizon Travel',   img:'https://res.cloudinary.com/demo/video/upload/c_fill,ar_9:16,w_540/elephants.mp4', link:'#', type:'video', desc:'Expedition brand commercial • High conversion'},
+                {cat:'Fitness & Sports',  title:'Apex Athletic Sprint',  img:'https://res.cloudinary.com/demo/video/upload/c_fill,ar_9:16,w_540/finish_line.mp4', link:'#', type:'video', desc:'High-energy sports promo • Fast kinetic cuts'},
+                {cat:'Product Promos',    title:'Aquatic Deep Dive',     img:'https://res.cloudinary.com/demo/video/upload/c_fill,ar_9:16,w_540/sea_turtle.mp4', link:'#', type:'video', desc:'Macro nature promo • 4K cinematic grade'},
+                {cat:'Reels & Shorts',     title:'Winter Ridge Adventure',img:'https://res.cloudinary.com/demo/video/upload/c_fill,ar_9:16,w_540/snow_horses.mp4', link:'#', type:'video', desc:'Viral lifestyle reel • 3.8x ROAS campaign'}
+            ];
+
+            let allProjectsCache = [];
+            let videoProjectsCache = [];
+            let videoWorkInitialized = false;
+            let isReelsMuted = true;
+            let currentVideoMode = 'reels';
+            let lastReelKey = '';
+
+            function updateVolumeUI() {
+                const icon = document.getElementById('reels-volume-icon');
+                const text = document.getElementById('reels-volume-text');
+                if (icon && text) {
+                    icon.textContent = isReelsMuted ? '🔇' : '🔊';
+                    text.textContent = isReelsMuted ? 'Tap to Unmute' : 'Audio On';
+                }
+            }
+
+            function switchWorkTab(tab) {
+                const btnWebApp = document.getElementById('tab-web-app');
+                const btnVideo = document.getElementById('tab-video');
+                const viewWebApp = document.getElementById('view-web-app');
+                const viewVideo = document.getElementById('view-video');
+
+                if (tab === 'webapp') {
+                    btnWebApp.classList.add('active');
+                    btnVideo.classList.remove('active');
+                    viewWebApp.classList.remove('hidden');
+                    viewVideo.classList.add('hidden');
+                    pauseAllReels();
+                } else {
+                    btnVideo.classList.add('active');
+                    btnWebApp.classList.remove('active');
+                    viewVideo.classList.remove('hidden');
+                    viewWebApp.classList.add('hidden');
+
+                    // LAZY LOAD: videos render ONLY once user clicks video work
+                    if (!videoWorkInitialized) {
+                        initVideoWork();
+                    } else {
+                        playActiveReel();
+                    }
+                }
+
+                if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+                if (typeof lenis !== 'undefined') lenis.resize();
+            }
+
+            function setVideoMode(mode) {
+                currentVideoMode = mode;
+                const btnReels = document.getElementById('btn-mode-reels');
+                const btnGrid = document.getElementById('btn-mode-grid');
+                const reelsWrap = document.getElementById('reels-mode-wrapper');
+                const gridWrap = document.getElementById('grid-mode-wrapper');
+                const catsRow = document.getElementById('video-cats-row');
+
+                if (mode === 'reels') {
+                    btnReels.classList.add('active');
+                    btnGrid.classList.remove('active');
+                    reelsWrap.style.display = 'block';
+                    gridWrap.style.display = 'none';
+                    catsRow.style.display = 'none';
+                    playActiveReel();
+                } else {
+                    btnGrid.classList.add('active');
+                    btnReels.classList.remove('active');
+                    gridWrap.style.display = 'block';
+                    reelsWrap.style.display = 'none';
+                    catsRow.style.display = 'flex';
+                    pauseAllReels();
+                }
+                if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+            }
+
+            function toggleReelsAudio() {
+                isReelsMuted = !isReelsMuted;
+                updateVolumeUI();
+                const vp = document.getElementById('reels-viewport');
+                if (vp) {
+                    vp.querySelectorAll('video').forEach(v => {
+                        v.muted = isReelsMuted;
+                    });
+                }
+                playActiveReel();
+            }
+
+            function pauseAllReels() {
+                const vp = document.getElementById('reels-viewport');
+                if (!vp) return;
+                vp.querySelectorAll('video').forEach(v => { v.pause(); });
+            }
+
+            function playActiveReel() {
+                const vp = document.getElementById('reels-viewport');
+                if (!vp || currentVideoMode !== 'reels') return;
+                const cards = vp.querySelectorAll('.reel-card');
+                const vpRect = vp.getBoundingClientRect();
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const video = card.querySelector('video');
+                    if (!video) return;
+                    const cardCenter = (rect.top + rect.bottom) / 2;
+                    if (cardCenter >= vpRect.top && cardCenter <= vpRect.bottom) {
+                        video.muted = isReelsMuted;
+                        const p = video.play();
+                        if (p !== undefined) {
+                            p.catch(() => {
+                                // Fallback for mobile and browser unmuted autoplay restrictions
+                                if (!video.muted) {
+                                    video.muted = true;
+                                    isReelsMuted = true;
+                                    updateVolumeUI();
+                                    video.play().catch(() => {});
+                                }
+                            });
+                        }
+                    } else {
+                        video.pause();
+                    }
+                });
+            }
+
+            function scrollReel(dir) {
+                const vp = document.getElementById('reels-viewport');
+                if (!vp) return;
+                if (dir > 0 && vp.scrollTop + vp.clientHeight >= vp.scrollHeight - vp.clientHeight * 1.5) {
+                    const list = videoProjectsCache.length ? videoProjectsCache : defaultVideoProjects;
+                    renderReelBatch(list, 6);
+                }
+                vp.scrollBy({ top: dir * vp.clientHeight, behavior: 'smooth' });
+                setTimeout(playActiveReel, 300);
+            }
+
+            function createReelCard(v) {
+                const card = document.createElement('div');
+                card.className = 'reel-card';
+                card.setAttribute('data-vcat', (v.cat||'').toLowerCase().replace(/[^a-z0-9]/g,''));
+                card.innerHTML = `
+                    <div class="reel-top-bar">
+                        <span class="reel-live-tag"><span class="reel-live-dot"></span> REEL</span>
+                    </div>
+                    <video src="${v.img}" loop playsinline preload="metadata" ${isReelsMuted ? 'muted' : ''}></video>
+                    <div class="reel-overlay">
+                        <span class="reel-cat-badge">${v.cat || 'Video Work'}</span>
+                        <h3 class="reel-title">${v.title || 'Featured Project'}</h3>
+                        <p class="reel-desc">${v.desc || 'High-converting video production • TRC Creative'}</p>
+                        <div class="reel-actions">
+                            <a href="${v.link && v.link !== '#' ? v.link : '#contact'}" class="reel-cta-btn" ${v.link && v.link !== '#' ? 'target="_blank"' : ''}>
+                                ${v.link && v.link !== '#' ? 'WATCH PROJECT ↗' : 'BOOK VIDEO EDIT →'}
+                            </a>
+                        </div>
+                    </div>
+                `;
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('.reel-actions') || e.target.closest('.reel-top-bar')) return;
+                    const vid = card.querySelector('video');
+                    if (vid) {
+                        if (vid.paused) { vid.play().catch(()=>{}); }
+                        else { vid.pause(); }
+                    }
+                });
+                return card;
+            }
+
+            function renderReelBatch(pool, count) {
+                const vp = document.getElementById('reels-viewport');
+                if (!vp || !pool.length) return;
+                const deck = [];
+                while (deck.length < count) {
+                    const shuffled = pool.slice().sort(() => Math.random() - 0.5);
+                    for (let item of shuffled) {
+                        const key = item.img || item.title;
+                        if (key === lastReelKey && pool.length > 1) continue;
+                        deck.push(item);
+                        lastReelKey = key;
+                        if (deck.length >= count) break;
+                    }
+                }
+                deck.forEach(item => vp.appendChild(createReelCard(item)));
+            }
+
+            function setupReelsInfiniteScroll() {
+                const vp = document.getElementById('reels-viewport');
+                if (!vp) return;
+                let scrollTimer;
+                vp.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        playActiveReel();
+                        // Append endless random videos when near bottom
+                        if (vp.scrollTop + vp.clientHeight >= vp.scrollHeight - vp.clientHeight * 1.5) {
+                            const list = videoProjectsCache.length ? videoProjectsCache : defaultVideoProjects;
+                            renderReelBatch(list, 6);
+                        }
+                    }, 80);
+                });
+                setTimeout(() => { playActiveReel(); }, 250);
+            }
+
+            function renderVideoGrid(list) {
+                const container = document.getElementById('video-grid-container');
+                if (!container) return;
+                container.innerHTML = list.map(v => {
+                    const safeSrc = (v.img || '').replace(/"/g, '&quot;');
+                    return `
+                    <div class="video-grid-card" data-vcat="${(v.cat||'').toLowerCase().replace(/[^a-z0-9]/g,'')}" data-vsrc="${safeSrc}">
+                        <video src="${safeSrc}" muted loop playsinline preload="metadata" onmouseenter="this.play().catch(()=>{})" onmouseleave="this.pause()"></video>
+                        <div class="grid-overlay">
+                            <span class="grid-cat">${v.cat || 'Video'}</span>
+                            <h4>${v.title || 'Video Reel'}</h4>
+                            <span class="grid-link">WATCH REEL &rarr;</span>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                container.querySelectorAll('.video-grid-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const src = card.getAttribute('data-vsrc');
+                        if (src) openVideoInReels(src);
+                    });
+                });
+            }
+
+            function filterVideoCategory(filter, btn) {
+                document.querySelectorAll('.video-cat-pill').forEach(b => b.classList.remove('active'));
+                if (btn) btn.classList.add('active');
+                document.querySelectorAll('.video-grid-card').forEach(card => {
+                    const match = filter === 'all' || card.getAttribute('data-vcat') === filter;
+                    card.style.display = match ? 'block' : 'none';
+                });
+            }
+
+            function openVideoInReels(videoSrc) {
+                setVideoMode('reels');
+                const vp = document.getElementById('reels-viewport');
+                if (!vp) return;
+                const targetCard = Array.from(vp.querySelectorAll('.reel-card')).find(c => {
+                    const vid = c.querySelector('video');
+                    return vid && vid.getAttribute('src') === videoSrc;
+                });
+                if (targetCard) {
+                    vp.scrollTo({ top: targetCard.offsetTop, behavior: 'smooth' });
+                } else {
+                    const list = videoProjectsCache.length ? videoProjectsCache : defaultVideoProjects;
+                    const found = list.find(v => v.img === videoSrc) || list[0];
+                    const newCard = createReelCard(found);
+                    vp.insertBefore(newCard, vp.firstChild);
+                    vp.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                setTimeout(() => { playActiveReel(); }, 300);
+            }
+
+            function updateVideoCategoriesUI(list) {
+                const catsRow = document.getElementById('video-cats-row');
+                if (!catsRow) return;
+                const vcats = ['all'];
+                list.forEach(v => {
+                    if (v.cat && !vcats.includes(v.cat)) vcats.push(v.cat);
+                });
+                catsRow.innerHTML = vcats.map(c => `
+                    <button class="video-cat-pill ${c==='all'?'active':''}" data-vcat="${c==='all'?'all':c.toLowerCase().replace(/[^a-z0-9]/g,'')}" onclick="filterVideoCategory('${c==='all'?'all':c.toLowerCase().replace(/[^a-z0-9]/g,'')}', this)">
+                        ${c.toUpperCase()}
+                    </button>
+                `).join('');
+            }
+
+            function initVideoWork() {
+                videoWorkInitialized = true;
+                const list = videoProjectsCache.length ? videoProjectsCache : defaultVideoProjects;
+                updateVideoCategoriesUI(list);
+                renderReelBatch(list, 8);
+                renderVideoGrid(list);
+                setupReelsInfiniteScroll();
+            }
+
+            function buildWebCategories(webList, appList) {
+                const filterRow = document.getElementById('web-app-filters');
+                if (!filterRow) return;
+
+                const catSet = new Set();
+                webList.forEach(p => { if (p.cat) catSet.add(p.cat); });
+                appList.forEach(p => { if (p.cat) catSet.add(p.cat); });
+
+                let html = `
+                    <button class="filter-pill active" data-filter="all">ALL</button>
+                    <button class="filter-pill" data-filter="websites">WEBSITE PROJECTS</button>
+                    <button class="filter-pill" data-filter="apps">APP PROJECTS</button>
+                `;
+
+                catSet.forEach(cat => {
+                    const filterKey = cat.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    html += `<button class="filter-pill" data-filter="${filterKey}">${cat.toUpperCase()}</button>`;
+                });
+
+                filterRow.innerHTML = html;
+            }
+
+            function buildRows(projects) {
+                allProjectsCache = projects;
+                const r1 = document.getElementById('marquee-r1');
+                const r2 = document.getElementById('marquee-r2');
+                const r3 = document.getElementById('marquee-r3');
+                if (!r1 || !r2 || !r3) return;
+
+                const isVideo = p => p.type === 'video';
+                const isApp = p => p.type === 'app' || (p.cat && p.cat.toLowerCase().includes('app'));
+
+                let webList = projects.filter(p => !isVideo(p) && !isApp(p));
+                let appList = projects.filter(p => !isVideo(p) && isApp(p));
+                let videoList = projects.filter(isVideo);
+
+                if (!webList.length) webList = defaultWebProjects.slice();
+                if (!appList.length) appList = defaultAppProjects.slice();
+                videoProjectsCache = videoList.length ? videoList : defaultVideoProjects.slice();
+
+                buildWebCategories(webList, appList);
+
+                const bWeb = document.getElementById('badge-webapp-count');
+                const bVid = document.getElementById('badge-video-count');
+                if (bWeb) bWeb.textContent = `${webList.length + appList.length}+ Projects`;
+                if (bVid) bVid.textContent = `${videoProjectsCache.length}+ Commercials`;
+
+                // ── BUILD ROW 1 & ROW 2 (WEBSITES) ──
+                let w1 = [], w2 = [];
+                webList.forEach((p, idx) => {
+                    if (idx % 2 === 0) w1.push(p);
+                    else w2.push(p);
+                });
+                if (!w2.length) w2 = w1.slice();
+
+                while (w1.length < 8) w1 = w1.concat(w1);
+                while (w2.length < 8) w2 = w2.concat(w2);
+
+                let h1 = '', h2 = '';
+                for (let j = 0; j < 2; j++) {
+                    w1.forEach(p => { h1 += buildCard(p); });
+                    w2.forEach(p => { h2 += buildCard(p); });
+                }
+                r1.innerHTML = h1;
+                r2.innerHTML = h2;
+
+                // ── BUILD ROW 3 (9:16 PORTRAIT APPS) ──
+                let a3 = appList.slice();
+                while (a3.length < 8) a3 = a3.concat(a3);
+                let h3 = '';
+                for (let j = 0; j < 2; j++) {
+                    a3.forEach(p => { h3 += buildAppCard(p); });
+                }
+                r3.innerHTML = h3;
+
+                // If video work view is already active, refresh grid and categories live
+                if (videoWorkInitialized) {
+                    renderVideoGrid(videoProjectsCache);
+                    updateVideoCategoriesUI(videoProjectsCache);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const allDefaults = defaultWebProjects.concat(defaultAppProjects).concat(defaultVideoProjects);
+                try {
+                    TRC_DOC.firestore
+                        ? listenProjects()
+                        : fallback();
+
+                    function listenProjects() {
+                        dbStore.collection('trc_projects')
+                            .orderBy('createdAt','desc')
+                            .onSnapshot(snap => {
+                                const projs = snap.docs.map(d => d.data());
+                                buildRows(projs.length ? projs : allDefaults);
+                            }, () => {
+                                dbStore.collection('trc_projects').onSnapshot(snap => {
+                                    const projs = snap.docs.map(d => d.data());
+                                    buildRows(projs.length ? projs : allDefaults);
+                                }, () => fallback());
+                            });
+                    }
+                    function fallback() { buildRows(allDefaults); }
+                } catch(e) {
+                    buildRows(allDefaults);
+                }
+            });
+        </script>
+    </section>
+
+    <!-- MARQUEE STRIP -->
+    <div class="marquee-strip">
+        <div class="marquee-content">
+            <span>WEBSITES</span><span>•</span>
+            <span>APPS</span><span>•</span>
+            <span>VIDEO REELS</span><span>•</span>
+            <span>LANDING PAGES</span><span>•</span>
+            <span>E-COMMERCE</span><span>•</span>
+            <span>COMMERCIALS</span><span>•</span>
+            <span>PORTFOLIOS</span><span>•</span>
+            <span>RESTAURANTS</span><span>•</span>
+            <span>REAL ESTATE</span><span>•</span>
+            <span>DOCTORS</span><span>•</span>
+            <span>STARTUPS</span><span>•</span>
+            <span>WEBSITES</span><span>•</span>
+            <span>APPS</span><span>•</span>
+            <span>VIDEO REELS</span><span>•</span>
+            <span>LANDING PAGES</span><span>•</span>
+            <span>E-COMMERCE</span><span>•</span>
+            <span>COMMERCIALS</span><span>•</span>
+            <span>PORTFOLIOS</span><span>•</span>
+            <span>RESTAURANTS</span><span>•</span>
+            <span>REAL ESTATE</span><span>•</span>
+            <span>DOCTORS</span><span>•</span>
+            <span>STARTUPS</span>
+        </div>
+    </div>
+
+    <!-- SECTION 2: AGENCY OVERVIEW & VALUE PROPOSITION (FORMER HERO) -->
+    <section id="intro" class="agency-intro-section">
         <div class="container hero-grid">
             <div class="hero-content">
-                <div class="hero-top-label fade-up" data-trc="hero_label">
-                    <span style="color:var(--color-copper);">•</span> INDIA'S GROWTH-FOCUSED WEB STUDIO
+                <div class="hero-top-label fade-up">
+                    <span style="color:var(--color-copper);">•</span> <span data-trc="hero_label">INDIA'S GROWTH-FOCUSED WEB STUDIO</span>
                 </div>
-                <h1 class="hero-headline word-reveal"><span data-trc="hero_headline">We Build Websites That Build</span> <span class="accent-word" data-trc="hero_accent">Businesses.</span></h1>
+                <h2 class="hero-headline word-reveal"><span data-trc="hero_headline">We Build Websites That Build</span> <span class="accent-word" data-trc="hero_accent">Businesses.</span></h2>
                 <p class="hero-subheadline fade-up" data-trc="hero_sub">
                     From your first call to your launch day — we handle everything. Clean design, fast performance, and websites that actually get you clients.
                 </p>
@@ -136,7 +763,7 @@
 
                 <div class="hero-buttons fade-up">
                     <a href="#contact" class="btn btn-magnetic">START YOUR PROJECT</a>
-                    <a href="#work" class="btn-ghost">SEE OUR WORK &darr;</a>
+                    <a href="#work" class="btn-ghost">SEE OUR WORK &uarr;</a>
                 </div>
 
                 <div class="social-proof-strip fade-up">
@@ -267,203 +894,7 @@ From a local restaurant in Mumbai to a doctor's clinic in Delhi — if you have 
         </div>
     </section>
 
-    <!-- SECTION 4: PORTFOLIO -->
-    <section id="work" class="portfolio-section">
-        <span class="label fade-up">OUR WORK</span>
-        <h2 class="portfolio-headline word-reveal">20 Websites. Real Businesses.</h2>
-        <p class="portfolio-subtext fade-up">Hover to preview. Click to explore the full project.</p>
-        
-        <div class="filter-row fade-up">
-            <button class="filter-pill active" data-filter="all">ALL</button>
-            <button class="filter-pill" data-filter="business">BUSINESS</button>
-            <button class="filter-pill" data-filter="restaurant">RESTAURANT</button>
-            <button class="filter-pill" data-filter="realestate">REAL ESTATE</button>
-            <button class="filter-pill" data-filter="ecommerce">E-COMMERCE</button>
-        </div>
 
-        <div class="work-category-header fade-up">
-            <span class="work-cat-badge">Website Projects</span>
-        </div>
-
-        <div class="marquee-container fade-up">
-            <!-- ROW 1 (WEBSITES LEFT) -->
-            <div class="marquee-row left" id="marquee-r1"></div>
-        </div>
-        
-        <div class="marquee-container fade-up" style="margin-top: 24px;">
-            <!-- ROW 2 (WEBSITES RIGHT) -->
-            <div class="marquee-row right" id="marquee-r2"></div>
-        </div>
-
-        <div class="work-category-header fade-up" style="margin-top: 48px;">
-            <span class="work-cat-badge">App Projects</span>
-        </div>
-
-        <div class="marquee-container fade-up" style="margin-top: 14px; padding: 18px 0;">
-            <!-- ROW 3 (APPS PORTRAIT 9:16) -->
-            <div class="marquee-row left-fast apps-marquee" id="marquee-r3"></div>
-        </div>
-
-        <script>
-            // Media detection for video vs animated GIF / static image
-            const isVideoMedia = src => src && (
-                src.toLowerCase().endsWith('.mp4') ||
-                src.toLowerCase().endsWith('.webm') ||
-                src.toLowerCase().endsWith('.mov') ||
-                src.toLowerCase().includes('.mp4?') ||
-                src.toLowerCase().includes('.webm?') ||
-                src.toLowerCase().includes('video/')
-            );
-
-            const renderCardMedia = (src, title, isPortrait = false) => {
-                if (!src) {
-                    return `<div style="width:100%;height:100%;background:#1A1712;display:flex;align-items:center;justify-content:center;color:#8B7355;font-size:12px;">No Preview</div>`;
-                }
-                if (isVideoMedia(src)) {
-                    return `<video src="${src}" autoplay loop muted playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>`;
-                }
-                // For images / animated GIFs, omit lazy loading so marquee loops never pause animation frames
-                return `<img src="${src}" alt="${title || 'Project'}" style="width:100%;height:100%;object-fit:cover;display:block;"
-                             onerror="this.onerror=null;this.src='https://placehold.co/${isPortrait ? '220x390' : '340x220'}/1A1712/D70321?text=${encodeURIComponent(title || 'Preview')}';">`;
-            };
-
-            // 16:9 Landscape Website Card
-            const buildCard = p => `
-                <div class="project-card" data-cat="${(p.cat||'').toLowerCase().replace(/[^a-z]/g,'')}">
-                    <div class="card-browser-bar">
-                        <div class="circle r"></div><div class="circle y"></div><div class="circle g"></div>
-                        <div class="url"></div>
-                    </div>
-                    <div class="card-img-wrapper">
-                        ${renderCardMedia(p.img, p.title, false)}
-                        <div class="card-overlay">
-                            <span class="card-cat">${p.cat || 'Website'}</span>
-                            <div class="card-overlay-text">
-                                <h4>${p.title}</h4>
-                                <p><a href="${p.link||'#'}" target="_blank" style="color:var(--color-copper);text-decoration:none;">OPEN PROJECT &rarr;</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-
-            // 9:16 Portrait Mobile App Card
-            const buildAppCard = p => `
-                <div class="app-card" data-cat="${(p.cat||'').toLowerCase().replace(/[^a-z]/g,'')}">
-                    <div class="phone-notch"></div>
-                    <div class="app-screen-wrapper">
-                        ${renderCardMedia(p.img, p.title, true)}
-                        <div class="app-card-overlay">
-                            <span class="app-card-cat">${p.cat || 'Mobile App'}</span>
-                            <div class="app-card-text">
-                                <h4>${p.title}</h4>
-                                <p><a href="${p.link||'#'}" target="_blank">EXPLORE APP &rarr;</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-
-            const defaultWebProjects = [
-                {cat:'Business',   title:'Limitless Jets',   img:'https://i.ibb.co/zjDPy0b/Screen-Recording-2026-04-26-184158.gif', link:'https://limitlessjets.netlify.app/', type:'website'},
-                {cat:'Business',   title:'Business Site',    img:'Screenshot 2026-04-23 075117.png', link:'#', type:'website'},
-                {cat:'Restaurant', title:'Spice Garden',     img:'Screenshot 2026-04-23 075136.png', link:'#', type:'website'},
-                {cat:'Real Estate',title:'Urban Homes',      img:'Screenshot 2026-04-23 075157.png', link:'#', type:'website'},
-                {cat:'E-commerce', title:'Style Store',      img:'Screenshot 2026-04-23 075216.png', link:'#', type:'website'},
-                {cat:'Portfolio',  title:'Creative Studio',  img:'Screenshot 2026-04-23 075238.png', link:'#', type:'website'},
-                {cat:'Business',   title:'Tech Startup',     img:'Screenshot 2026-04-23 075246.png', link:'#', type:'website'},
-                {cat:'E-commerce', title:'Gadget Hub',       img:'Screenshot 2026-04-23 075252.png', link:'#', type:'website'},
-                {cat:'Healthcare', title:'City Clinic',      img:'Screenshot 2026-04-23 075304.png', link:'#', type:'website'},
-                {cat:'Restaurant', title:'Cafe Beans',       img:'Screenshot 2026-04-23 075311.png', link:'#', type:'website'},
-                {cat:'Real Estate',title:'Skyline Props',    img:'Screenshot 2026-04-23 075345.png', link:'#', type:'website'},
-                {cat:'Business',   title:'Apex Logistics',   img:'Screenshot 2026-04-23 075357.png', link:'#', type:'website'},
-                {cat:'Portfolio',  title:'Luxe Interiors',   img:'Screenshot 2026-04-23 075421.png', link:'#', type:'website'}
-            ];
-
-            const defaultAppProjects = [
-                {cat:'Food Delivery', title:'QuickBite App', img:'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
-                {cat:'Fitness',       title:'FitTrack Pro',  img:'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
-                {cat:'Fintech',       title:'Nova Wallet',   img:'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
-                {cat:'E-commerce',    title:'Trendy Store',  img:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
-                {cat:'Healthcare',    title:'MediCare Go',   img:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'},
-                {cat:'Real Estate',   title:'NestFinder App',img:'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&auto=format&fit=crop&q=80', link:'#', type:'app'}
-            ];
-
-            function buildRows(projects) {
-                const r1 = document.getElementById('marquee-r1');
-                const r2 = document.getElementById('marquee-r2');
-                const r3 = document.getElementById('marquee-r3');
-                if (!r1 || !r2 || !r3) return;
-
-                // Split projects into Website (16:9) and App (9:16)
-                const isApp = p => p.type === 'app' || (p.cat && p.cat.toLowerCase().includes('app'));
-                let webList = projects.filter(p => !isApp(p));
-                let appList = projects.filter(isApp);
-
-                if (!webList.length) webList = defaultWebProjects.slice();
-                if (!appList.length) appList = defaultAppProjects.slice();
-
-                // ── BUILD ROW 1 & ROW 2 (WEBSITES) ──
-                // Ensure at least 12 items for seamless infinite marquee loop
-                let w1 = [], w2 = [];
-                webList.forEach((p, idx) => {
-                    if (idx % 2 === 0) w1.push(p);
-                    else w2.push(p);
-                });
-                if (!w2.length) w2 = w1.slice();
-
-                while (w1.length < 8) w1 = w1.concat(w1);
-                while (w2.length < 8) w2 = w2.concat(w2);
-
-                let h1 = '', h2 = '';
-                // Duplicate once for infinite continuous scroll
-                for (let j = 0; j < 2; j++) {
-                    w1.forEach(p => { h1 += buildCard(p); });
-                    w2.forEach(p => { h2 += buildCard(p); });
-                }
-                r1.innerHTML = h1;
-                r2.innerHTML = h2;
-
-                // ── BUILD ROW 3 (9:16 PORTRAIT APPS) ──
-                let a3 = appList.slice();
-                while (a3.length < 8) a3 = a3.concat(a3);
-                let h3 = '';
-                for (let j = 0; j < 2; j++) {
-                    a3.forEach(p => { h3 += buildAppCard(p); });
-                }
-                r3.innerHTML = h3;
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                const allDefaults = defaultWebProjects.concat(defaultAppProjects);
-                try {
-                    TRC_DOC.firestore
-                        ? listenProjects()
-                        : fallback();
-
-                    function listenProjects() {
-                        dbStore.collection('trc_projects')
-                            .orderBy('createdAt','desc')
-                            .onSnapshot(snap => {
-                                const projs = snap.docs.map(d => d.data());
-                                buildRows(projs.length ? projs : allDefaults);
-                            }, () => {
-                                dbStore.collection('trc_projects').onSnapshot(snap => {
-                                    const projs = snap.docs.map(d => d.data());
-                                    buildRows(projs.length ? projs : allDefaults);
-                                }, () => fallback());
-                            });
-                    }
-                    function fallback() { buildRows(allDefaults); }
-                } catch(e) {
-                    buildRows(allDefaults);
-                }
-            });
-        </script>
-
-        <div class="portfolio-footer fade-up">
-            <p style="font-family: var(--font-body); font-style: italic; color: var(--color-muted); margin-bottom: 16px;">Your industry isn't on this list? We've probably built for it.</p>
-            <a href="#contact" class="btn-ghost">DISCUSS YOUR PROJECT &rarr;</a>
-        </div>
-    </section>
 
     <section id="services" class="services-section">
         <div class="container">

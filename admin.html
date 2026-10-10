@@ -110,9 +110,20 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
         <div class="ptitle">Edit Website Content</div>
         <div class="psub">Changes are saved globally to Firebase and reflect live for all users.</div>
 
+        <!-- TOP WORK HERO -->
+        <div class="cgroup">
+          <div class="cgroup-title">🚀 Top Work Hero (Homepage Primary Section)</div>
+          <div class="cf"><label>Top Authority Label</label><input data-key="work_hero_label" placeholder="PROVEN AUTHORITY • 20+ SHIPPED DELIVERIES"></div>
+          <div class="cf-row">
+            <div class="cf"><label>Headline (first part)</label><input data-key="work_hero_headline" placeholder="Real Businesses. Real Results."></div>
+            <div class="cf"><label>Accent Word (red)</label><input data-key="work_hero_accent" placeholder="Zero Fluff."></div>
+          </div>
+          <div class="cf"><label>Sub-headline</label><textarea data-key="work_hero_sub" placeholder="Explore live production websites, high-converting mobile apps, and scroll-stopping video edits..."></textarea></div>
+        </div>
+
         <!-- HERO -->
         <div class="cgroup">
-          <div class="cgroup-title">🏠 Hero Section</div>
+          <div class="cgroup-title">🏠 Agency Overview Section</div>
           <div class="cf"><label>Top Label</label><input data-key="hero_label" placeholder="INDIA'S GROWTH-FOCUSED WEB STUDIO"></div>
           <div class="cf-row">
             <div class="cf"><label>Headline (first part)</label><input data-key="hero_headline" placeholder="We Build Websites That Build"></div>
@@ -241,8 +252,9 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
         
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;">
           <button class="bsm" id="pfilter-all" style="background:var(--red); color:#fff;" onclick="setAdminProjFilter('all')">All Projects (<span id="count-all">0</span>)</button>
-          <button class="bsm" id="pfilter-website" style="background:var(--bg3); color:var(--cream); border:1px solid var(--border);" onclick="setAdminProjFilter('website')">🌐 Websites 16:9 (<span id="count-web">0</span>)</button>
-          <button class="bsm" id="pfilter-app" style="background:var(--bg3); color:var(--cream); border:1px solid var(--border);" onclick="setAdminProjFilter('app')">📱 Mobile Apps 9:16 (<span id="count-app">0</span>)</button>
+          <button class="bsm" id="pfilter-website" style="background:var(--bg3); color:var(--cream); border:1px solid var(--border);" onclick="setAdminProjFilter('website')">🌐 Websites (<span id="count-web">0</span>)</button>
+          <button class="bsm" id="pfilter-app" style="background:var(--bg3); color:var(--cream); border:1px solid var(--border);" onclick="setAdminProjFilter('app')">📱 App Projects (<span id="count-app">0</span>)</button>
+          <button class="bsm" id="pfilter-video" style="background:var(--bg3); color:var(--cream); border:1px solid var(--border);" onclick="setAdminProjFilter('video')">🎬 Video Work (<span id="count-vid">0</span>)</button>
         </div>
 
         <div id="pg" class="pg"></div>
@@ -257,20 +269,33 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
           <!-- PROJECT TYPE SELECTOR -->
           <div class="cf">
             <label>Project Type</label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px;">
-              <label id="type-opt-website" style="display:flex; align-items:center; gap:10px; background:rgba(215,3,33,0.12); padding:12px 16px; border-radius:8px; border:1.5px solid var(--red); cursor:pointer;">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:4px;">
+              <label id="type-opt-website" style="display:flex; align-items:center; gap:8px; background:rgba(215,3,33,0.12); padding:12px 14px; border-radius:8px; border:1.5px solid var(--red); cursor:pointer;">
                 <input type="radio" name="project_type" value="website" checked onchange="onTypeChange('website')">
-                <span style="font-weight:600; font-size:13px;">🌐 Website (16:9 Landscape)</span>
+                <span style="font-weight:600; font-size:12px;">🌐 Website</span>
               </label>
-              <label id="type-opt-app" style="display:flex; align-items:center; gap:10px; background:var(--bg3); padding:12px 16px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+              <label id="type-opt-app" style="display:flex; align-items:center; gap:8px; background:var(--bg3); padding:12px 14px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
                 <input type="radio" name="project_type" value="app" onchange="onTypeChange('app')">
-                <span style="font-weight:600; font-size:13px;">📱 Mobile App (9:16 Portrait)</span>
+                <span style="font-weight:600; font-size:12px;">📱 App</span>
+              </label>
+              <label id="type-opt-video" style="display:flex; align-items:center; gap:8px; background:var(--bg3); padding:12px 14px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                <input type="radio" name="project_type" value="video" onchange="onTypeChange('video')">
+                <span style="font-weight:600; font-size:12px;">🎬 Video (Reel/Ad)</span>
               </label>
             </div>
           </div>
 
-          <div class="cf"><label>Project Title</label><input id="ft" placeholder="e.g. Spice Garden Restaurant"></div>
-          <div class="cf"><label>Category</label><select id="fc"><option value="">Select category</option></select></div>
+          <div class="cf"><label>Project Title</label><input id="ft" placeholder="e.g. Spice Garden Restaurant or Velvet Luxury Reel"></div>
+          <div class="cf">
+            <label>Category <span style="font-weight:normal; color:var(--red); font-size:11px;">(Pick an existing category OR type any custom name)</span></label>
+            <input id="fc" list="cat-datalist" placeholder="Select or type ANY category (e.g. Brand Commercials, Restaurant, Real Estate...)" autocomplete="off">
+            <datalist id="cat-datalist"></datalist>
+            <div style="font-size:10px; color:var(--muted); margin-top:4px;">💡 You can write ANY category name you want. New categories are saved automatically!</div>
+          </div>
+          <div class="cf" id="cf-desc">
+            <label id="lbl-desc">Subtitle / Reel Caption <span style="font-weight:normal; color:var(--muted); font-size:11px;">(Short caption shown on the card or reel overlay)</span></label>
+            <input id="fd" placeholder="e.g. Viral food teaser reel • 420K+ Organic views">
+          </div>
 
           <!-- UPLOAD ZONE -->
           <div class="cf">
@@ -323,7 +348,7 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
 
 <script>
 const U = 'atish3477', P = 'aj(-0:{_)(*Ij)(ujHIUGHjk90jHij';
-let db = { cats: ["Business","Restaurant","Real Estate","E-Commerce","Healthcare"] };
+let db = { cats: ["Business","Restaurant","Real Estate","E-Commerce","Healthcare","Brand Commercials","Reels & Shorts","Product Promos"] };
 
 // AUTH
 function doLogin() {
@@ -358,30 +383,62 @@ function isVideoMedia(src) {
 
 function onTypeChange(type) {
   const isWeb = type === 'website';
+  const isApp = type === 'app';
+  const isVid = type === 'video';
+
   const optWeb = document.getElementById('type-opt-website');
   const optApp = document.getElementById('type-opt-app');
-  if (optWeb && optApp) {
+  const optVid = document.getElementById('type-opt-video');
+
+  if (optWeb) {
     optWeb.style.background = isWeb ? 'rgba(215,3,33,0.14)' : 'var(--bg3)';
     optWeb.style.borderColor = isWeb ? 'var(--red)' : 'var(--border)';
-    optApp.style.background = !isWeb ? 'rgba(215,3,33,0.14)' : 'var(--bg3)';
-    optApp.style.borderColor = !isWeb ? 'var(--red)' : 'var(--border)';
+  }
+  if (optApp) {
+    optApp.style.background = isApp ? 'rgba(215,3,33,0.14)' : 'var(--bg3)';
+    optApp.style.borderColor = isApp ? 'var(--red)' : 'var(--border)';
+  }
+  if (optVid) {
+    optVid.style.background = isVid ? 'rgba(215,3,33,0.14)' : 'var(--bg3)';
+    optVid.style.borderColor = isVid ? 'var(--red)' : 'var(--border)';
   }
 
   const dzText = document.getElementById('dz-text');
   const prevImg = document.getElementById('dz-preview');
   const prevVid = document.getElementById('dz-video-preview');
   const lblLive = document.getElementById('lbl-live-link');
+  const lblMedia = document.getElementById('lbl-media-type');
 
   if (isWeb) {
+    if (lblMedia) lblMedia.innerHTML = 'Project GIF, Video, or Image <span style="color:var(--red);font-size:10px;">(Select file OR paste a URL)</span>';
     if (dzText) dzText.innerHTML = 'Click to choose a Landscape GIF, Video, or Image<br><span style="font-size:11px;">Recommended: 16:9 ratio (GIF · MP4 · WebP · PNG · JPG)</span>';
     if (prevImg) { prevImg.style.maxWidth = '100%'; prevImg.style.maxHeight = '180px'; prevImg.style.margin = '10px auto'; }
     if (prevVid) { prevVid.style.maxWidth = '100%'; prevVid.style.maxHeight = '240px'; prevVid.style.margin = '10px auto'; }
     if (lblLive) lblLive.textContent = 'Live URL (Website Link)';
-  } else {
+    const lblDesc = document.getElementById('lbl-desc');
+    const fd = document.getElementById('fd');
+    if (lblDesc) lblDesc.innerHTML = 'Card Subtitle / Description <span style="font-weight:normal;color:var(--muted);font-size:11px;">(Optional short note)</span>';
+    if (fd) fd.placeholder = 'e.g. Modern responsive business site';
+  } else if (isApp) {
+    if (lblMedia) lblMedia.innerHTML = 'App Screen Recording or GIF <span style="color:var(--red);font-size:10px;">(Select file OR paste a URL)</span>';
     if (dzText) dzText.innerHTML = 'Click to choose a Portrait Screen Recording or GIF<br><span style="font-size:11px;">Recommended: 9:16 portrait ratio (MP4 · GIF · WebP · PNG)</span>';
     if (prevImg) { prevImg.style.maxWidth = '180px'; prevImg.style.maxHeight = '320px'; prevImg.style.margin = '10px auto'; }
     if (prevVid) { prevVid.style.maxWidth = '180px'; prevVid.style.maxHeight = '320px'; prevVid.style.margin = '10px auto'; }
     if (lblLive) lblLive.textContent = 'App Store / Play Store / Live Demo Link (Optional)';
+    const lblDesc = document.getElementById('lbl-desc');
+    const fd = document.getElementById('fd');
+    if (lblDesc) lblDesc.innerHTML = 'App Subtitle / Description <span style="font-weight:normal;color:var(--muted);font-size:11px;">(Optional short note)</span>';
+    if (fd) fd.placeholder = 'e.g. Cross-platform mobile app interface';
+  } else {
+    if (lblMedia) lblMedia.innerHTML = 'Commercial Video / Reel <span style="color:var(--red);font-size:10px;">(MP4, WebM, or Cloud Link)</span>';
+    if (dzText) dzText.innerHTML = 'Click to choose a Video File (MP4, WebM) or paste direct link<br><span style="font-size:11px;">Recommended: 9:16 vertical reel or 16:9 commercial (MP4 · WebM)</span>';
+    if (prevImg) { prevImg.style.maxWidth = '180px'; prevImg.style.maxHeight = '320px'; prevImg.style.margin = '10px auto'; }
+    if (prevVid) { prevVid.style.maxWidth = '180px'; prevVid.style.maxHeight = '320px'; prevVid.style.margin = '10px auto'; }
+    if (lblLive) lblLive.textContent = 'Live Link / Reel Link (Instagram, YouTube, or Client Site)';
+    const lblDesc = document.getElementById('lbl-desc');
+    const fd = document.getElementById('fd');
+    if (lblDesc) lblDesc.innerHTML = 'Reel Caption / Overlay Subtitle <span style="font-weight:normal;color:var(--muted);font-size:11px;">(Shown on bottom of vertical video reel)</span>';
+    if (fd) fd.placeholder = 'e.g. High-converting brand commercial • Fast kinetic cuts';
   }
 }
 
@@ -412,7 +469,7 @@ function previewFromUrl(url) {
 
 function setAdminProjFilter(f) {
   adminCurrentFilter = f;
-  ['all', 'website', 'app'].forEach(k => {
+  ['all', 'website', 'app', 'video'].forEach(k => {
     const b = document.getElementById('pfilter-' + k);
     if (!b) return;
     if (k === f) {
@@ -438,8 +495,10 @@ function show(id,el) {
     editingProjectId = null;
     document.getElementById('panel-addp').querySelector('.ptitle').innerText = 'Add New Project';
     document.getElementById('save-proj-btn').innerText = '💾 SAVE PROJECT';
-    ['ft','fi','fl'].forEach(i=>document.getElementById(i).value='');
-    document.getElementById('fc').value = '';
+    ['ft','fi','fl','fc','fd'].forEach(i => {
+      const field = document.getElementById(i);
+      if (field) field.value = '';
+    });
     
     const radWeb = document.querySelector('input[name="project_type"][value="website"]');
     if (radWeb) radWeb.checked = true;
@@ -448,7 +507,6 @@ function show(id,el) {
     setStatus('','');
   }
   
-  // Clean up data-edit attribute if it was set
   if (id !== 'addp' || !el.hasAttribute('data-edit')) {
     document.querySelectorAll('.si')[2].removeAttribute('data-edit');
   }
@@ -479,16 +537,20 @@ function renderDocs(snap) {
   allAdminProjects = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   
   const cntAll = allAdminProjects.length;
+  const cntVid = allAdminProjects.filter(p => p.type === 'video').length;
   const cntApp = allAdminProjects.filter(p => p.type === 'app').length;
-  const cntWeb = cntAll - cntApp;
+  const cntWeb = cntAll - cntApp - cntVid;
 
   const elAll = document.getElementById('count-all');
   const elWeb = document.getElementById('count-web');
   const elApp = document.getElementById('count-app');
+  const elVid = document.getElementById('count-vid');
   if (elAll) elAll.innerText = cntAll;
   if (elWeb) elWeb.innerText = cntWeb;
   if (elApp) elApp.innerText = cntApp;
+  if (elVid) elVid.innerText = cntVid;
 
+  populateCatSel();
   renderProjectCards();
 }
 
@@ -502,19 +564,21 @@ function renderProjectCards() {
   const filtered = allAdminProjects.filter(p => {
     if (adminCurrentFilter === 'all') return true;
     if (adminCurrentFilter === 'app') return p.type === 'app';
-    if (adminCurrentFilter === 'website') return p.type !== 'app';
+    if (adminCurrentFilter === 'video') return p.type === 'video';
+    if (adminCurrentFilter === 'website') return p.type !== 'app' && p.type !== 'video';
     return true;
   });
 
   if (!filtered.length) {
-    g.innerHTML = '<p class="no">No projects found in this category.</p>';
+    g.innerHTML = '<p class="no">No projects found in this filter.</p>';
     return;
   }
 
   g.innerHTML = filtered.map(p => {
     const id = p.id;
     const isApp = p.type === 'app';
-    const isVid = isVideoMedia(p.img);
+    const isVidProj = p.type === 'video';
+    const isVid = isVideoMedia(p.img) || isVidProj;
     const isGif = p.img && (p.img.toLowerCase().includes('.gif') || p.img.toLowerCase().includes('image%2Fgif') || p.img.startsWith('data:image/gif'));
 
     const mediaBadge = isVid
@@ -523,15 +587,17 @@ function renderProjectCards() {
         ? '<span style="font-size:9px;background:rgba(215,3,33,.2);color:#FF4D61;padding:2px 7px;border-radius:10px;font-weight:700;">GIF</span>'
         : '';
 
-    const typeBadge = isApp
-      ? '<span style="font-size:10px;background:rgba(215,3,33,.18);color:#FF6B7A;padding:3px 8px;border-radius:12px;font-weight:700;">📱 9:16 APP</span>'
-      : '<span style="font-size:10px;background:rgba(255,255,255,.08);color:var(--cream);padding:3px 8px;border-radius:12px;font-weight:600;">🌐 16:9 WEBSITE</span>';
+    const typeBadge = isVidProj
+      ? '<span style="font-size:10px;background:rgba(215,3,33,.25);color:#FF5266;padding:3px 8px;border-radius:12px;font-weight:700;">🎬 VIDEO REEL</span>'
+      : isApp
+        ? '<span style="font-size:10px;background:rgba(215,3,33,.18);color:#FF6B7A;padding:3px 8px;border-radius:12px;font-weight:700;">📱 APP</span>'
+        : '<span style="font-size:10px;background:rgba(255,255,255,.08);color:var(--cream);padding:3px 8px;border-radius:12px;font-weight:600;">🌐 WEBSITE</span>';
 
     const mediaTag = isVid
       ? `<video src="${p.img}" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;display:block;"></video>`
       : `<img src="${p.img||''}" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" onerror="this.style.display='none'">`;
 
-    const mediaContainer = isApp
+    const mediaContainer = (isApp || isVidProj)
       ? `<div style="background:#090807;padding:12px 0;display:flex;justify-content:center;border-bottom:1px solid var(--border);">
            <div style="width:130px;height:231px;border-radius:18px;border:2px solid rgba(255,255,255,0.15);overflow:hidden;position:relative;background:#000;box-shadow:0 8px 20px rgba(0,0,0,0.6);">
              <div style="position:absolute;top:5px;left:50%;transform:translateX(-50%);width:36px;height:8px;background:#000;border-radius:10px;z-index:3;"></div>
@@ -542,7 +608,7 @@ function renderProjectCards() {
            ${mediaTag}
          </div>`;
 
-    return `<div class="pc" style="border:1px solid ${isApp ? 'rgba(215,3,33,0.35)' : 'var(--border)'};">
+    return `<div class="pc" style="border:1px solid ${(isApp || isVidProj) ? 'rgba(215,3,33,0.35)' : 'var(--border)'};">
       ${mediaContainer}
       <div class="pci">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
@@ -582,11 +648,40 @@ function setupUpload() {
 }
 
 async function handleFileSelection(file) {
-  // If video file (screen recording)
+  // If video file (screen recording / commercial reel)
   if (file.type.startsWith('video/')) {
     const objectUrl = URL.createObjectURL(file);
     previewFromUrl(objectUrl);
-    setStatus('✓ Video preview loaded! Note: For cloud hosting, please paste a direct video link in the URL box below (from Cloudinary, Catbox, Discord, or Google Drive), or upload an animated GIF.', 'info');
+    
+    // Try uploading to Firebase Storage if available
+    try {
+      if (typeof storage !== 'undefined') {
+        const ref = storage.ref('trc_videos/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_'));
+        const uploadTask = ref.put(file);
+        setStatus('Uploading video to Firebase (0%)...', 'info');
+        uploadTask.on('state_changed',
+          snap => {
+            const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+            setStatus(`Uploading video: ${pct}%...`, 'info');
+          },
+          err => {
+            console.warn('Firebase storage video upload error:', err);
+            setStatus('✓ Video preview loaded! For cloud hosting, paste a direct video link below (Cloudinary, Catbox, or Google Drive) or keep preview.', 'info');
+          },
+          async () => {
+            const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
+            document.getElementById('fi').value = downloadUrl;
+            previewFromUrl(downloadUrl);
+            setStatus('✓ Video uploaded successfully! Click Save Project.', 'ok');
+          }
+        );
+        return;
+      }
+    } catch(e) {
+      console.warn('Storage attempt exception:', e);
+    }
+    
+    setStatus('✓ Video preview loaded! For permanent hosting, paste a direct video link in the URL box below (from Cloudinary, Catbox, Discord, or Google Drive).', 'info');
     return;
   }
 
@@ -686,6 +781,8 @@ function editProject(id) {
       document.getElementById('fc').value = p.cat || '';
       document.getElementById('fi').value = p.img || '';
       document.getElementById('fl').value = p.link || '';
+      const fdEl = document.getElementById('fd');
+      if (fdEl) fdEl.value = p.desc || '';
       editingProjectId = id;
       
       const pType = p.type || 'website';
@@ -710,13 +807,14 @@ function editProject(id) {
 
 async function addProject() {
   const t=document.getElementById('ft').value.trim();
-  const c=document.getElementById('fc').value;
+  const c=document.getElementById('fc').value.trim();
   const img=document.getElementById('fi').value.trim();
   const link=document.getElementById('fl').value.trim();
+  const desc = document.getElementById('fd') ? document.getElementById('fd').value.trim() : '';
   const type = document.querySelector('input[name="project_type"]:checked')?.value || 'website';
   
   if(!t) { alert('Please enter a Project Title.'); return; }
-  if(!c) { alert('Please select a Category.'); return; }
+  if(!c) { alert('Please enter or select a Category.'); return; }
   if(!img) { alert('Please provide a GIF/Video/Image URL or upload a file.'); return; }
 
   const btn=document.getElementById('save-proj-btn');
@@ -725,25 +823,28 @@ async function addProject() {
   try {
     if (editingProjectId) {
       await dbStore.collection('trc_projects').doc(editingProjectId).update({
-        title:t, cat:c, img, link, type
+        title:t, cat:c, img, link, type, desc
       });
       editingProjectId = null;
       document.getElementById('panel-addp').querySelector('.ptitle').innerText = 'Add New Project';
     } else {
       await dbStore.collection('trc_projects').add({
-        title:t, cat:c, img, link, type,
+        title:t, cat:c, img, link, type, desc,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     }
     
-    if(!db.cats.includes(c)) {
+    if(c && !db.cats.some(x => x.toLowerCase() === c.toLowerCase())) {
       db.cats.push(c);
       await TRC_DOC.set({cats:db.cats},{merge:true});
       renderCats(); populateCatSel();
     }
     
     // Reset form
-    ['ft','fi','fl'].forEach(i=>document.getElementById(i).value='');
+    ['ft','fi','fl','fc','fd'].forEach(i => {
+      const el = document.getElementById(i);
+      if (el) el.value = '';
+    });
     const radWeb = document.querySelector('input[name="project_type"][value="website"]');
     if (radWeb) radWeb.checked = true;
     onTypeChange('website');
@@ -825,8 +926,14 @@ async function delCat(i) {
   renderCats(); populateCatSel();
 }
 function populateCatSel() {
-  document.getElementById('fc').innerHTML='<option value="">Select category</option>'+
-    db.cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const dl = document.getElementById('cat-datalist');
+  if (dl) {
+    const s = new Set(db.cats || []);
+    if (Array.isArray(allAdminProjects)) {
+      allAdminProjects.forEach(p => { if (p.cat) s.add(p.cat); });
+    }
+    dl.innerHTML = Array.from(s).map(c=>`<option value="${c}">${c}</option>`).join('');
+  }
 }
 </script>
 </body>

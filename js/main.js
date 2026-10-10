@@ -83,13 +83,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Populate categories dynamically
+      // Populate categories dynamically from Firestore if present
       if (data.cats && data.cats.length > 0) {
+        window.TRC_CATS = data.cats;
         const filterRow = document.querySelector('.filter-row');
         if (filterRow) {
-          let filtersHTML = `<button class="filter-pill active" data-filter="all">ALL</button>`;
+          let filtersHTML = `
+            <button class="filter-pill active" data-filter="all">ALL</button>
+            <button class="filter-pill" data-filter="websites">WEBSITE PROJECTS</button>
+            <button class="filter-pill" data-filter="apps">APP PROJECTS</button>
+          `;
           data.cats.forEach(cat => {
-            filtersHTML += `<button class="filter-pill" style="text-transform:uppercase" data-filter="${cat.toLowerCase().replace(/[^a-z]/g,'')}">${cat}</button>`;
+            filtersHTML += `<button class="filter-pill" style="text-transform:uppercase" data-filter="${cat.toLowerCase().replace(/[^a-z0-9]/g,'')}">${cat}</button>`;
           });
           filterRow.innerHTML = filtersHTML;
         }
@@ -157,11 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
         gsap.set(dot, { x: e.clientX, y: e.clientY });
         xTo(e.clientX); yTo(e.clientY);
       });
-      document.querySelectorAll('.nav-links a,.btn,.project-card,.app-card,.faq-question,.filter-pill').forEach(el => {
+      document.querySelectorAll('.nav-links a,.btn,.project-card,.app-card,.video-grid-card,.work-switch-btn,.faq-question,.filter-pill').forEach(el => {
         el.addEventListener('mouseenter', () => {
           gsap.to(ring, { scale: 2, opacity: 0.6, duration: 0.3 });
           gsap.to(dot, { scale: 0, duration: 0.3 });
-          if (el.classList.contains('project-card') || el.classList.contains('app-card')) {
+          if (el.classList.contains('project-card') || el.classList.contains('app-card') || el.classList.contains('video-grid-card')) {
             gsap.to(ring, { backgroundColor: 'rgba(215,3,33,0.15)', borderColor: 'rgba(215,3,33,0.8)' });
             ring.setAttribute('data-text', 'VIEW');
           }
@@ -323,8 +328,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.classList.add('active');
         const filter = btn.getAttribute('data-filter');
         document.querySelectorAll('.project-card, .app-card').forEach(card => {
-          const match = filter === 'all' || card.getAttribute('data-cat') === filter;
-          gsap.to(card, { opacity: match ? 1 : 0.2, duration: 0.3, pointerEvents: match ? 'auto' : 'none' });
+          const match = filter === 'all'
+            || (filter === 'websites' && card.classList.contains('project-card'))
+            || (filter === 'apps' && card.classList.contains('app-card'))
+            || card.getAttribute('data-cat') === filter;
+          gsap.to(card, { opacity: match ? 1 : 0.15, duration: 0.3, pointerEvents: match ? 'auto' : 'none' });
         });
       }
     });
