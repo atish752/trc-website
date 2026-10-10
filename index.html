@@ -119,9 +119,6 @@
     <!-- SECTION 1: TOP HERO WORK SECTION (AUTHORITY & LIVE WORK) -->
     <section id="work" class="hero hero-work-section">
         <div class="container hero-work-header">
-            <div class="hero-top-label fade-up">
-                <span data-trc="work_hero_label">PROVEN AUTHORITY • 20+ SHIPPED DELIVERIES</span>
-            </div>
             <h1 class="hero-work-headline word-reveal">
                 <span data-trc="work_hero_headline">Real Businesses. Real Results.</span><br class="mobile-break"><span class="accent-word" data-trc="work_hero_accent">Zero Fluff.</span>
             </h1>
@@ -146,16 +143,6 @@
 
         <!-- VIEW 1: WEB & APPS (DEFAULT) -->
         <div class="work-view" id="view-web-app">
-            <div class="filter-row fade-up" id="web-app-filters">
-                <button class="filter-pill active" data-filter="all">ALL</button>
-                <button class="filter-pill" data-filter="websites">WEBSITE PROJECTS</button>
-                <button class="filter-pill" data-filter="apps">APP PROJECTS</button>
-                <button class="filter-pill" data-filter="business">BUSINESS</button>
-                <button class="filter-pill" data-filter="restaurant">RESTAURANT</button>
-                <button class="filter-pill" data-filter="realestate">REAL ESTATE</button>
-                <button class="filter-pill" data-filter="ecommerce">E-COMMERCE</button>
-            </div>
-
             <div class="work-category-header fade-up">
                 <span class="work-cat-badge">Website Projects</span>
             </div>
@@ -190,24 +177,19 @@
             <div class="video-mode-bar">
                 <div class="video-mode-toggle">
                     <button class="video-mode-btn active" id="btn-mode-reels" onclick="setVideoMode('reels')">
-                        <span>📱</span> Infinite Reels
+                        <span>📱</span> Reels Feed
+                    </button>
+                    <button class="video-mode-btn" id="btn-mode-shuffle" onclick="shuffleVideoReels()" title="Shuffle & watch random videos">
+                        <span>🔀</span> Shuffle Videos
                     </button>
                     <button class="video-mode-btn" id="btn-mode-grid" onclick="setVideoMode('grid')">
-                        <span>🏷️</span> Browse Categories
+                        <span>📁</span> View All Projects
                     </button>
                 </div>
                 <div class="video-volume-control" id="reels-volume-toggle" onclick="toggleReelsAudio()">
                     <span id="reels-volume-icon">🔇</span>
                     <span id="reels-volume-text">Tap to Unmute</span>
                 </div>
-            </div>
-
-            <!-- Video Category Filter Pills (visible in Browse Categories mode) -->
-            <div class="video-cats-row" id="video-cats-row" style="display: none;">
-                <button class="video-cat-pill active" data-vcat="all" onclick="filterVideoCategory('all', this)">ALL</button>
-                <button class="video-cat-pill" data-vcat="brandcommercials" onclick="filterVideoCategory('brandcommercials', this)">BRAND COMMERCIALS</button>
-                <button class="video-cat-pill" data-vcat="reelsandshorts" onclick="filterVideoCategory('reelsandshorts', this)">REELS &amp; SHORTS</button>
-                <button class="video-cat-pill" data-vcat="productpromos" onclick="filterVideoCategory('productpromos', this)">PRODUCT PROMOS</button>
             </div>
 
             <!-- MODE 1: REELS FEED (DEFAULT) -->
@@ -220,6 +202,7 @@
                     </div>
                     <div class="reels-nav-controls">
                         <button class="reels-arrow-btn" onclick="scrollReel(-1)" title="Previous Reel">&#9650;</button>
+                        <button class="reels-arrow-btn" onclick="shuffleVideoReels()" title="Shuffle Random Reel" style="font-size:14px;">🔀</button>
                         <button class="reels-arrow-btn" onclick="scrollReel(1)" title="Next Reel">&#9660;</button>
                     </div>
                 </div>
@@ -394,30 +377,52 @@
                 if (typeof lenis !== 'undefined') lenis.resize();
             }
 
+            function optimizeVideoUrl(url) {
+                if (!url) return '';
+                url = url.trim();
+                // Downscale Cloudinary videos to 720p with smart auto quality for fast streaming & data saving
+                if (url.includes('res.cloudinary.com') && url.includes('/video/upload/')) {
+                    if (!url.includes('/video/upload/w_') && !url.includes('/video/upload/c_')) {
+                        return url.replace('/video/upload/', '/video/upload/w_720,c_limit,q_auto/');
+                    }
+                }
+                return url;
+            }
+
             function setVideoMode(mode) {
                 currentVideoMode = mode;
                 const btnReels = document.getElementById('btn-mode-reels');
                 const btnGrid = document.getElementById('btn-mode-grid');
                 const reelsWrap = document.getElementById('reels-mode-wrapper');
                 const gridWrap = document.getElementById('grid-mode-wrapper');
-                const catsRow = document.getElementById('video-cats-row');
 
                 if (mode === 'reels') {
-                    btnReels.classList.add('active');
-                    btnGrid.classList.remove('active');
-                    reelsWrap.style.display = 'block';
-                    gridWrap.style.display = 'none';
-                    catsRow.style.display = 'none';
+                    if (btnReels) btnReels.classList.add('active');
+                    if (btnGrid) btnGrid.classList.remove('active');
+                    if (reelsWrap) reelsWrap.style.display = 'block';
+                    if (gridWrap) gridWrap.style.display = 'none';
                     playActiveReel();
                 } else {
-                    btnGrid.classList.add('active');
-                    btnReels.classList.remove('active');
-                    gridWrap.style.display = 'block';
-                    reelsWrap.style.display = 'none';
-                    catsRow.style.display = 'flex';
+                    if (btnGrid) btnGrid.classList.add('active');
+                    if (btnReels) btnReels.classList.remove('active');
+                    if (gridWrap) gridWrap.style.display = 'block';
+                    if (reelsWrap) reelsWrap.style.display = 'none';
                     pauseAllReels();
                 }
                 if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+            }
+
+            function shuffleVideoReels() {
+                setVideoMode('reels');
+                const vp = document.getElementById('reels-viewport');
+                if (!vp) return;
+                const list = videoProjectsCache.length ? videoProjectsCache : defaultVideoProjects;
+                if (!list.length) return;
+                vp.innerHTML = '';
+                lastReelKey = '';
+                renderReelBatch(list, 8);
+                vp.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(playActiveReel, 250);
             }
 
             function toggleReelsAudio() {
@@ -484,9 +489,10 @@
                 card.className = 'reel-card';
                 card.setAttribute('data-vcat', (v.cat||'').toLowerCase().replace(/[^a-z0-9]/g,''));
                 const isDrive = (v.img || '').includes('drive.google.com');
+                const optSrc = optimizeVideoUrl(v.img);
                 card.innerHTML = `
                     <div class="reel-top-bar">
-                        <span class="reel-live-tag"><span class="reel-live-dot"></span> REEL</span>
+                        <span class="reel-live-tag"><span class="reel-live-dot"></span> MY WORK</span>
                     </div>
                     ${isDrive ? `
                         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0d0d0d;padding:24px;text-align:center;z-index:2;">
@@ -496,7 +502,7 @@
                             <a href="${v.link && v.link !== '#' ? v.link : v.img}" target="_blank" class="reel-cta-btn" style="font-size:11px;padding:6px 14px;">Open Video Link ↗</a>
                         </div>
                     ` : `
-                        <video src="${v.img}" loop playsinline preload="metadata" ${isReelsMuted ? 'muted' : ''}></video>
+                        <video src="${optSrc}" loop playsinline preload="metadata" ${isReelsMuted ? 'muted' : ''}></video>
                     `}
                     <div class="reel-overlay">
                         <span class="reel-cat-badge">${v.cat || 'Video Work'}</span>
@@ -559,7 +565,7 @@
                 const container = document.getElementById('video-grid-container');
                 if (!container) return;
                 container.innerHTML = list.map(v => {
-                    const safeSrc = (v.img || '').replace(/"/g, '&quot;');
+                    const safeSrc = (optimizeVideoUrl(v.img) || '').replace(/"/g, '&quot;');
                     const isDrive = safeSrc.includes('drive.google.com');
                     return `
                     <div class="video-grid-card" data-vcat="${(v.cat||'').toLowerCase().replace(/[^a-z0-9]/g,'')}" data-vsrc="${safeSrc}">
@@ -602,13 +608,14 @@
                 if (!vp) return;
                 const targetCard = Array.from(vp.querySelectorAll('.reel-card')).find(c => {
                     const vid = c.querySelector('video');
-                    return vid && vid.getAttribute('src') === videoSrc;
+                    const cSrc = vid ? vid.getAttribute('src') : '';
+                    return cSrc === videoSrc || cSrc === optimizeVideoUrl(videoSrc);
                 });
                 if (targetCard) {
                     vp.scrollTo({ top: targetCard.offsetTop, behavior: 'smooth' });
                 } else {
                     const list = videoProjectsCache.length ? videoProjectsCache : defaultVideoProjects;
-                    const found = list.find(v => v.img === videoSrc) || list[0];
+                    const found = list.find(v => v.img === videoSrc || optimizeVideoUrl(v.img) === videoSrc) || list[0];
                     const newCard = createReelCard(found);
                     vp.insertBefore(newCard, vp.firstChild);
                     vp.scrollTo({ top: 0, behavior: 'smooth' });

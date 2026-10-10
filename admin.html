@@ -321,11 +321,11 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
                 <div>
                   <label style="color:var(--muted); font-size:10px; display:block; margin-bottom:3px;">Cloudinary Cloud Name</label>
-                  <input id="cld_cloud" type="text" placeholder="e.g. dxyz123ab" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_cloud', this.value.trim())">
+                  <input id="cld_cloud" type="text" value="qvf1sexr" placeholder="e.g. qvf1sexr" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_cloud', this.value.trim())">
                 </div>
                 <div>
                   <label style="color:var(--muted); font-size:10px; display:block; margin-bottom:3px;">Upload Preset (Unsigned)</label>
-                  <input id="cld_preset" type="text" placeholder="e.g. trc_reels" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_preset', this.value.trim())">
+                  <input id="cld_preset" type="text" value="xeny1zrg" placeholder="e.g. xeny1zrg" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_preset', this.value.trim())">
                 </div>
               </div>
               <div style="font-size:10px; color:var(--muted); line-height:1.4;">
@@ -604,10 +604,15 @@ async function init() {
   const savedKey = localStorage.getItem('trc_imgbb');
   if(savedKey && document.getElementById('imgbb_key')) document.getElementById('imgbb_key').value = savedKey;
 
-  const savedCldCloud = localStorage.getItem('trc_cld_cloud');
-  const savedCldPreset = localStorage.getItem('trc_cld_preset');
-  if(savedCldCloud && document.getElementById('cld_cloud')) document.getElementById('cld_cloud').value = savedCldCloud;
-  if(savedCldPreset && document.getElementById('cld_preset')) document.getElementById('cld_preset').value = savedCldPreset;
+  const DEFAULT_CLD_CLOUD = 'qvf1sexr';
+  const DEFAULT_CLD_PRESET = 'xeny1zrg';
+
+  const savedCldCloud = localStorage.getItem('trc_cld_cloud') || DEFAULT_CLD_CLOUD;
+  const savedCldPreset = localStorage.getItem('trc_cld_preset') || DEFAULT_CLD_PRESET;
+  if(document.getElementById('cld_cloud')) document.getElementById('cld_cloud').value = savedCldCloud;
+  if(document.getElementById('cld_preset')) document.getElementById('cld_preset').value = savedCldPreset;
+  localStorage.setItem('trc_cld_cloud', savedCldCloud);
+  localStorage.setItem('trc_cld_preset', savedCldPreset);
 }
 
 // ── REAL-TIME PROJECTS ─────────────────────────────────────────
@@ -753,14 +758,16 @@ async function handleFileSelection(file) {
     }
 
     // Check Cloudinary settings
-    const cloudName = (document.getElementById('cld_cloud') ? document.getElementById('cld_cloud').value.trim() : '') || localStorage.getItem('trc_cld_cloud') || '';
-    const uploadPreset = (document.getElementById('cld_preset') ? document.getElementById('cld_preset').value.trim() : '') || localStorage.getItem('trc_cld_preset') || '';
+    const DEFAULT_CLD_CLOUD = 'qvf1sexr';
+    const DEFAULT_CLD_PRESET = 'xeny1zrg';
+    const cloudName = (document.getElementById('cld_cloud') ? document.getElementById('cld_cloud').value.trim() : '') || localStorage.getItem('trc_cld_cloud') || DEFAULT_CLD_CLOUD;
+    const uploadPreset = (document.getElementById('cld_preset') ? document.getElementById('cld_preset').value.trim() : '') || localStorage.getItem('trc_cld_preset') || DEFAULT_CLD_PRESET;
 
     if (cloudName && uploadPreset) {
       await uploadVideoToCloudinary(file);
     } else {
       const mbSize = (file.size / (1024 * 1024)).toFixed(1);
-      setStatus(`💡 Selected video is ${mbSize}MB. To upload with 1 click, enter your Cloudinary "Cloud Name" & "Upload Preset" in the box above (free 25GB, takes 1 min). Or upload your MP4 to any host and paste the direct .mp4 link below!`, 'info');
+      setStatus(`💡 Selected video is ${mbSize}MB. Upload your MP4 to any host and paste the direct .mp4 link below!`, 'info');
     }
     return;
   }
@@ -770,13 +777,10 @@ async function handleFileSelection(file) {
 }
 
 async function uploadVideoToCloudinary(file) {
-  const cloudName = (document.getElementById('cld_cloud') ? document.getElementById('cld_cloud').value.trim() : '') || localStorage.getItem('trc_cld_cloud') || '';
-  const uploadPreset = (document.getElementById('cld_preset') ? document.getElementById('cld_preset').value.trim() : '') || localStorage.getItem('trc_cld_preset') || '';
-
-  if (!cloudName || !uploadPreset) {
-    setStatus('⚠️ Please enter your Cloudinary Cloud Name and Upload Preset in the box above (takes 1 min, 25GB free) to upload MP4 videos directly!', 'err');
-    return;
-  }
+  const DEFAULT_CLD_CLOUD = 'qvf1sexr';
+  const DEFAULT_CLD_PRESET = 'xeny1zrg';
+  const cloudName = (document.getElementById('cld_cloud') ? document.getElementById('cld_cloud').value.trim() : '') || localStorage.getItem('trc_cld_cloud') || DEFAULT_CLD_CLOUD;
+  const uploadPreset = (document.getElementById('cld_preset') ? document.getElementById('cld_preset').value.trim() : '') || localStorage.getItem('trc_cld_preset') || DEFAULT_CLD_PRESET;
 
   localStorage.setItem('trc_cld_cloud', cloudName);
   localStorage.setItem('trc_cld_preset', uploadPreset);
@@ -808,11 +812,15 @@ async function uploadVideoToCloudinary(file) {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           const res = JSON.parse(xhr.responseText);
-          const videoUrl = res.secure_url || res.url;
+          let videoUrl = res.secure_url || res.url;
           if (videoUrl) {
+            // Automatically optimize to 720p with smart auto quality for smooth playback & low data usage
+            if (videoUrl.includes('/video/upload/') && !videoUrl.includes('/video/upload/w_') && !videoUrl.includes('/video/upload/c_')) {
+              videoUrl = videoUrl.replace('/video/upload/', '/video/upload/w_720,c_limit,q_auto/');
+            }
             document.getElementById('fi').value = videoUrl;
             previewFromUrl(videoUrl);
-            setStatus('✅ Video uploaded successfully! Direct MP4 stream ready. Click "SAVE PROJECT".', 'ok');
+            setStatus('✅ Video uploaded & optimized to 720p! Click "SAVE PROJECT".', 'ok');
             resolve(videoUrl);
           } else {
             setStatus('❌ Video uploaded, but no video URL was returned.', 'err');
