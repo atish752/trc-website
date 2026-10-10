@@ -309,18 +309,28 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
               <div style="font-size: 9px; color: var(--muted); margin-top: 4px;">Get your free key at <a href="https://api.imgbb.com/" target="_blank" style="color: var(--red);">api.imgbb.com</a>.</div>
             </div>
 
-            <!-- Video Work Free Plan Guide -->
-            <div id="box-video-storage" style="display:none; margin-bottom: 12px; background: rgba(215,3,33,0.08); padding: 12px 14px; border-radius: 8px; border: 1.5px solid var(--red);">
-              <div style="font-size:12px; font-weight:700; color:#FF5A6E; margin-bottom:4px;">🎬 Video Work Hosting (100% Free)</div>
-              <div style="font-size:11px; color:var(--cream); line-height:1.5;">
-                Firestore stores all your video titles, captions, and links for free. Paste any MP4 video URL below (or select small clips under 700KB directly):
+            <!-- Video Work Free Plan Guide & Direct Cloudinary Upload -->
+            <div id="box-video-storage" style="display:none; margin-bottom: 12px; background: rgba(215,3,33,0.06); padding: 12px 14px; border-radius: 8px; border: 1.5px solid var(--red);">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                <div style="font-size:12px; font-weight:700; color:#FF5A6E;">🎬 Video Work Hosting (100% Free)</div>
+                <span style="font-size:10px; background:rgba(215,3,33,0.2); color:#FF5A6E; padding:2px 7px; border-radius:10px; font-weight:600;">25GB Free Storage</span>
               </div>
-              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
-                <span style="font-size:10px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; color:var(--cream);">📁 Google Drive (Share &rarr; Anyone with link)</span>
-                <span style="font-size:10px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; color:var(--cream);">📦 Dropbox (Share link)</span>
-                <span style="font-size:10px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; color:var(--cream);">☁️ Cloudinary (25GB Free)</span>
+              <div style="font-size:11px; color:var(--cream); line-height:1.5; margin-bottom:8px;">
+                Upload MP4 videos directly using free Cloudinary CDN (no credit card required), or paste any direct <code style="background:rgba(255,255,255,0.1);padding:1px 4px;border-radius:3px;color:#fff;">.mp4</code> streaming link below.
               </div>
-              <div style="font-size:10px; color:var(--muted); margin-top:6px;">💡 Google Drive and Dropbox share links are automatically converted to direct streaming video!</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                <div>
+                  <label style="color:var(--muted); font-size:10px; display:block; margin-bottom:3px;">Cloudinary Cloud Name</label>
+                  <input id="cld_cloud" type="text" placeholder="e.g. dxyz123ab" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_cloud', this.value.trim())">
+                </div>
+                <div>
+                  <label style="color:var(--muted); font-size:10px; display:block; margin-bottom:3px;">Upload Preset (Unsigned)</label>
+                  <input id="cld_preset" type="text" placeholder="e.g. trc_reels" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_preset', this.value.trim())">
+                </div>
+              </div>
+              <div style="font-size:10px; color:var(--muted); line-height:1.4;">
+                ⚡ <strong>1-Minute Free Setup:</strong> 1. Sign up free at <a href="https://cloudinary.com" target="_blank" style="color:var(--red);text-decoration:underline;">cloudinary.com</a> &bull; 2. Go to Settings &rarr; <em>Upload presets</em> &rarr; Add upload preset &rarr; set Signing Mode to <strong>Unsigned</strong> &rarr; Save &bull; 3. Enter your Cloud Name and Preset name here. They are saved automatically!
+              </div>
             </div>
 
             <div id="drop-zone" onclick="document.getElementById('f_file').click()" style="border:2px dashed var(--border);border-radius:8px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;margin-bottom:8px;">
@@ -388,11 +398,6 @@ let allAdminProjects = [];
 function normalizeVideoUrl(url) {
   if (!url) return '';
   url = url.trim();
-  // Google Drive: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
-  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (driveMatch && driveMatch[1]) {
-    return `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
-  }
   // Dropbox: https://www.dropbox.com/s/.../video.mp4?dl=0
   if (url.includes('dropbox.com')) {
     return url.replace(/[?&]dl=0/, '?raw=1');
@@ -407,10 +412,11 @@ function isVideoMedia(src) {
     s.endsWith('.mp4') ||
     s.endsWith('.webm') ||
     s.endsWith('.mov') ||
+    s.endsWith('.m4v') ||
     s.includes('.mp4?') ||
     s.includes('.webm?') ||
     s.includes('video/') ||
-    s.includes('drive.google.com') ||
+    s.includes('res.cloudinary.com') ||
     s.startsWith('data:video/')
   );
 }
@@ -493,6 +499,18 @@ function previewFromUrl(url) {
     return;
   }
 
+  // Explicit Google Drive Warning
+  if (url.includes('drive.google.com')) {
+    setStatus('⚠️ Google Drive blocks browser video streaming (resulting in a blank black screen). Please upload your MP4 via Cloudinary above or paste a direct .mp4 streaming URL!', 'err');
+    if (prevVid) { prevVid.src = ''; prevVid.style.display = 'none'; }
+    if (prevImg) { prevImg.src = ''; prevImg.style.display = 'none'; }
+    if (dzT) {
+      dzT.style.display = 'block';
+      dzT.innerHTML = '<span style="color:#FF5A6E;font-weight:700;">⚠️ Google Drive blocks video streaming (black screen)</span><br><span style="font-size:11px;color:var(--muted);margin-top:4px;display:block;">Google Drive does not allow browsers to stream video files.<br>Please upload your MP4 file using Cloudinary above or paste a direct .mp4 link!</span>';
+    }
+    return;
+  }
+
   const normalized = normalizeVideoUrl(url);
   if (normalized !== url) {
     url = normalized;
@@ -505,10 +523,25 @@ function previewFromUrl(url) {
 
   if (isVideoMedia(url)) {
     if (prevImg) { prevImg.src = ''; prevImg.style.display = 'none'; }
-    if (prevVid) { prevVid.src = url; prevVid.style.display = 'block'; }
+    if (prevVid) {
+      prevVid.src = url;
+      prevVid.style.display = 'block';
+      prevVid.onerror = () => {
+        setStatus('⚠️ Unable to stream video from this URL. Make sure it is a direct .mp4 link with public access.', 'err');
+      };
+      prevVid.onloadeddata = () => {
+        setStatus('✅ Video loaded and streaming successfully!', 'ok');
+      };
+    }
   } else {
     if (prevVid) { prevVid.src = ''; prevVid.style.display = 'none'; }
-    if (prevImg) { prevImg.src = url; prevImg.style.display = 'block'; }
+    if (prevImg) {
+      prevImg.src = url;
+      prevImg.style.display = 'block';
+      prevImg.onerror = () => {
+        setStatus('⚠️ Unable to load image from this URL.', 'err');
+      };
+    }
   }
 }
 
@@ -569,7 +602,12 @@ async function init() {
   setupUpload();
   
   const savedKey = localStorage.getItem('trc_imgbb');
-  if(savedKey) document.getElementById('imgbb_key').value = savedKey;
+  if(savedKey && document.getElementById('imgbb_key')) document.getElementById('imgbb_key').value = savedKey;
+
+  const savedCldCloud = localStorage.getItem('trc_cld_cloud');
+  const savedCldPreset = localStorage.getItem('trc_cld_preset');
+  if(savedCldCloud && document.getElementById('cld_cloud')) document.getElementById('cld_cloud').value = savedCldCloud;
+  if(savedCldPreset && document.getElementById('cld_preset')) document.getElementById('cld_preset').value = savedCldPreset;
 }
 
 // ── REAL-TIME PROJECTS ─────────────────────────────────────────
@@ -714,14 +752,98 @@ async function handleFileSelection(file) {
       return;
     }
 
-    // Friendly guide for videos > 750KB on the Firebase Free / Spark plan
-    const mbSize = (file.size / (1024 * 1024)).toFixed(1);
-    setStatus(`💡 Video is ${mbSize}MB (Firestore limit is 1MB). On the Firebase free plan, upload this video to Google Drive, Dropbox, or Cloudinary, and paste the share link in the URL box below! (Preview loaded above)`, 'info');
+    // Check Cloudinary settings
+    const cloudName = (document.getElementById('cld_cloud') ? document.getElementById('cld_cloud').value.trim() : '') || localStorage.getItem('trc_cld_cloud') || '';
+    const uploadPreset = (document.getElementById('cld_preset') ? document.getElementById('cld_preset').value.trim() : '') || localStorage.getItem('trc_cld_preset') || '';
+
+    if (cloudName && uploadPreset) {
+      await uploadVideoToCloudinary(file);
+    } else {
+      const mbSize = (file.size / (1024 * 1024)).toFixed(1);
+      setStatus(`💡 Selected video is ${mbSize}MB. To upload with 1 click, enter your Cloudinary "Cloud Name" & "Upload Preset" in the box above (free 25GB, takes 1 min). Or upload your MP4 to any host and paste the direct .mp4 link below!`, 'info');
+    }
     return;
   }
 
   // If image or GIF (for websites & apps)
   uploadToStorage(file);
+}
+
+async function uploadVideoToCloudinary(file) {
+  const cloudName = (document.getElementById('cld_cloud') ? document.getElementById('cld_cloud').value.trim() : '') || localStorage.getItem('trc_cld_cloud') || '';
+  const uploadPreset = (document.getElementById('cld_preset') ? document.getElementById('cld_preset').value.trim() : '') || localStorage.getItem('trc_cld_preset') || '';
+
+  if (!cloudName || !uploadPreset) {
+    setStatus('⚠️ Please enter your Cloudinary Cloud Name and Upload Preset in the box above (takes 1 min, 25GB free) to upload MP4 videos directly!', 'err');
+    return;
+  }
+
+  localStorage.setItem('trc_cld_cloud', cloudName);
+  localStorage.setItem('trc_cld_preset', uploadPreset);
+
+  const dzText = document.getElementById('dz-text');
+  const dzIcon = document.getElementById('dz-icon');
+  if (dzText) dzText.style.display = 'none';
+  if (dzIcon) dzIcon.style.display = 'none';
+
+  const url = `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`;
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', uploadPreset);
+
+  setStatus('⏳ Uploading video to Cloudinary (0%)...', 'info');
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 100);
+        setStatus(`⏳ Uploading video to Cloudinary: ${pct}%...`, 'info');
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const res = JSON.parse(xhr.responseText);
+          const videoUrl = res.secure_url || res.url;
+          if (videoUrl) {
+            document.getElementById('fi').value = videoUrl;
+            previewFromUrl(videoUrl);
+            setStatus('✅ Video uploaded successfully! Direct MP4 stream ready. Click "SAVE PROJECT".', 'ok');
+            resolve(videoUrl);
+          } else {
+            setStatus('❌ Video uploaded, but no video URL was returned.', 'err');
+            reject(new Error('No secure_url returned'));
+          }
+        } catch(err) {
+          setStatus('❌ Error parsing Cloudinary response: ' + err.message, 'err');
+          reject(err);
+        }
+      } else {
+        let errDesc = 'Cloudinary upload failed (HTTP ' + xhr.status + ').';
+        try {
+          const errRes = JSON.parse(xhr.responseText);
+          if (errRes.error && errRes.error.message) errDesc += ' ' + errRes.error.message;
+        } catch(e) {}
+        setStatus('❌ ' + errDesc + ' (Make sure Preset is set to "Unsigned" in Cloudinary Settings > Upload)', 'err');
+        if (dzText) dzText.style.display = '';
+        if (dzIcon) dzIcon.style.display = '';
+        reject(new Error(errDesc));
+      }
+    };
+
+    xhr.onerror = () => {
+      setStatus('❌ Network error uploading to Cloudinary. Check internet connection.', 'err');
+      if (dzText) dzText.style.display = '';
+      if (dzIcon) dzIcon.style.display = '';
+      reject(new Error('Network error'));
+    };
+
+    xhr.send(formData);
+  });
 }
 
 async function uploadVideoToFirebase(file) {

@@ -483,11 +483,21 @@
                 const card = document.createElement('div');
                 card.className = 'reel-card';
                 card.setAttribute('data-vcat', (v.cat||'').toLowerCase().replace(/[^a-z0-9]/g,''));
+                const isDrive = (v.img || '').includes('drive.google.com');
                 card.innerHTML = `
                     <div class="reel-top-bar">
                         <span class="reel-live-tag"><span class="reel-live-dot"></span> REEL</span>
                     </div>
-                    <video src="${v.img}" loop playsinline preload="metadata" ${isReelsMuted ? 'muted' : ''}></video>
+                    ${isDrive ? `
+                        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0d0d0d;padding:24px;text-align:center;z-index:2;">
+                            <div style="font-size:32px;margin-bottom:8px;">⚠️</div>
+                            <div style="font-size:13px;font-weight:700;color:#FF5A6E;margin-bottom:6px;">Google Drive Video Blocked</div>
+                            <div style="font-size:11px;color:#ECE4D8;line-height:1.4;margin-bottom:14px;max-width:240px;">Google Drive blocks browsers from streaming video directly. Please upload this MP4 via Cloudinary in the Admin Panel!</div>
+                            <a href="${v.link && v.link !== '#' ? v.link : v.img}" target="_blank" class="reel-cta-btn" style="font-size:11px;padding:6px 14px;">Open Video Link ↗</a>
+                        </div>
+                    ` : `
+                        <video src="${v.img}" loop playsinline preload="metadata" ${isReelsMuted ? 'muted' : ''}></video>
+                    `}
                     <div class="reel-overlay">
                         <span class="reel-cat-badge">${v.cat || 'Video Work'}</span>
                         <h3 class="reel-title">${v.title || 'Featured Project'}</h3>
@@ -550,9 +560,17 @@
                 if (!container) return;
                 container.innerHTML = list.map(v => {
                     const safeSrc = (v.img || '').replace(/"/g, '&quot;');
+                    const isDrive = safeSrc.includes('drive.google.com');
                     return `
                     <div class="video-grid-card" data-vcat="${(v.cat||'').toLowerCase().replace(/[^a-z0-9]/g,'')}" data-vsrc="${safeSrc}">
-                        <video src="${safeSrc}" muted loop playsinline preload="metadata" onmouseenter="this.play().catch(()=>{})" onmouseleave="this.pause()"></video>
+                        ${isDrive ? `
+                            <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#141414;padding:12px;text-align:center;">
+                                <div style="font-size:20px;">⚠️</div>
+                                <div style="font-size:10px;color:#FF5A6E;font-weight:700;margin-top:4px;">Google Drive Blocked</div>
+                            </div>
+                        ` : `
+                            <video src="${safeSrc}" muted loop playsinline preload="metadata" onmouseenter="this.play().catch(()=>{})" onmouseleave="this.pause()"></video>
+                        `}
                         <div class="grid-overlay">
                             <span class="grid-cat">${v.cat || 'Video'}</span>
                             <h4>${v.title || 'Video Reel'}</h4>
