@@ -314,11 +314,11 @@ input,select,textarea,button{font-family:'Inter',sans-serif;}
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
                 <div>
                   <label style="color:var(--muted); font-size:10px; display:block; margin-bottom:3px;">Cloudinary Cloud Name</label>
-                  <input id="cld_cloud" type="text" value="qvf1sexr" placeholder="e.g. qvf1sexr" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_cloud', this.value.trim())">
+                  <input id="cld_cloud" type="text" value="dmmvyvsnj" placeholder="e.g. dmmvyvsnj" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_cloud', this.value.trim())">
                 </div>
                 <div>
                   <label style="color:var(--muted); font-size:10px; display:block; margin-bottom:3px;">Upload Preset (Unsigned)</label>
-                  <input id="cld_preset" type="text" value="xeny1zrg" placeholder="e.g. xeny1zrg" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_preset', this.value.trim())">
+                  <input id="cld_preset" type="text" value="trc_preset" placeholder="e.g. trc_preset" style="width:100%; padding:7px 9px; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; color:var(--cream);" onchange="localStorage.setItem('trc_cld_preset', this.value.trim())">
                 </div>
               </div>
               <div style="font-size:10px; color:var(--muted); line-height:1.4;">
@@ -591,8 +591,8 @@ async function init() {
   listenProjects();
   setupUpload();
 
-  const DEFAULT_CLD_CLOUD = 'qvf1sexr';
-  const DEFAULT_CLD_PRESET = 'xeny1zrg';
+  const DEFAULT_CLD_CLOUD = 'dmmvyvsnj';
+  const DEFAULT_CLD_PRESET = 'trc_preset';
 
   const savedCldCloud = localStorage.getItem('trc_cld_cloud') || DEFAULT_CLD_CLOUD;
   const savedCldPreset = localStorage.getItem('trc_cld_preset') || DEFAULT_CLD_PRESET;
@@ -758,8 +758,8 @@ async function handleFileSelection(file) {
 }
 
 async function uploadMediaToCloudinary(file, isVideo) {
-  const DEFAULT_CLD_CLOUD = 'qvf1sexr';
-  const DEFAULT_CLD_PRESET = 'xeny1zrg';
+  const DEFAULT_CLD_CLOUD = 'dmmvyvsnj';
+  const DEFAULT_CLD_PRESET = 'trc_preset';
   const cloudName = (document.getElementById('cld_cloud') ? document.getElementById('cld_cloud').value.trim() : '') || localStorage.getItem('trc_cld_cloud') || DEFAULT_CLD_CLOUD;
   const uploadPreset = (document.getElementById('cld_preset') ? document.getElementById('cld_preset').value.trim() : '') || localStorage.getItem('trc_cld_preset') || DEFAULT_CLD_PRESET;
 
